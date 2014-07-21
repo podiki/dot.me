@@ -170,7 +170,8 @@ point reaches the beginning or end of the buffer, stop there."
 ;; Smartparens
 (smartparens-global-mode 1)
 (require 'smartparens-config)
-(show-smartparens-mode 1)
+;(show-smartparens-mode +1)
+(show-smartparens-global-mode 1)
 
 ;; Show line-number and column-number in the mode line
 (line-number-mode 1)
@@ -355,25 +356,21 @@ point reaches the beginning or end of the buffer, stop there."
 ;;
 ;; Python
 ;;
+
+;; use python-mode.el
 (setq py-install-directory "/Users/john/.emacs.d/.cask/24.3.1/elpa/python-mode-6.1.3/")
 (add-to-list 'load-path py-install-directory)
 (require 'python-mode)
 (when (featurep 'python) (unload-feature 'python t))
-;(add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
-;(add-to-list 'interpreter-mode-alist '("python" . python-mode))
-(add-hook 'python-mode-hook 'flyspell-prog-mode)
-;; ipython
-;; (for some reason this is forcing python.el rather than python-mode.el)
-;; (defun python-use-ipython (cmd args)
-;;  (setq ipython-command cmd)
-;;  (setq py-python-command-args args)
-;;  (require 'ipython)
-;;  (setq ipython-completion-command-string
-;;        "print(';'.join(__IP.Completer.all_completions('%s')))\n"))
-;; (python-use-ipython "/usr/local/bin/ipython" '("-colors" "LightBG" "-nobanner"))
+(add-hook 'python-mode-hook 'flyspell-prog-mode) ; spell check comments
+;; use ipython interpreter
+(setq-default py-shell-name "ipython")
+(setq py-force-py-shell-name-p 1) ; overrides shebang setting
+
 ;; jedi
 (add-hook 'python-mode-hook 'jedi:setup)
 (setq jedi:complete-on-dot 1)
+
 ;; cython
 (require 'cython-mode)
 (add-to-list 'auto-mode-alist '("\\.pyx\\'" . cython-mode))
@@ -482,35 +479,3 @@ point reaches the beginning or end of the buffer, stop there."
 ; Enable synctex
 (setq TeX-source-correlate-mode 1)
 (setq TeX-source-correlate-method 'synctex)
-
-;; old Skim setup, doesn't seem needed anymore
-;; (add-hook 'LaTeX-mode-hook
-;;       (lambda()
-;;         (add-to-list 'TeX-expand-list
-;;              '("%q" skim-make-url))))
-
-;; (defun skim-make-url () (concat
-;;         (TeX-current-line)
-;;         " "
-;;         (expand-file-name (funcall file (TeX-output-extension) t)
-;;             (file-name-directory (TeX-master-file)))
-;;         " "
-;;         (buffer-file-name)))
-
-;; Don't remember what this was for, maybe attempting to set up Skim previously?
-;; doesn't seem to cause any problems with it disabled right now
-
-;; (custom-set-variables
-;;  ;; custom-set-variables was added by Custom.
-;;  ;; If you edit it by hand, you could mess it up, so be careful.
-;;  ;; Your init file should contain only one such instance.
-;;  ;; If there is more than one, they won't work right.
-;;  '(TeX-command-list (quote (("TeX" "%(PDF)%(tex) %`%S%(PDFout)%(mode)%' %t" TeX-run-TeX nil (plain-tex-mode texinfo-mode ams-tex-mode) :help "Run plain TeX") ("LaTeX" "%`%l%(mode)%' %t" TeX-run-TeX nil (latex-mode doctex-mode) :help "Run LaTeX") ("Makeinfo" "makeinfo %t" TeX-run-compile nil (texinfo-mode) :help "Run Makeinfo with Info output") ("Makeinfo HTML" "makeinfo --html %t" TeX-run-compile nil (texinfo-mode) :help "Run Makeinfo with HTML output") ("AmSTeX" "%(PDF)amstex %`%S%(PDFout)%(mode)%' %t" TeX-run-TeX nil (ams-tex-mode) :help "Run AMSTeX") ("ConTeXt" "texexec --once --texutil %(execopts)%t" TeX-run-TeX nil (context-mode) :help "Run ConTeXt once") ("ConTeXt Full" "texexec %(execopts)%t" TeX-run-TeX nil (context-mode) :help "Run ConTeXt until completion") ("BibTeX" "bibtex %s" TeX-run-BibTeX nil t :help "Run BibTeX") ("Biber" "biber %s" TeX-run-Biber nil t :help "Run Biber") ("View" "%V" TeX-run-command t t :help "Run Text viewer") ("Print" "%p" TeX-run-command t t :help "Print the file") ("Queue" "%q" TeX-run-background nil t :help "View the printer queue" :visible TeX-queue-command) ("File" "%(o?)dvips %d -o %f " TeX-run-command t t :help "Generate PostScript file") ("Index" "makeindex %s" TeX-run-command nil t :help "Create index file") ("Check" "lacheck %s" TeX-run-compile nil (latex-mode) :help "Check LaTeX file for correctness") ("Spell" "(TeX-ispell-document \"\")" TeX-run-function nil t :help "Spell-check the document") ("Clean" "TeX-clean" TeX-run-function nil t :help "Delete generated intermediate files") ("Clean All" "(TeX-clean t)" TeX-run-function nil t :help "Delete generated intermediate and output files") ("Other" "" TeX-run-command t t :help "Run an arbitrary command"))))
-;;  '(custom-safe-themes (quote ("1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d" default))))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes (quote ("fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" default))))
-

@@ -1,13 +1,25 @@
-;; Package manager and sources
-;(require 'package)
-;(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-;                         ("marmalade" . "http://marmalade-repo.org/packages/")
-;                         ("melpa" . "http://melpa.milkbox.net/packages/")))
-;(package-initialize)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   (quote
+    ("b71d5d49d0b9611c0afce5c6237aacab4f1775b74e513d8ba36ab67dfab35e5a" "628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "9dae95cdbed1505d45322ef8b5aa90ccb6cb59e0ff26fef0b8f411dfc416c552" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" "756597b162f1be60a12dbd52bab71d40d6a2845a3e3c2584c6573ee9c332a66e" "cdc7555f0b34ed32eb510be295b6b967526dd8060e5d04ff0dce719af789f8e5" "6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" default)))
+ '(paradox-github-token t))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
 
-(require 'cask "/usr/local/Cellar/cask/0.7.0/cask.el")
+
+;; Package manager and sources, using Cask
+(require 'cask "/usr/local/Cellar/cask/0.7.2/cask.el")
 (cask-initialize)
 (require 'pallet)
+(pallet-mode t)
 
 ;; When running emacs.app in Mac OS X, copy the path from terminal
 ;; (this avoids problems with finding aspell, latex, etc.)
@@ -16,21 +28,33 @@
   (exec-path-from-shell-copy-env "JAVA_HOME"))
 
 ;; Themes
-(setq ns-use-srgb-colorspace 1) ;; shouldn't be needed in 24.4?
-;(load-theme 'solarized-light t)
+;; temporarily revert to older emacs colorspace for powerline fix
+(setq ns-use-srgb-colorspace nil)
 (load-theme 'sanityinc-tomorrow-eighties 1)
 ;; Font
 (when window-system
-  (set-face-attribute 'default nil :font "Sauce Code Powerline"))
+  (set-face-attribute 'default nil :font "Inconsolata" :height 130))
 
 ;; powerline modeline
 ;; (display problem with terminal emacs?)
-(require 'powerline)
-(powerline-default-theme)
+;(require 'powerline)
+;(powerline-default-theme)
+
+;; smart-mode-line
+(sml/setup)
+(sml/apply-theme 'powerline)
+;; shorten directories/modes
+(setq sml/shorten-directory t)
+(setq sml/shorten-modes t)
+(setq sml/name-width 40)
+(setq sml/mode-width 'full)
+;; directory abbreviations
+(add-to-list 'sml/replacer-regexp-list '("^~/Dropbox/" ":DB:") t)
+(add-to-list 'sml/replacer-regexp-list '("^~/codemonkey/" ":CM:") t)
 
 ;; initial size
 (setq default-frame-alist '((width . 90)
-			    (height . 45)))
+			    (height . 55)))
 
 ;; no system bell or toolbar, scrollbar, delete goes to trash
 (setq visible-bell 1)
@@ -165,13 +189,20 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;; Rainbow parens
 (require 'rainbow-delimiters)
-(global-rainbow-delimiters-mode)
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'LaTeX-mode-hook 'rainbow-delimiters-mode)
 
 ;; Smartparens
 (smartparens-global-mode 1)
 (require 'smartparens-config)
-;(show-smartparens-mode +1)
 (show-smartparens-global-mode 1)
+;; paredit-like setup for lisp
+(add-hook 'lisp-mode-hook 'turn-on-smartparens-strict-mode)
+(setq sp-base-key-bindings 'paredit)
+(sp-use-paredit-bindings)
+(define-key sp-keymap (kbd "M-J") 'sp-join-sexp)
+(sp-local-pair 'lisp-mode "(" ")" :wrap "M-(")
+(sp-local-pair 'lisp-mode "\"" "\"" :wrap "M-\"")
 
 ;; Show line-number and column-number in the mode line
 (line-number-mode 1)
@@ -249,6 +280,17 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;; highlight current line
 (global-hl-line-mode 1)
+
+;; color-identifiers-mode
+(add-hook 'after-init-hook 'global-color-identifiers-mode)
+
+;; highlight symbols in buffer
+(global-set-key [(control f3)] 'highlight-symbol-at-point)
+(global-set-key [f3] 'highlight-symbol-next)
+(global-set-key [(shift f3)] 'highlight-symbol-prev)
+(global-set-key [(meta f3)] 'highlight-symbol-query-replace)
+(setq highlight-symbol-idle-delay 0)
+(add-hook 'prog-mode-hook 'highlight-symbol-mode)
 
 ;; auto-complete
 (require 'auto-complete-config)
@@ -330,8 +372,13 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;; languagetool grammar checker
 (require 'langtool)
-(setq langtool-language-tool-jar "/usr/local/Cellar/languagetool/2.4.1/libexec/languagetool.jar"
+(setq langtool-language-tool-jar "/usr/local/Cellar/languagetool/2.7/libexec/languagetool-commandline.jar"
       langtool-mother-tongue "en-US")
+
+;; writegood mode
+(global-set-key "\C-cg" 'writegood-mode)
+(global-set-key "\C-c\C-gg" 'writegood-grade-level)
+(global-set-key "\C-c\C-ge" 'writegood-reading-ease)
 
 ;; magit
 (require 'magit)
@@ -339,6 +386,9 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;; fountain-mode
 (add-to-list 'auto-mode-alist '("\\.fountain\\'" . fountain-mode))
+
+;; org-mode
+(add-hook 'org-mode-hook 'visual-line-mode)
 
 ;; markdown
 (autoload 'markdown-mode "markdown-mode"
@@ -353,12 +403,25 @@ point reaches the beginning or end of the buffer, stop there."
     (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
 (ad-activate 'ansi-term)
 
+;; lisp/slime
+(load (expand-file-name "~/quicklisp/slime-helper.el"))
+(setq inferior-lisp-program "/usr/local/bin/sbcl")
+(setq slime-contribs '(slime-fancy))
+;; ac-slime
+(add-hook 'slime-mode-hook 'set-up-slime-ac)
+(add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
+(eval-after-load "auto-complete"
+  '(add-to-list 'ac-modes 'slime-repl-mode))
+;; highlight-sexp
+(add-hook 'lisp-mode-hook 'highlight-sexp-mode)
+(add-hook 'emacs-lisp-mode-hook 'highlight-sexp-mode)
+
 ;;
 ;; Python
 ;;
 
 ;; use python-mode.el
-(setq py-install-directory "/Users/john/.emacs.d/.cask/24.3.1/elpa/python-mode-6.1.3/")
+(setq py-install-directory "/Users/john/.emacs.d/.cask/24.4.1/elpa/python-mode-6.1.3/")
 (add-to-list 'load-path py-install-directory)
 (require 'python-mode)
 (when (featurep 'python) (unload-feature 'python t))

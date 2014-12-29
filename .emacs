@@ -204,6 +204,12 @@ point reaches the beginning or end of the buffer, stop there."
 (sp-local-pair 'lisp-mode "(" ")" :wrap "M-(")
 (sp-local-pair 'lisp-mode "\"" "\"" :wrap "M-\"")
 
+;; multiple cursors
+(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+
 ;; Show line-number and column-number in the mode line
 (line-number-mode 1)
 (column-number-mode 1)
@@ -379,6 +385,9 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key "\C-cg" 'writegood-mode)
 (global-set-key "\C-c\C-gg" 'writegood-grade-level)
 (global-set-key "\C-c\C-ge" 'writegood-reading-ease)
+
+;; treat the end of sentence as punctuation plus one space (not two)
+(setq sentence-end-double-space nil)
 
 ;; magit
 (require 'magit)

@@ -5,7 +5,7 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("b71d5d49d0b9611c0afce5c6237aacab4f1775b74e513d8ba36ab67dfab35e5a" "628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "9dae95cdbed1505d45322ef8b5aa90ccb6cb59e0ff26fef0b8f411dfc416c552" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" "756597b162f1be60a12dbd52bab71d40d6a2845a3e3c2584c6573ee9c332a66e" "cdc7555f0b34ed32eb510be295b6b967526dd8060e5d04ff0dce719af789f8e5" "6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" default)))
+    ("e56f1b1c1daec5dbddc50abd00fcd00f6ce4079f4a7f66052cf16d96412a09a9" "b71d5d49d0b9611c0afce5c6237aacab4f1775b74e513d8ba36ab67dfab35e5a" "628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "9dae95cdbed1505d45322ef8b5aa90ccb6cb59e0ff26fef0b8f411dfc416c552" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" "756597b162f1be60a12dbd52bab71d40d6a2845a3e3c2584c6573ee9c332a66e" "cdc7555f0b34ed32eb510be295b6b967526dd8060e5d04ff0dce719af789f8e5" "6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" default)))
  '(paradox-github-token t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -310,10 +310,11 @@ point reaches the beginning or end of the buffer, stop there."
 (require 'flycheck)
 (add-hook 'after-init-hook #'global-flycheck-mode)
 ;; color the modeline by flycheck status
-;; (compatibility with current color theme/powerline :()
-;; (require 'flycheck-color-mode-line)
-;; (eval-after-load "flycheck"
-;;   '(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
+;; (compatibility issue with previous color theme/powerline :()
+;; seems okay now with smart-mode-line
+(require 'flycheck-color-mode-line)
+(eval-after-load "flycheck"
+  '(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
 
 ;; Enable mouse support in terminal
 (unless window-system
@@ -378,7 +379,8 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;; languagetool grammar checker
 (require 'langtool)
-(setq langtool-language-tool-jar "/usr/local/Cellar/languagetool/2.7/libexec/languagetool-commandline.jar"
+(setq langtool-language-tool-jar
+      "/usr/local/Cellar/languagetool/2.7/libexec/languagetool-commandline.jar"
       langtool-mother-tongue "en-US")
 
 ;; writegood mode
@@ -396,10 +398,17 @@ point reaches the beginning or end of the buffer, stop there."
 ;; fountain-mode
 (add-to-list 'auto-mode-alist '("\\.fountain\\'" . fountain-mode))
 
+;;
 ;; org-mode
-(add-hook 'org-mode-hook 'visual-line-mode)
+;;
 
+(add-hook 'org-mode-hook 'visual-line-mode)
+;; fancy utf-8 bullets
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+
+;;
 ;; markdown
+;;
 (autoload 'markdown-mode "markdown-mode"
    "Major mode for editing Markdown files" 1)
 (add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
@@ -412,7 +421,9 @@ point reaches the beginning or end of the buffer, stop there."
     (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
 (ad-activate 'ansi-term)
 
+;;
 ;; lisp/slime
+;;
 (load (expand-file-name "~/quicklisp/slime-helper.el"))
 (setq inferior-lisp-program "/usr/local/bin/sbcl")
 (setq slime-contribs '(slime-fancy))
@@ -424,6 +435,7 @@ point reaches the beginning or end of the buffer, stop there."
 ;; highlight-sexp
 (add-hook 'lisp-mode-hook 'highlight-sexp-mode)
 (add-hook 'emacs-lisp-mode-hook 'highlight-sexp-mode)
+
 
 ;;
 ;; Python

@@ -56,6 +56,8 @@ command -v htop >/dev/null 2>&1 && alias top=htop
 alias ls="ls -aGF --color=auto"
 # ll for details
 alias ll="ls -laGFh --color=auto"
+# rlwrap-ed sbcl
+alias sbcl="~/rlwrap_sbcl.sh"
 
 # AK's fix for iTerm2 color washout
 #source ~/iTerm2colors.sh

@@ -62,6 +62,7 @@
 (depends-on "smart-mode-line-powerline-theme")
 (depends-on "smartparens")
 (depends-on "smex")
+(depends-on "visual-fill-column")
 (depends-on "writegood-mode")
 (depends-on "writeroom-mode")
 (depends-on "zenburn-theme")

@@ -8,8 +8,8 @@ export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 
 # bash completions
-if [ -f $(brew --prefix)/etc/bash_completion ]; then
-    . $(brew --prefix)/etc/bash_completion
+if [ -f $(brew --prefix)/share/bash-completion/bash_completion ]; then
+    . $(brew --prefix)/share/bash-completion/bash_completion
 fi
 
 # various bash settings (many from the terminally-incoherent blog):
@@ -49,7 +49,7 @@ command -v colordiff >/dev/null 2>&1 && alias diff="colordiff -u"
 command -v htop >/dev/null 2>&1 && alias top=htop
 
 # autojump
-[[ -s `brew --prefix`/etc/autojump.sh ]] && . `brew --prefix`/etc/autojump.sh
+[[ -s $(brew --prefix)/etc/profile.d/autojump.sh ]] && . $(brew --prefix)/etc/profile.d/autojump.sh
 
 # aliases
 # ls to use color, type indicators

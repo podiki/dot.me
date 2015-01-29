@@ -29,8 +29,10 @@
 
 ;; Themes
 ;; temporarily revert to older emacs colorspace for powerline fix
+;; and solarized (although can probably use new solarized-broken-srgb instead)
 (setq ns-use-srgb-colorspace nil)
 (load-theme 'sanityinc-tomorrow-eighties 1)
+;(load-theme 'solarized t)
 ;; Font
 (when window-system
   (set-face-attribute 'default nil :font "Inconsolata" :height 130))

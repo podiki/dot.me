@@ -5,7 +5,7 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "e56f1b1c1daec5dbddc50abd00fcd00f6ce4079f4a7f66052cf16d96412a09a9" "b71d5d49d0b9611c0afce5c6237aacab4f1775b74e513d8ba36ab67dfab35e5a" "628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "9dae95cdbed1505d45322ef8b5aa90ccb6cb59e0ff26fef0b8f411dfc416c552" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" "756597b162f1be60a12dbd52bab71d40d6a2845a3e3c2584c6573ee9c332a66e" "cdc7555f0b34ed32eb510be295b6b967526dd8060e5d04ff0dce719af789f8e5" "6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" default)))
+    ("f0b0710b7e1260ead8f7808b3ee13c3bb38d45564e369cbe15fc6d312f0cd7a0" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "e56f1b1c1daec5dbddc50abd00fcd00f6ce4079f4a7f66052cf16d96412a09a9" "b71d5d49d0b9611c0afce5c6237aacab4f1775b74e513d8ba36ab67dfab35e5a" "628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "9dae95cdbed1505d45322ef8b5aa90ccb6cb59e0ff26fef0b8f411dfc416c552" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" "756597b162f1be60a12dbd52bab71d40d6a2845a3e3c2584c6573ee9c332a66e" "cdc7555f0b34ed32eb510be295b6b967526dd8060e5d04ff0dce719af789f8e5" "6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" default)))
  '(paradox-github-token t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -16,7 +16,10 @@
 
 
 ;; Package manager and sources, using Cask
-(require 'cask "/usr/local/Cellar/cask/0.7.2/cask.el")
+(when (memq window-system '(mac ns))
+  (require 'cask "~/usr/local/sahre/emacs/site-lisp/cask.el"))
+(when (memq window-system '(w32))
+  (require 'cask "~/.cask/cask.el"))
 (cask-initialize)
 (require 'pallet)
 (pallet-mode t)
@@ -34,8 +37,10 @@
 (load-theme 'sanityinc-tomorrow-eighties 1)
 ;(load-theme 'solarized t)
 ;; Font
-(when window-system
+(when (memq window-system '(mac ns))
   (set-face-attribute 'default nil :font "Inconsolata" :height 130))
+(when (memq window-system '(w32))
+  (set-face-attribute 'default nil :font "Inconsolata" :height 110))
 
 ;; powerline modeline
 ;; (display problem with terminal emacs?)
@@ -201,6 +206,7 @@ point reaches the beginning or end of the buffer, stop there."
 (show-smartparens-global-mode 1)
 ;; paredit-like setup for lisp
 (add-hook 'lisp-mode-hook 'turn-on-smartparens-strict-mode)
+(add-hook 'emacs-lisp-mode-hook 'turn-on-smartparens-strict-mode)
 (setq sp-base-key-bindings 'paredit)
 (sp-use-paredit-bindings)
 (define-key sp-keymap (kbd "M-J") 'sp-join-sexp)
@@ -397,6 +403,17 @@ point reaches the beginning or end of the buffer, stop there."
 ;; magit
 (require 'magit)
 (global-set-key "\C-xg" 'magit-status)
+;; for windows paths in msys2 with default install directory
+;; modified from solutions in https://github.com/magit/magit/issues/1318
+(defun magit-expand-git-file-name--msys2 (args)
+  "Handle msys2 directory names starting with /home by prefixing with c:/msys2"
+  (let ((filename (car args)))
+        (when (string-match "^\\(/home\\)\\(.*\\)" filename)
+          (setq filename (concat  "c:/msys64/home" (match-string 2 filename))))
+        (list filename)))
+(when (memq window-system '(w32))
+  (advice-add 'magit-expand-git-file-name :filter-args
+	      #'magit-expand-git-file-name--msys2))
 
 ;; fountain-mode
 (add-to-list 'auto-mode-alist '("\\.fountain\\'" . fountain-mode))

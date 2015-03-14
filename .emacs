@@ -17,7 +17,7 @@
 
 ;; Package manager and sources, using Cask
 (when (memq window-system '(mac ns))
-  (require 'cask "~/usr/local/share/emacs/site-lisp/cask.el"))
+  (require 'cask "/usr/local/share/emacs/site-lisp/cask.el"))
 (when (memq window-system '(w32))
   (require 'cask "~/.cask/cask.el"))
 (cask-initialize)

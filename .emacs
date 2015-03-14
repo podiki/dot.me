@@ -414,6 +414,9 @@ point reaches the beginning or end of the buffer, stop there."
 (when (memq window-system '(w32))
   (advice-add 'magit-expand-git-file-name :filter-args
 	      #'magit-expand-git-file-name--msys2))
+;; work around for https git on windows
+(when (memq window-system '(w32))
+  (setenv "GIT_ASKPASS" "git-gui--askpass"))
 
 ;; fountain-mode
 (add-to-list 'auto-mode-alist '("\\.fountain\\'" . fountain-mode))
@@ -445,7 +448,7 @@ point reaches the beginning or end of the buffer, stop there."
 ;; lisp/slime
 ;;
 (load (expand-file-name "~/quicklisp/slime-helper.el"))
-(setq inferior-lisp-program "/usr/local/bin/sbcl")
+(setq inferior-lisp-program "sbcl")
 (setq slime-contribs '(slime-fancy))
 ;; ac-slime
 (add-hook 'slime-mode-hook 'set-up-slime-ac)

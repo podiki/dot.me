@@ -40,7 +40,7 @@
 (when (memq window-system '(mac ns))
   (set-face-attribute 'default nil :font "Inconsolata" :height 130))
 (when (memq window-system '(w32))
-  (set-face-attribute 'default nil :font "Inconsolata" :height 110))
+  (set-face-attribute 'default nil :font "Inconsolata" :height 105))
 
 ;; powerline modeline
 ;; (display problem with terminal emacs?)
@@ -400,9 +400,12 @@ point reaches the beginning or end of the buffer, stop there."
 ;; treat the end of sentence as punctuation plus one space (not two)
 (setq sentence-end-double-space nil)
 
+;;
 ;; magit
+;;
 (require 'magit)
 (global-set-key "\C-xg" 'magit-status)
+
 ;; for windows paths in msys2 with default install directory
 ;; modified from solutions in https://github.com/magit/magit/issues/1318
 (defun magit-expand-git-file-name--msys2 (args)
@@ -414,7 +417,9 @@ point reaches the beginning or end of the buffer, stop there."
 (when (memq window-system '(w32))
   (advice-add 'magit-expand-git-file-name :filter-args
 	      #'magit-expand-git-file-name--msys2))
+
 ;; work around for https git on windows
+;; https://github.com/magit/magit/wiki/FAQ#windows-cannot-push-via-https
 (when (memq window-system '(w32))
   (setenv "GIT_ASKPASS" "git-gui--askpass"))
 
@@ -444,9 +449,11 @@ point reaches the beginning or end of the buffer, stop there."
     (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
 (ad-activate 'ansi-term)
 
+
 ;;
 ;; lisp/slime
 ;;
+
 (load (expand-file-name "~/quicklisp/slime-helper.el"))
 (setq inferior-lisp-program "sbcl")
 (setq slime-contribs '(slime-fancy))
@@ -455,6 +462,7 @@ point reaches the beginning or end of the buffer, stop there."
 (add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
 (eval-after-load "auto-complete"
   '(add-to-list 'ac-modes 'slime-repl-mode))
+
 ;; highlight-sexp
 (add-hook 'lisp-mode-hook 'highlight-sexp-mode)
 (add-hook 'emacs-lisp-mode-hook 'highlight-sexp-mode)

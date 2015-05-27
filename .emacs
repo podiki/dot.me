@@ -468,7 +468,8 @@ point reaches the beginning or end of the buffer, stop there."
 ;;
 
 ;; use python-mode.el
-(setq py-install-directory "/Users/john/.emacs.d/.cask/24.4.1/elpa/python-mode-6.1.3/")
+;; err...doesn't seem to work, loads python.el (Python vs py mode), fix later
+(setq py-install-directory "~/.emacs.d/.cask/24.5.1/elpa/python-mode-20150512.353/")
 (add-to-list 'load-path py-install-directory)
 (require 'python-mode)
 (when (featurep 'python) (unload-feature 'python t))
@@ -501,6 +502,7 @@ point reaches the beginning or end of the buffer, stop there."
 (add-hook 'LaTeX-mode-hook 'flyspell-mode)
 (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+(add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
 (setq reftex-plug-into-AUCTeX 1)
 
 ;; some reftex options esp. for big files
@@ -589,9 +591,3 @@ point reaches the beginning or end of the buffer, stop there."
 ; Enable synctex
 (setq TeX-source-correlate-mode 1)
 (setq TeX-source-correlate-method 'synctex)
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )

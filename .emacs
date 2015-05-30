@@ -28,30 +28,41 @@
 ;; temporarily revert to older emacs colorspace for powerline fix
 ;; and solarized (although can probably use new solarized-broken-srgb instead)
 (setq ns-use-srgb-colorspace nil)
-(load-theme 'sanityinc-tomorrow-eighties 1)
+(load-theme 'leuven)
+;(load-theme 'sanityinc-tomorrow-eighties 1)
 ;(load-theme 'solarized t)
 ;; Font
 (when (memq window-system '(mac ns))
-  (set-face-attribute 'default nil :font "Inconsolata" :height 130))
+  (set-face-attribute 'default nil :family "Inconsolata" :height 130)
+  ; extra unicode characters via:
+  ; https://github.com/joodie/emacs-literal-config/blob/master/emacs.org
+  (when (functionp 'set-fontset-font)
+    (set-fontset-font "fontset-default"
+		      'unicode
+		      (font-spec :family "DejaVu Sans Mono for Powerline"
+				 :width 'normal
+				 :size 12.4
+				 :weight 'normal))))
+
 (when (memq window-system '(w32))
   (set-face-attribute 'default nil :font "Inconsolata" :height 105))
 
 ;; powerline modeline
 ;; (display problem with terminal emacs?)
-;(require 'powerline)
-;(powerline-default-theme)
+(require 'powerline)
+(powerline-default-theme)
 
 ;; smart-mode-line
-(sml/setup)
-(sml/apply-theme 'powerline)
+;(sml/setup)
+;(sml/apply-theme 'powerline)
 ;; shorten directories/modes
-(setq sml/shorten-directory t)
-(setq sml/shorten-modes t)
-(setq sml/name-width 40)
-(setq sml/mode-width 'full)
+;(setq sml/shorten-directory t)
+;(setq sml/shorten-modes t)
+;(setq sml/name-width 40)
+;(setq sml/mode-width 'full)
 ;; directory abbreviations
-(add-to-list 'sml/replacer-regexp-list '("^~/Dropbox/" ":DB:") t)
-(add-to-list 'sml/replacer-regexp-list '("^~/codemonkey/" ":CM:") t)
+;(add-to-list 'sml/replacer-regexp-list '("^~/Dropbox/" ":DB:") t)
+;(add-to-list 'sml/replacer-regexp-list '("^~/codemonkey/" ":CM:") t)
 
 ;; initial size
 (setq default-frame-alist '((width . 90)

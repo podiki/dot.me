@@ -45,7 +45,7 @@
 				 :weight 'normal))))
 
 (when (memq window-system '(w32))
-  (set-face-attribute 'default nil :font "Inconsolata" :height 105))
+  (set-face-attribute 'default nil :font "Inconsolata" :height 102))
 
 ;; powerline modeline
 ;; (display problem with terminal emacs?)
@@ -77,6 +77,8 @@
 (setq redisplay-dont-pause 1)
 ;; garbage collection every 20MB instead of default 0.76 (from flx)
 (setq gc-cons-threshold 20000000)
+;; no goddamn tabs
+(setq-default indent-tabs-mode nil)
 
 ;; overwrite selections
 (delete-selection-mode 1)
@@ -472,6 +474,8 @@ point reaches the beginning or end of the buffer, stop there."
 ;; highlight-sexp
 (add-hook 'lisp-mode-hook 'highlight-sexp-mode)
 (add-hook 'emacs-lisp-mode-hook 'highlight-sexp-mode)
+;; for leuven theme, default purple is unreadable
+(setq hl-sexp-background-color "#EAF2F5")
 
 
 ;;

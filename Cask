@@ -8,6 +8,7 @@
 (depends-on "auctex")
 (depends-on "auto-complete")
 (depends-on "cask")
+(depends-on "cdlatex")
 (depends-on "color-identifiers-mode")
 (depends-on "color-theme")
 (depends-on "color-theme-sanityinc-tomorrow")

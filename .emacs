@@ -234,9 +234,11 @@ point reaches the beginning or end of the buffer, stop there."
 ;; Line number in left margin using linum
 ;;
 
+(global-linum-mode 1)
+(set-face-attribute 'linum nil :height 100)
+
 ;; Fix from EmacsWiki to have space before the line contents with right-
 ;; aligned numbers padded only to the max number of digits in the buffer
-(global-linum-mode 1)
 (unless window-system
   (add-hook 'linum-before-numbering-hook
 	        (lambda ()

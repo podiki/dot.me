@@ -220,6 +220,9 @@ point reaches the beginning or end of the buffer, stop there."
 (sp-local-pair 'lisp-mode "(" ")" :wrap "M-(")
 (sp-local-pair 'lisp-mode "\"" "\"" :wrap "M-\"")
 
+;; expand region intelligently
+(global-set-key (kbd "C-=") 'er/expand-region)
+
 ;; multiple cursors
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 (global-set-key (kbd "C->") 'mc/mark-next-like-this)

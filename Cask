@@ -18,6 +18,7 @@
 (depends-on "cython-mode")
 (depends-on "dash")
 (depends-on "deferred")
+(depends-on "define-word")
 (depends-on "discover")
 (depends-on "discover-my-major")
 (depends-on "epc")

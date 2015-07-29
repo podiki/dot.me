@@ -398,6 +398,10 @@ point reaches the beginning or end of the buffer, stop there."
        (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
        (define-key flyspell-mouse-map [mouse-3] #'undefined)))
 
+;; dictionary look up
+(global-set-key (kbd "C-c d") 'define-word-at-point)
+(global-set-key (kbd "C-c D") 'define-word)
+
 ;; languagetool grammar checker
 (require 'langtool)
 (setq langtool-language-tool-jar

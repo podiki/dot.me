@@ -30,8 +30,6 @@
 (depends-on "flycheck")
 (depends-on "flycheck-color-mode-line")
 (depends-on "fountain-mode")
-(depends-on "git-commit-mode")
-(depends-on "git-rebase-mode")
 (depends-on "highlight-sexp")
 (depends-on "highlight-symbol")
 (depends-on "ht")

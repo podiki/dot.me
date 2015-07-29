@@ -578,17 +578,12 @@ point reaches the beginning or end of the buffer, stop there."
 ;; auto-complete for latex
 ;;
 (require 'ac-math)
-
 (add-to-list 'ac-modes 'latex-mode)   ; make auto-complete aware of `latex-mode`
-
 (defun ac-latex-mode-setup ()         ; add ac-sources to default ac-sources
   (setq ac-sources
      (append '(ac-source-math-unicode ac-source-math-latex ac-source-latex-commands)
-               ac-sources))
-)
-
+               ac-sources)))
 (add-hook 'latex-mode-hook 'ac-latex-mode-setup)
-
 (defvar ac-source-math-latex-everywere
 '((candidates . ac-math-symbols-latex)
   (prefix . "\\\\\\(.*\\)")
@@ -599,12 +594,19 @@ point reaches the beginning or end of the buffer, stop there."
 ; Set pdf mode
 (setq TeX-PDF-mode 1)
 
-;; use Skim as default pdf viewer
+;; use Skim as default pdf viewer on Mac
 ;; Skim's displayline is used for forward search (from .tex to .pdf)
 ;; option -b highlights the current line; option -g opens Skim in the background  
-(setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
-(setq TeX-view-program-list
-     '(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
+(when (memq window-system '(mac ns))
+  (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
+  (setq TeX-view-program-list
+        '(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b"))))
+
+;; use Sumatra as pdf viewer on Windows
+(when (memq window-system '(w32))
+  (setq TeX-view-program-selection '((output-pdf "Sumatra PDF")))
+  (setq TeX-view-program-list
+        '(("Sumatra PDF" ("\"C:/Program Files (x86)/SumatraPDF/SumatraPDF.exe\" -reuse-instance" (mode-io-correlate " -forward-search %b %n") " %o")))))
 
 (server-start); start emacs in server mode so that skim can talk to it
 

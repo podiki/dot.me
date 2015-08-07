@@ -47,7 +47,14 @@
 				 :weight 'normal))))
 
 (when (memq window-system '(w32))
-  (set-face-attribute 'default nil :font "Inconsolata" :height 102))
+  (set-face-attribute 'default nil :font "Inconsolata" :height 102)
+  (when (functionp 'set-fontset-font)
+    (set-fontset-font "fontset-default"
+		      'unicode
+		      (font-spec :family "DejaVu Sans Mono"
+				 :width 'normal
+				 :size 12.2
+				 :weight 'normal))))
 
 ;; powerline modeline
 ;; (display problem with terminal emacs?)

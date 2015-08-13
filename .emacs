@@ -11,9 +11,9 @@
 
 ;; Package manager and sources, using Cask
 (when (memq window-system '(mac ns))
-                                        ;(require 'cask "/usr/local/share/emacs/site-lisp/cask.el"))
   (let ((default-directory "/usr/local/share/emacs/site-lisp/"))
-    (normal-top-level-add-subdirs-to-load-path)))
+    (normal-top-level-add-subdirs-to-load-path))
+  (require 'cask "cask.el"))
 (when (memq window-system '(w32))
   (require 'cask "~/.cask/cask.el"))
 (cask-initialize)

@@ -89,6 +89,14 @@
 ;; no goddamn tabs
 (setq-default indent-tabs-mode nil)
 
+;; Windows key bindings
+(when (memq window-system '(w32))
+  (setq w32-pass-lwindow-to-system nil)
+  (setq w32-lwindow-modifier 'super))
+
+;; all prompts use only y or n
+(fset 'yes-or-no-p 'y-or-n-p)
+
 ;; overwrite selections
 (delete-selection-mode 1)
 ;; transient-mark-mode related (commands from masterinemacs)

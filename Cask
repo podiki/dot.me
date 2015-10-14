@@ -72,6 +72,7 @@
 (depends-on "smart-mode-line-powerline-theme")
 (depends-on "smartparens")
 (depends-on "smex")
+(depends-on "spaceline")
 (depends-on "spinner")
 (depends-on "symon")
 (depends-on "visual-fill-column")

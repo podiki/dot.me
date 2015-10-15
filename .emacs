@@ -467,6 +467,17 @@ point reaches the beginning or end of the buffer, stop there."
 (add-hook 'org-mode-hook 'visual-line-mode)
 ;; fancy utf-8 bullets
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+;; syntax highlight code blocks
+(setq org-src-fontify-natively t)
+
+;; org-babel languages
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((sh . t)
+   (python . t)
+   (gnuplot . t)
+   (lisp . t)
+   (latex . t)))
 
 ;;
 ;; markdown

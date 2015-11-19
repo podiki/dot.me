@@ -76,6 +76,7 @@
 (depends-on "spaceline")
 (depends-on "spinner")
 (depends-on "symon")
+(depends-on "use-package")
 (depends-on "visual-fill-column")
 (depends-on "window-purpose")
 (depends-on "writegood-mode")

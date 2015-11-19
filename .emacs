@@ -8,4 +8,7 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
+(eval-when-compile
+  (require 'use-package))
+
 (org-babel-load-file "~/codemonkey/dot.me/dotemacs.org")

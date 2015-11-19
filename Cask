@@ -49,6 +49,7 @@
 (depends-on "markdown-mode")
 (depends-on "math-symbol-lists")
 (depends-on "multiple-cursors")
+(depends-on "olivetti")
 (depends-on "org")
 (depends-on "org-bullets")
 (depends-on "org-wc")

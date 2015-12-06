@@ -527,15 +527,16 @@ Magit for source control with git/github. Some modifications necessary for deali
 
   ;; for windows paths in msys2 with default install directory
   ;; modified from solutions in https://github.com/magit/magit/issues/1318
-  (defun magit-expand-git-file-name--msys2 (args)
-    "Handle msys2 directory names starting with /home by prefixing with c:/msys2"
-    (let ((filename (car args)))
-          (when (string-match "^\\(/home\\)\\(.*\\)" filename)
-            (setq filename (concat  "c:/msys64/home" (match-string 2 filename))))
-          (list filename)))
-  (when (memq window-system '(w32))
-    (advice-add 'magit-expand-git-file-name :filter-args
-                #'magit-expand-git-file-name--msys2))
+  ;; Doesn't seem to be needed anymore, not sure since when (on magit 2.3.1)
+  ;; (defun magit-expand-git-file-name--msys2 (args)
+  ;;   "Handle msys2 directory names starting with /home by prefixing with c:/msys2"
+  ;;   (let ((filename (car args)))
+  ;;         (when (string-match "^\\(/home\\)\\(.*\\)" filename)
+  ;;           (setq filename (concat  "c:/msys64/home" (match-string 2 filename))))
+  ;;         (list filename)))
+  ;; (when (memq window-system '(w32))
+  ;;   (advice-add 'magit-expand-git-file-name :filter-args
+  ;;               #'magit-expand-git-file-name--msys2))
 
   ;; work around for https git on windows
   ;; https://github.com/magit/magit/wiki/FAQ#windows-cannot-push-via-https

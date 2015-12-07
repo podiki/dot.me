@@ -55,6 +55,12 @@
 
   ;; overwrite selections
   (delete-selection-mode 1)
+
+  ;; proper encoding for ansi-term (mainly for powerline-shell characters)
+  (defadvice ansi-term (after advise-ansi-term-coding-system)
+      (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
+  (ad-activate 'ansi-term)
+
   ;; transient-mark-mode related (commands from masterinemacs)
   (defun push-mark-no-activate ()
     "Pushes `point' to `mark-ring' and does not activate the region
@@ -105,10 +111,10 @@
                   'smarter-move-beginning-of-line)
 #+END_SRC
 
-** Paradox for package listing and browsing
+** Paradox
+for package listing and browsing
 #+BEGIN_SRC emacs-lisp
-  (use-package paradox
-    :ensure t)
+  (use-package paradox)
 #+END_SRC
 
 ** Paths
@@ -404,7 +410,7 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
 #+BEGIN_SRC emacs-lisp
   ;; color-identifiers-mode
   (use-package color-identifiers-mode
-    :config
+    :init
     (add-hook 'after-init-hook 'global-color-identifiers-mode))
 
   ;; highlight symbols in buffer
@@ -416,25 +422,9 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
     :config
     (setq highlight-symbol-idle-delay 0)
     (add-hook 'prog-mode-hook 'highlight-symbol-mode))
+#+END_SRC
 
-  ;; auto-complete
-  (require 'auto-complete-config)
-  (global-auto-complete-mode 1)
-  (ac-config-default)
-  (add-to-list 'ac-dictionary-directories "~/.emacs.d/dict")
-  (eval-after-load 'auto-complete
-    '(ac-flyspell-workaround))
-
-  ;; flycheck
-  (require 'flycheck)
-  (add-hook 'after-init-hook #'global-flycheck-mode)
-  ;; color the modeline by flycheck status
-  ;; (compatibility issue with previous color theme/powerline :()
-  ;; seems okay now with smart-mode-line
-  (require 'flycheck-color-mode-line)
-  (eval-after-load "flycheck"
-    '(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
-
+#+BEGIN_SRC emacs-lisp
   ;; Enable mouse support in terminal
   (unless window-system
     (require 'mouse)
@@ -497,14 +487,31 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
          (define-key flyspell-mouse-map [mouse-3] #'undefined)))
 
   ;; dictionary look up
-  (global-set-key (kbd "C-c d") 'define-word-at-point)
-  (global-set-key (kbd "C-c D") 'define-word)
+  (use-package define-word
+    :bind (("C-c d" . define-word-at-point)
+           ("C-c D" . define-word)))
 
   ;; languagetool grammar checker
-  (require 'langtool)
-  (setq langtool-language-tool-jar
-        "/usr/local/Cellar/languagetool/2.7/libexec/languagetool-commandline.jar"
-        langtool-mother-tongue "en-US")
+  (use-package langtool
+    :config
+    (when (memq window-system '(mac ns))
+      (setq langtool-language-tool-jar
+        "/usr/local/Cellar/languagetool/2.7/libexec/languagetool-commandline.jar"))
+    (when (memq window-system '(w32))
+      (setq langtool-language-tool-jar
+        "~/LanguageTool-3.1/languagetool-commandline.jar"))
+    (setq langtool-default-language "en-US"
+      langtool-mother-tongue "en")
+    (defun langtool-autoshow-detail-popup (overlays)
+      (when (require 'popup nil t)
+        ;; Do not interrupt current popup
+        (unless (or popup-instances
+                    ;; suppress popup after type `C-g` .
+                    (memq last-command '(keyboard-quit)))
+          (let ((msg (langtool-details-error-message overlays)))
+            (popup-tip msg)))))
+    (setq langtool-autoshow-message-function
+      'langtool-autoshow-detail-popup))
 
   ;; writegood mode
   (global-set-key "\C-cg" 'writegood-mode)
@@ -515,6 +522,33 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
   (setq sentence-end-double-space nil)
 #+END_SRC
 
+* Org-mode
+#+BEGIN_SRC emacs-lisp
+  (use-package org
+    :ensure org-plus-contrib
+    :pin org
+    :config
+    (add-hook 'org-mode-hook 'visual-line-mode)
+    ;; syntax highlight code blocks
+    (setq org-src-fontify-natively t)
+    ;; org-babel languages
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((sh . t)
+       (python . t)
+       (gnuplot . t)
+       (lisp . t)
+       (latex . t))))
+
+  ;; fancy utf-8 bullets
+  (use-package org-bullets
+    :ensure nil ; included in org-plus-contrib
+    :config
+    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
+  ;; htmlize for html output
+  (use-package htmlize)
+#+END_SRC
 * Programming
 ** Magit
 Magit for source control with git/github. Some modifications necessary for dealing with paths in Windows with msys2.
@@ -544,50 +578,65 @@ Magit for source control with git/github. Some modifications necessary for deali
     (setenv "GIT_ASKPASS" "git-gui--askpass"))
 #+END_SRC
 
-
+** Autocompletion with company-mode
 #+BEGIN_SRC emacs-lisp
-  ;; fountain-mode
-  (add-to-list 'auto-mode-alist '("\\.fountain\\'" . fountain-mode))
+  ;; auto-complete
+  ;; (require 'auto-complete-config)
+  ;; (global-auto-complete-mode 1)
+  ;; (ac-config-default)
+  ;; (add-to-list 'ac-dictionary-directories "~/.emacs.d/dict")
+  ;; (eval-after-load 'auto-complete
+  ;;   '(ac-flyspell-workaround))
 
-  ;;
-  ;; org-mode
-  ;;
+  (use-package company
+    :init
+    (add-hook 'after-init-hook 'global-company-mode))
 
-  (add-hook 'org-mode-hook 'visual-line-mode)
-  ;; fancy utf-8 bullets
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-  ;; syntax highlight code blocks
-  (setq org-src-fontify-natively t)
+  (use-package company-quickhelp
+    :config
+    (company-quickhelp-mode 1))
 
-  ;; org-babel languages
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((sh . t)
-     (python . t)
-     (gnuplot . t)
-     (lisp . t)
-     (latex . t)))
+#+END_SRC
 
+** Flycheck for showing errors and style complaints
+#+BEGIN_SRC emacs-lisp
+  ;; flycheck
+  (use-package flycheck
+    :init
+    (add-hook 'after-init-hook #'global-flycheck-mode))
+  ;; color the modeline by flycheck status
+  ;; (compatibility issue with previous color theme/powerline :()
+  ;; seems okay now with smart-mode-line
+  (use-package flycheck-color-mode-line
+    :config
+    (eval-after-load "flycheck"
+      '(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode)))
+#+END_SRC
+
+* Other text modes
+** Fountain for screenplay writing
+#+BEGIN_SRC emacs-lisp
+  (use-package fountain-mode
+    :mode "\\.fountain\\'")
+#+END_SRC
+
+** Markdown
+#+BEGIN_SRC emacs-lisp
   ;;
   ;; markdown
   ;;
-  (autoload 'markdown-mode "markdown-mode"
-     "Major mode for editing Markdown files" 1)
-  (add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
-  (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-  (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-  (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
+  (use-package markdown-mode
+    :init
+    (autoload 'markdown-mode "markdown-mode"
+      "Major mode for editing Markdown files" 1)
+    :mode (("\\.text\\'"     . markdown-mode)
+           ("\\.markdown\\'" . markdown-mode)
+           ("\\.md\\'"       . markdown-mode)
+           ("README\\.md\\'" . gfm-mode)))
+#+END_SRC
 
-  ;; proper encoding for ansi-term (mainly for powerline-shell characters)
-  (defadvice ansi-term (after advise-ansi-term-coding-system)
-      (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
-  (ad-activate 'ansi-term)
-
-
-  ;;
-  ;; lisp/slime
-  ;;
-
+** Lisp and SLIME
+#+BEGIN_SRC emacs-lisp
   (load (expand-file-name "~/quicklisp/slime-helper.el"))
   (setq inferior-lisp-program "sbcl")
   (setq slime-contribs '(slime-fancy))
@@ -598,16 +647,16 @@ Magit for source control with git/github. Some modifications necessary for deali
     '(add-to-list 'ac-modes 'slime-repl-mode))
 
   ;; highlight-sexp
-  (add-hook 'lisp-mode-hook 'highlight-sexp-mode)
-  (add-hook 'emacs-lisp-mode-hook 'highlight-sexp-mode)
+  (use-package highlight-sexp
+    :config
+    (add-hook 'lisp-mode-hook 'highlight-sexp-mode)
+    (add-hook 'emacs-lisp-mode-hook 'highlight-sexp-mode))
   ;; for leuven theme, default purple is unreadable
   ;;(setq hl-sexp-background-color "#EAF2F5")
+#+END_SRC
 
-
-  ;;
-  ;; Python
-  ;;
-
+** Python
+#+BEGIN_SRC emacs-lisp
   ;; use python-mode.el
   ;; err...doesn't seem to work, loads python.el (Python vs py mode), fix later
   (setq py-install-directory "~/.emacs.d/.cask/24.5.1/elpa/python-mode-20150512.353/")
@@ -628,8 +677,10 @@ Magit for source control with git/github. Some modifications necessary for deali
   (add-to-list 'auto-mode-alist '("\\.pyx\\'" . cython-mode))
   (add-to-list 'auto-mode-alist '("\\.pxd\\'" . cython-mode))
   (add-to-list 'auto-mode-alist '("\\.pxi\\'" . cython-mode))
+#+END_SRC
 
-
+* LaTeX configuration
+#+BEGIN_SRC emacs-lisp
   ;;
   ;; LaTeX stuff
   ;;
@@ -734,11 +785,4 @@ Magit for source control with git/github. Some modifications necessary for deali
   ; Enable synctex
   (setq TeX-source-correlate-mode 1)
   (setq TeX-source-correlate-method 'synctex)
-  (custom-set-faces
-   ;; custom-set-faces was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   )
-
 #+END_SRC

@@ -1,6 +1,6 @@
 #+TITLE: Emacs Configuration
 
-* Basics
+* Basics and General Config
 
 ** Custom-set-variables
 #+BEGIN_SRC emacs-lisp
@@ -256,66 +256,11 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-  ;; show path info for buffers with same name
-  (require 'uniquify)
-
-  ;; save position on buffer kill
-  (require 'saveplace)
-  (setq-default save-place 1)
-  (setq save-place-file "~/.emacs.d/saved-places")
-
-  ;; use ibuffer (like dired) for buffer list
-  (global-set-key (kbd "C-x C-b") 'ibuffer)
-
-  ;;
-  ;; recent files list with ido completion (via masteringemacs)
-  ;;
-  (require 'recentf)
-
-  ;; get rid of `find-file-read-only' and replace it with something
-  ;; more useful.
-  (global-set-key (kbd "C-x C-r") 'ido-recentf-open)
-
-  ;; enable recent files mode.
-  (recentf-mode 1)
-
-  ; 50 files ought to be enough.
-  (setq recentf-max-saved-items 50)
-
-  (defun ido-recentf-open ()
-    "Use `ido-completing-read' to \\[find-file] a recent file"
-    (interactive)
-    (if (find-file (ido-completing-read "Find recent file: " recentf-list))
-        (message "Opening file...")
-      (message "Aborting")))
-
-
   ;; discover
   (use-package discover
     :ensure nil
     :config
     (global-discover-mode 1))
-
-  ;; Rainbow parens
-  (use-package rainbow-delimiters
-    :config
-    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-    (add-hook 'LaTeX-mode-hook 'rainbow-delimiters-mode))
-
-  ;; Smartparens
-  (use-package smartparens-config
-    :ensure smartparens
-    :config
-    (smartparens-global-mode 1)
-    (show-smartparens-global-mode 1)
-    ;; paredit-like setup for lisp
-    (add-hook 'lisp-mode-hook 'turn-on-smartparens-strict-mode)
-    (add-hook 'emacs-lisp-mode-hook 'turn-on-smartparens-strict-mode)
-    (setq sp-base-key-bindings 'paredit)
-    (sp-use-paredit-bindings)
-    (define-key sp-keymap (kbd "M-J") 'sp-join-sexp)
-    (sp-local-pair 'lisp-mode "(" ")" :wrap "M-(")
-    (sp-local-pair 'lisp-mode "\"" "\"" :wrap "M-\""))
 
   ;; expand region intelligently
   (global-set-key (kbd "C-=") 'er/expand-region)
@@ -526,6 +471,46 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
   (setq sentence-end-double-space nil)
 #+END_SRC
 
+** File navigation
+*** Neotree for a file tree side panel
+#+BEGIN_SRC emacs-lisp
+  (use-package neotree
+    :bind ("<f8>" . neotree-toggle))
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+  ;; show path info for buffers with same name
+  (require 'uniquify)
+
+  ;; save position on buffer kill
+  (require 'saveplace)
+  (setq-default save-place 1)
+  (setq save-place-file "~/.emacs.d/saved-places")
+
+  ;; use ibuffer (like dired) for buffer list
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
+
+  ;;
+  ;; recent files list with ido completion (via masteringemacs)
+  ;;
+  (require 'recentf)
+
+  ;; get rid of `find-file-read-only' and replace it with something
+  ;; more useful.
+  (global-set-key (kbd "C-x C-r") 'ido-recentf-open)
+
+  ;; enable recent files mode.
+  (recentf-mode 1)
+
+  ; 50 files ought to be enough.
+  (setq recentf-max-saved-items 50)
+
+  (defun ido-recentf-open ()
+    "Use `ido-completing-read' to \\[find-file] a recent file"
+    (interactive)
+    (if (find-file (ido-completing-read "Find recent file: " recentf-list))
+        (message "Opening file...")
+      (message "Aborting")))
+#+END_SRC
 * Org-mode
 #+BEGIN_SRC emacs-lisp
   (use-package org
@@ -617,28 +602,33 @@ Magit for source control with git/github. Some modifications necessary for deali
       '(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode)))
 #+END_SRC
 
-* Other text modes
-** Fountain for screenplay writing
+** All things parens
+*** Pretty colors
 #+BEGIN_SRC emacs-lisp
-  (use-package fountain-mode
-    :mode "\\.fountain\\'")
+  ;; Rainbow parens
+  (use-package rainbow-delimiters
+    :config
+    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+    (add-hook 'LaTeX-mode-hook 'rainbow-delimiters-mode))
 #+END_SRC
-
-** Markdown
+*** Smartparens as a more general paredit
+Set up to behave like paredit in lisp modes
 #+BEGIN_SRC emacs-lisp
-  ;;
-  ;; markdown
-  ;;
-  (use-package markdown-mode
-    :init
-    (autoload 'markdown-mode "markdown-mode"
-      "Major mode for editing Markdown files" 1)
-    :mode (("\\.text\\'"     . markdown-mode)
-           ("\\.markdown\\'" . markdown-mode)
-           ("\\.md\\'"       . markdown-mode)
-           ("README\\.md\\'" . gfm-mode)))
+  ;; Smartparens
+  (use-package smartparens-config
+    :ensure smartparens
+    :config
+    (smartparens-global-mode 1)
+    (show-smartparens-global-mode 1)
+    ;; paredit-like setup for lisp
+    (add-hook 'lisp-mode-hook 'turn-on-smartparens-strict-mode)
+    (add-hook 'emacs-lisp-mode-hook 'turn-on-smartparens-strict-mode)
+    (setq sp-base-key-bindings 'paredit)
+    (sp-use-paredit-bindings)
+    (define-key sp-keymap (kbd "M-J") 'sp-join-sexp)
+    (sp-local-pair 'lisp-mode "(" ")" :wrap "M-(")
+    (sp-local-pair 'lisp-mode "\"" "\"" :wrap "M-\""))
 #+END_SRC
-
 ** Lisp and SLIME
 Slime and other lisp stuff
 #+BEGIN_SRC emacs-lisp
@@ -693,6 +683,33 @@ Commented out for now as I haven't used python in a while, will need to be updat
   ;; (add-to-list 'auto-mode-alist '("\\.pxi\\'" . cython-mode))
 #+END_SRC
 
+* Other text modes
+** Fountain for screenplay writing
+#+BEGIN_SRC emacs-lisp
+  (use-package fountain-mode
+    :mode "\\.fountain\\'")
+#+END_SRC
+
+** Markdown
+#+BEGIN_SRC emacs-lisp
+  ;;
+  ;; markdown
+  ;;
+  (use-package markdown-mode
+    :init
+    (autoload 'markdown-mode "markdown-mode"
+      "Major mode for editing Markdown files" 1)
+    :mode (("\\.text\\'"     . markdown-mode)
+           ("\\.markdown\\'" . markdown-mode)
+           ("\\.md\\'"       . markdown-mode)
+           ("README\\.md\\'" . gfm-mode)))
+#+END_SRC
+
+** Olivetti
+This is a nice distraction free writing environment, but currently has a bug with linum-mode (disable for olivetti-mode).
+#+BEGIN_SRC emacs-lisp
+  (use-package olivetti)
+#+END_SRC
 * LaTeX configuration
 #+BEGIN_SRC emacs-lisp
   ; Enable AucTeX

@@ -111,6 +111,10 @@
                   'smarter-move-beginning-of-line)
 #+END_SRC
 
+** Server
+#+BEGIN_SRC emacs-lisp
+  (server-start)
+#+END_SRC
 ** Paradox
 for package listing and browsing
 #+BEGIN_SRC emacs-lisp
@@ -636,15 +640,24 @@ Magit for source control with git/github. Some modifications necessary for deali
 #+END_SRC
 
 ** Lisp and SLIME
+Slime and other lisp stuff
 #+BEGIN_SRC emacs-lisp
-  (load (expand-file-name "~/quicklisp/slime-helper.el"))
-  (setq inferior-lisp-program "sbcl")
-  (setq slime-contribs '(slime-fancy))
+  ;; (load (expand-file-name "~/quicklisp/slime-helper.el"))
+  (use-package slime
+    :config
+    (setq inferior-lisp-program "sbcl")
+    (setq slime-contribs '(slime-fancy))
+    (slime-setup '(slime-fancy)))
   ;; ac-slime
-  (add-hook 'slime-mode-hook 'set-up-slime-ac)
-  (add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
-  (eval-after-load "auto-complete"
-    '(add-to-list 'ac-modes 'slime-repl-mode))
+  ;; now using company-mode instead
+  ;; (add-hook 'slime-mode-hook 'set-up-slime-ac)
+  ;; (add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
+  ;; (eval-after-load "auto-complete"
+  ;;   '(add-to-list 'ac-modes 'slime-repl-mode))
+
+  (use-package slime-company
+    :config
+    (slime-setup '(slime-company)))
 
   ;; highlight-sexp
   (use-package highlight-sexp
@@ -656,133 +669,139 @@ Magit for source control with git/github. Some modifications necessary for deali
 #+END_SRC
 
 ** Python
+Commented out for now as I haven't used python in a while, will need to be updated in the future
 #+BEGIN_SRC emacs-lisp
   ;; use python-mode.el
   ;; err...doesn't seem to work, loads python.el (Python vs py mode), fix later
-  (setq py-install-directory "~/.emacs.d/.cask/24.5.1/elpa/python-mode-20150512.353/")
-  (add-to-list 'load-path py-install-directory)
-  (require 'python-mode)
-  (when (featurep 'python) (unload-feature 'python t))
-  (add-hook 'python-mode-hook 'flyspell-prog-mode) ; spell check comments
+  ;; (setq py-install-directory "~/.emacs.d/.cask/24.5.1/elpa/python-mode-20150512.353/")
+  ;; (add-to-list 'load-path py-install-directory)
+  ;; (require 'python-mode)
+  ;; (when (featurep 'python) (unload-feature 'python t))
+  ;; (add-hook 'python-mode-hook 'flyspell-prog-mode) ; spell check comments
   ;; use ipython interpreter
-  (setq-default py-shell-name "ipython")
-  (setq py-force-py-shell-name-p 1) ; overrides shebang setting
+  ;; (setq-default py-shell-name "ipython")
+  ;; (setq py-force-py-shell-name-p 1) ; overrides shebang setting
 
   ;; jedi
-  (add-hook 'python-mode-hook 'jedi:setup)
-  (setq jedi:complete-on-dot 1)
+  ;; (add-hook 'python-mode-hook 'jedi:setup)
+  ;; (setq jedi:complete-on-dot 1)
 
   ;; cython
-  (require 'cython-mode)
-  (add-to-list 'auto-mode-alist '("\\.pyx\\'" . cython-mode))
-  (add-to-list 'auto-mode-alist '("\\.pxd\\'" . cython-mode))
-  (add-to-list 'auto-mode-alist '("\\.pxi\\'" . cython-mode))
+  ;; (require 'cython-mode)
+  ;; (add-to-list 'auto-mode-alist '("\\.pyx\\'" . cython-mode))
+  ;; (add-to-list 'auto-mode-alist '("\\.pxd\\'" . cython-mode))
+  ;; (add-to-list 'auto-mode-alist '("\\.pxi\\'" . cython-mode))
 #+END_SRC
 
 * LaTeX configuration
 #+BEGIN_SRC emacs-lisp
-  ;;
-  ;; LaTeX stuff
-  ;;
-
   ; Enable AucTeX
-  (require 'tex-site)
-  (setq TeX-auto-save 1)
-  (setq TeX-parse-self 1)
-  (setq-default TeX-master -1)
-  (add-hook 'LaTeX-mode-hook 'visual-line-mode)
-  (add-hook 'LaTeX-mode-hook 'flyspell-mode)
-  (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
-  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-  (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
-  (setq reftex-plug-into-AUCTeX 1)
+  (use-package tex-site
+    :ensure auctex
+    :config
+    (setq TeX-auto-save 1)
+    (setq TeX-parse-self 1)
+    (setq-default TeX-master -1)
+    (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+    (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+    (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+    (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+    (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
+    (setq reftex-plug-into-AUCTeX 1)
 
-  ;; some reftex options esp. for big files
-  (setq reftex-enable-partial-scans 1)
-  (setq reftex-save-parse-info 1)
-  (setq reftex-use-multiple-selection-buffers 1)
+    ;; some reftex options esp. for big files
+    (setq reftex-enable-partial-scans 1)
+    (setq reftex-save-parse-info 1)
+    (setq reftex-use-multiple-selection-buffers 1)
 
-  ;; spellcheck in LaTex mode
-  (add-hook `latex-mode-hook `flyspell-mode)
-  (add-hook `tex-mode-hook `flyspell-mode)
-  (add-hook `bibtex-mode-hook `flyspell-mode)
+    ;; spellcheck in LaTex mode
+    (add-hook `latex-mode-hook `flyspell-mode)
+    (add-hook `tex-mode-hook `flyspell-mode)
+    (add-hook `bibtex-mode-hook `flyspell-mode)
 
-  ;; use latexmk for compiling, ~/.latexmkrc has options set
-  (add-hook 'LaTeX-mode-hook (lambda ()
-    (push 
-      '("Latexmk" "latexmk -pdf %s" TeX-run-TeX nil t
-        :help "Run Latexmk on file")
-      TeX-command-list)
+    ;; use latexmk for compiling, ~/. latexmkrc has options set
+    (add-hook 'LaTeX-mode-hook (lambda ()
+      (push
+        '("Latexmk" "latexmk -pdf %s" TeX-run-TeX nil t
+          :help "Run Latexmk on file")
+        TeX-command-list)
     (setq TeX-command-default "Latexmk")))
 
+    ;; force load on file open (still need to edit
+    ;; something in math mode for it to kick in though)
+    (add-hook 'find-file-hook
+              (lambda () (when (eq major-mode 'latex-mode)
+                               (latex-unicode-simplified))))
+
+
+    ;; Automatically activate TeX-fold-mode and fold after opening
+    (add-hook 'find-file-hook
+              (lambda () (when (eq major-mode 'latex-mode)
+                               (TeX-fold-mode 1)
+                               (TeX-fold-buffer))))
+
+    ;; Automatically fold new input, run after $ or }
+    (add-hook 'LaTeX-mode-hook 
+          (lambda () 
+            (TeX-fold-mode 1)
+            (add-hook 'find-file-hook 'TeX-fold-buffer t t)
+            (add-hook 'after-change-functions 
+                  (lambda (start end oldlen) 
+                    (when (= (- end start) 1)
+                      (let ((char-point 
+                                     (buffer-substring-no-properties 
+                                      start end)))
+                       (when (or (string= char-point "}")
+                             (string= char-point "$"))
+                        (TeX-fold-paragraph)))))
+                   t t)))
+    ; Set pdf mode
+    (setq TeX-PDF-mode 1)
+
+    ;; use Skim as default pdf viewer on Mac
+    ;; Skim's displayline is used for forward search (from .tex to .pdf)
+    ;; option -b highlights the current line; option -g opens Skim in the background  
+    (when (memq window-system '(mac ns))
+      (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
+      (setq TeX-view-program-list
+            '(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b"))))
+
+    ;; use Sumatra as pdf viewer on Windows
+    (when (memq window-system '(w32))
+      (setq TeX-view-program-selection '((output-pdf "Sumatra PDF")))
+      (setq TeX-view-program-list
+            '(("Sumatra PDF" ("\"C:/Program Files (x86)/SumatraPDF/SumatraPDF.exe\" -reuse-instance" (mode-io-correlate " -forward-search %b %n") " %o")))))
+
+    ; Enable synctex
+    (setq TeX-source-correlate-mode 1)
+    (setq TeX-source-correlate-method 'synctex))
+
   ;; latex symbols via unicode (suplement fold-mode)
-  (require 'latex-pretty-symbols)
-  ;; force load on file open (still need to edit
-  ;; something in math mode for it to kick in though)
-  (add-hook 'find-file-hook
-            (lambda () (when (eq major-mode 'latex-mode)
-                             (latex-unicode-simplified))))
+  (use-package latex-pretty-symbols)
 
-
-  ;; Automatically activate TeX-fold-mode and fold after opening
-  (add-hook 'find-file-hook
-            (lambda () (when (eq major-mode 'latex-mode)
-                             (TeX-fold-mode 1)
-                             (TeX-fold-buffer))))
-
-  ;; Automatically fold new input, run after $ or }
-  (add-hook 'LaTeX-mode-hook 
-        (lambda () 
-          (TeX-fold-mode 1)
-          (add-hook 'find-file-hook 'TeX-fold-buffer t t)
-          (add-hook 'after-change-functions 
-                (lambda (start end oldlen) 
-                  (when (= (- end start) 1)
-                    (let ((char-point 
-                                   (buffer-substring-no-properties 
-                                    start end)))
-                     (when (or (string= char-point "}")
-                           (string= char-point "$"))
-                      (TeX-fold-paragraph)))))
-                 t t)))
+  ;; auto-complete using company-mode auctex and math backends
+  (use-package company-auctex
+    :config
+    (company-auctex-init))
+  (use-package company-math
+    :config
+    (add-to-list 'company-backends 'company-math-symbols-unicode))
 
   ;;
   ;; auto-complete for latex
   ;;
-  (require 'ac-math)
-  (add-to-list 'ac-modes 'latex-mode)   ; make auto-complete aware of `latex-mode`
-  (defun ac-latex-mode-setup ()         ; add ac-sources to default ac-sources
-    (setq ac-sources
-       (append '(ac-source-math-unicode ac-source-math-latex ac-source-latex-commands)
-                 ac-sources)))
-  (add-hook 'latex-mode-hook 'ac-latex-mode-setup)
-  (defvar ac-source-math-latex-everywere
-  '((candidates . ac-math-symbols-latex)
-    (prefix . "\\\\\\(.*\\)")
-    (action . ac-math-action-latex)
-    (symbol . "l")
-   ))
-
-  ; Set pdf mode
-  (setq TeX-PDF-mode 1)
-
-  ;; use Skim as default pdf viewer on Mac
-  ;; Skim's displayline is used for forward search (from .tex to .pdf)
-  ;; option -b highlights the current line; option -g opens Skim in the background  
-  (when (memq window-system '(mac ns))
-    (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
-    (setq TeX-view-program-list
-          '(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b"))))
-
-  ;; use Sumatra as pdf viewer on Windows
-  (when (memq window-system '(w32))
-    (setq TeX-view-program-selection '((output-pdf "Sumatra PDF")))
-    (setq TeX-view-program-list
-          '(("Sumatra PDF" ("\"C:/Program Files (x86)/SumatraPDF/SumatraPDF.exe\" -reuse-instance" (mode-io-correlate " -forward-search %b %n") " %o")))))
-
-  (server-start); start emacs in server mode so that skim can talk to it
-
-  ; Enable synctex
-  (setq TeX-source-correlate-mode 1)
-  (setq TeX-source-correlate-method 'synctex)
+  ;; switched to company-mode
+  ;; (require 'ac-math)
+  ;; (add-to-list 'ac-modes 'latex-mode)   ; make auto-complete aware of `latex-mode`
+  ;; (defun ac-latex-mode-setup ()         ; add ac-sources to default ac-sources
+  ;;   (setq ac-sources
+  ;;      (append '(ac-source-math-unicode ac-source-math-latex ac-source-latex-commands)
+  ;;                ac-sources)))
+  ;; (add-hook 'latex-mode-hook 'ac-latex-mode-setup)
+  ;; (defvar ac-source-math-latex-everywere
+  ;; '((candidates . ac-math-symbols-latex)
+  ;;   (prefix . "\\\\\\(.*\\)")
+  ;;   (action . ac-math-action-latex)
+  ;;   (symbol . "l")
+  ;;  ))
 #+END_SRC

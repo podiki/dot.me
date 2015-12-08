@@ -1,4 +1,4 @@
-export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:/usr/local/share/pypy:/usr/texbin:/usr/local/sbin:$PATH
+export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:/usr/local/share/pypy:/Library/TeX/texbin:/usr/local/sbin:$PATH
 export JAVA_HOME=/Library/Internet\ Plug-Ins/JavaAppletPlugin.plugin/Contents/Home
 export MANPATH=/usr/local/opt/coreutils/libexec/gnuman:$MANPATH
 export EDITOR=emacsclient

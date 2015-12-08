@@ -142,16 +142,9 @@ for package listing and browsing
   ;(load-theme 'sanityinc-tomorrow-eighties 1)
   ;(load-theme 'solarized t)
 
-  (use-package color-theme-molokai
-    :ensure nil
-    :defer t
+  (use-package molokai-theme
     :config
-    (color-theme-molokai))
-
-  (use-package color-theme
-    :config
-    (color-theme-initialize)
-    (color-theme-molokai))
+    (load-theme 'molokai))
 
   ;; Font
   (when (memq window-system '(mac ns))

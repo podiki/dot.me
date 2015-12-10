@@ -721,7 +721,12 @@ This is a nice distraction free writing environment, but currently has a bug wit
     :if (memq window-system '(mac ns))
     :load-path "/usr/local/Cellar/maxima/5.37.2/share/maxima/5.37.2/emacs/"
     :ensure nil)
-
+#+END_SRC
+** For Windows use a modified version of setup-imaxima-imath.el file included with maxima (see also windows_pains.org notes)
+#+BEGIN_SRC emacs-lisp
+  (when (memq window-system '(w32))
+    (load-file "~/codemonkey/setup-imaxima-imath.el")
+    (setq imaxima-use-maxima-mode-flag t))
 #+END_SRC
 * LaTeX configuration
 #+BEGIN_SRC emacs-lisp

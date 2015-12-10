@@ -631,6 +631,10 @@ point reaches the beginning or end of the buffer, stop there."
   :load-path "/usr/local/Cellar/maxima/5.37.2/share/maxima/5.37.2/emacs/"
   :ensure nil)
 
+(when (memq window-system '(w32))
+  (load-file "~/codemonkey/setup-imaxima-imath.el")
+  (setq imaxima-use-maxima-mode-flag t))
+
 ; Enable AucTeX
 (use-package tex-site
   :ensure auctex

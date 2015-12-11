@@ -555,17 +555,18 @@ point reaches the beginning or end of the buffer, stop there."
 
 (use-package company
   :init
-  (add-hook 'after-init-hook 'global-company-mode)
-  ;; some keybindings to behave more like auto-complete
+  (add-hook 'after-init-hook 'global-company-mode))
+
+(use-package company-quickhelp
+  :config
+  (company-quickhelp-mode 1))
+
+(use-package company
   :bind (:map company-active-map
         ("TAB"       . company-complete-common-or-cycle)
         ("<tab>"     . company-complete-common-or-cycle)
         ("S-TAB"     . company-select-previous)
         ("<backtab>" . company-select-previous)))
-
-(use-package company-quickhelp
-  :config
-  (company-quickhelp-mode 1))
 
 ;; flycheck
 (use-package flycheck

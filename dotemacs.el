@@ -46,6 +46,12 @@
 ;; overwrite selections
 (delete-selection-mode 1)
 
+;; treat the end of sentence as punctuation plus one space (not two)
+(setq sentence-end-double-space nil)
+
+;; always blink that cursor (easier to find and I like it)
+(setq blink-cursor-blinks 0)
+
 ;; proper encoding for ansi-term (mainly for powerline-shell characters)
 (defadvice ansi-term (after advise-ansi-term-coding-system)
     (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
@@ -100,6 +106,24 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key [remap move-beginning-of-line]
                 'smarter-move-beginning-of-line)
 
+;; hop back and forth between edit points
+;; (via http://pragmaticemacs.com/emacs/move-through-edit-points/)
+;; changes described by "C-u 0 C-c b ,"
+(use-package goto-chg
+  :bind (("C-c b ," . goto-last-change)
+         ("C-c b ." . goto-last-change-reverse)))
+
+(defun smooth-scroll (increment)
+  (scroll-up increment) (sit-for 0.05)
+  (scroll-up increment) (sit-for 0.02)
+  (scroll-up increment) (sit-for 0.02)
+  (scroll-up increment) (sit-for 0.05)
+  (scroll-up increment) (sit-for 0.06)
+  (scroll-up increment))
+
+(global-set-key [(wheel-down)] '(lambda () (interactive) (smooth-scroll 1)))
+(global-set-key [(wheel-up)] '(lambda () (interactive) (smooth-scroll -1)))
+
 (server-start)
 
 (use-package paradox)
@@ -109,16 +133,6 @@ point reaches the beginning or end of the buffer, stop there."
   :config
   (exec-path-from-shell-initialize)
   (exec-path-from-shell-copy-env "JAVA_HOME"))
-
-;; disable previous custom-theme before loading a new one
-;; (via https://emacs.stackexchange.com/questions/3112/how-to-reset-color-theme
-;; and referencing http://stackoverflow.com/a/15595000/729907)
-;; also use powerline-reset so that powerline/spaceline is also reset
-(defadvice load-theme 
-  (before theme-dont-propagate activate)
-  (mapcar #'disable-theme custom-enabled-themes)
-  (when (package-installed-p 'powerline)
-    (powerline-reset)))
 
 ;; temporarily revert to older emacs colorspace for powerline fix
 ;; and solarized (although can probably use new solarized-broken-srgb instead)
@@ -137,6 +151,16 @@ point reaches the beginning or end of the buffer, stop there."
 (use-package molokai-theme
   :config
   (load-theme 'molokai))
+
+;; disable previous custom-theme before loading a new one
+;; (via https://emacs.stackexchange.com/questions/3112/how-to-reset-color-theme
+;; and referencing http://stackoverflow.com/a/15595000/729907)
+;; also use powerline-reset so that powerline/spaceline is also reset
+(defadvice load-theme 
+  (before theme-dont-propagate activate)
+  (mapcar #'disable-theme custom-enabled-themes)
+  (when (package-installed-p 'powerline)
+    (powerline-reset)))
 
 ;; Font
 (when (memq window-system '(mac ns))
@@ -435,9 +459,6 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key "\C-c\C-gg" 'writegood-grade-level)
 (global-set-key "\C-c\C-ge" 'writegood-reading-ease)
 
-;; treat the end of sentence as punctuation plus one space (not two)
-(setq sentence-end-double-space nil)
-
 (use-package neotree
   :bind ("<f8>" . neotree-toggle))
 
@@ -497,7 +518,7 @@ point reaches the beginning or end of the buffer, stop there."
   :config
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
-;; htmlize for html output
+;; htmlize for nicer html output
 (use-package htmlize)
 
 (use-package magit
@@ -534,7 +555,13 @@ point reaches the beginning or end of the buffer, stop there."
 
 (use-package company
   :init
-  (add-hook 'after-init-hook 'global-company-mode))
+  (add-hook 'after-init-hook 'global-company-mode)
+  ;; some keybindings to behave more like auto-complete
+  :bind (:map company-active-map
+        ("TAB"       . company-complete-common-or-cycle)
+        ("<tab>"     . company-complete-common-or-cycle)
+        ("S-TAB"     . company-select-previous)
+        ("<backtab>" . company-select-previous)))
 
 (use-package company-quickhelp
   :config

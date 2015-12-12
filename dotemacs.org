@@ -26,6 +26,15 @@
 ;;  (pallet-mode t)
 #+END_SRC
 
+** Some variables
+*** location of Dropbox
+#+BEGIN_SRC emacs-lisp
+  (when (memq window-system '(w32))
+    (defvar dropbox "c:/Users/John/Desktop/Dropbox/"))
+
+  (when (memq window-system '(mac ns))
+    (defvar dropbox "/Users/John/Desktop/Dropbox"))
+#+END_SRC
 ** Initial size, appearance, etc.
 #+BEGIN_SRC emacs-lisp
   ;; initial size
@@ -556,13 +565,15 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
     (setq org-src-fontify-natively t)
     ;; org-babel languages
     (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((sh . t)
-       (python . t)
-       (gnuplot . t)
-       (lisp . t)
-       (latex . t)
-       (maxima . t))))
+      'org-babel-load-languages
+      '((sh . t)
+        (python . t)
+        (gnuplot . t)
+        (lisp . t)
+        (latex . t)
+        (maxima . t)))
+    (setq org-agenda-files (list (concat dropbox "org/todoes.org")))
+    :bind (("C-c a" . org-agenda)))
 
   ;; fancy utf-8 bullets
   (use-package org-bullets

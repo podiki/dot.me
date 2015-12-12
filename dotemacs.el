@@ -19,6 +19,12 @@
 ;;  (require 'pallet)
 ;;  (pallet-mode t)
 
+(when (memq window-system '(w32))
+  (defvar dropbox "c:/Users/John/Desktop/Dropbox/"))
+
+(when (memq window-system '(mac ns))
+  (defvar dropbox "/Users/John/Desktop/Dropbox"))
+
 ;; initial size
 (setq default-frame-alist '((width . 90)
                             (height . 55)))
@@ -504,13 +510,15 @@ point reaches the beginning or end of the buffer, stop there."
   (setq org-src-fontify-natively t)
   ;; org-babel languages
   (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((sh . t)
-     (python . t)
-     (gnuplot . t)
-     (lisp . t)
-     (latex . t)
-     (maxima . t))))
+    'org-babel-load-languages
+    '((sh . t)
+      (python . t)
+      (gnuplot . t)
+      (lisp . t)
+      (latex . t)
+      (maxima . t)))
+  (setq org-agenda-files (list (concat dropbox "org/todoes.org")))
+  :bind (("C-c a" . org-agenda)))
 
 ;; fancy utf-8 bullets
 (use-package org-bullets

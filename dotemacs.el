@@ -507,6 +507,8 @@ point reaches the beginning or end of the buffer, stop there."
   :pin org
   :config
   (add-hook 'org-mode-hook 'visual-line-mode)
+  ;; use indented view by default
+  (setq org-startup-indented t)
   ;; syntax highlight code blocks
   (setq org-src-fontify-natively t)
   ;; org-babel languages
@@ -518,8 +520,32 @@ point reaches the beginning or end of the buffer, stop there."
       (lisp . t)
       (latex . t)
       (maxima . t)))
+  ;; todo and agenda customization
+  ;; warn of upcoming deadlines in next week
+  (setq org-deadline-warning-days 7)
+  ;; show tasks for next fornight
+  (setq org-agenda-span 'fortnight)
+  ;; sort tasks in order of when they are due and then by priority
+  (setq org-agenda-sorting-strategy
+    (quote
+     ((agenda deadline-up priority-down)
+      (todo priority-down category-keep)
+      (tags priority-down category-keep)
+      (search category-keep))))
+  ;; set priority range from (default) A to C
+  (setq org-highest-priority ?A)
+  (setq org-lowest-priority ?C)
+  (setq org-default-priority ?A)
+  ;; todo file(s)
   (setq org-agenda-files (list (concat dropbox "org/todoes.org")))
-  :bind (("C-c a" . org-agenda)))
+  ;; todo capture template with default priority and scheduled for today
+  (setq org-capture-templates
+    '(("t" "todo" entry (file+headline (concat dropbox "org/todoes.org") "Tasks")
+       "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp
+                                     (org-read-date nil t \"+0d\"))\n")))
+  :bind (("C-c a" . org-agenda))
+  :bind  (:map global-map
+        ("C-c c" . org-capture)))
 
 ;; fancy utf-8 bullets
 (use-package org-bullets
@@ -529,6 +555,12 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;; htmlize for nicer html output
 (use-package htmlize)
+
+;; export presentations using reveal.js
+(use-package ox-reveal
+  :config
+  ;; use CDN copy by default
+  (setq org-reveal-root "http://cdn.jsdelivr.net/reveal.js/3.0.0/"))
 
 (use-package magit
   :pin melpa-stable

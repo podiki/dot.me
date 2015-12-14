@@ -119,16 +119,17 @@ point reaches the beginning or end of the buffer, stop there."
   :bind (("C-c b ," . goto-last-change)
          ("C-c b ." . goto-last-change-reverse)))
 
-(defun smooth-scroll (increment)
-  (scroll-up increment) (sit-for 0.05)
-  (scroll-up increment) (sit-for 0.02)
-  (scroll-up increment) (sit-for 0.02)
-  (scroll-up increment) (sit-for 0.05)
-  (scroll-up increment) (sit-for 0.06)
-  (scroll-up increment))
+(when (memq window-system '(w32))
+  (defun smooth-scroll (increment)
+    (scroll-up increment) (sit-for 0.05)
+    (scroll-up increment) (sit-for 0.02)
+    (scroll-up increment) (sit-for 0.02)
+    (scroll-up increment) (sit-for 0.05)
+    (scroll-up increment) (sit-for 0.06)
+    (scroll-up increment))
 
-(global-set-key [(wheel-down)] '(lambda () (interactive) (smooth-scroll 1)))
-(global-set-key [(wheel-up)] '(lambda () (interactive) (smooth-scroll -1)))
+  (global-set-key [(wheel-down)] '(lambda () (interactive) (smooth-scroll 1)))
+  (global-set-key [(wheel-up)] '(lambda () (interactive) (smooth-scroll -1))))
 
 (server-start)
 

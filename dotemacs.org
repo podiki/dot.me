@@ -135,16 +135,17 @@
 ** Smooth scroll (Windows)
 Found [[http://zwell.net/content/emacs.html][this attempt]] (works okay so far) on the gnu.emacs.help mailing list discussion about [[https://groups.google.com/forum/#!topic/gnu.emacs.help/l7ymPQItP18][smooth scrolling]] (was also thinking of using this [[http://bug-gnu-emacs.gnu.narkive.com/cXKzPf3R/bug-21-4-19-smooth-vscroll-up-down][sample code]] to try to whip up something as a little project). There is an slightly different and more generic version on the same webpage.
 #+BEGIN_SRC emacs-lisp
-  (defun smooth-scroll (increment)
-    (scroll-up increment) (sit-for 0.05)
-    (scroll-up increment) (sit-for 0.02)
-    (scroll-up increment) (sit-for 0.02)
-    (scroll-up increment) (sit-for 0.05)
-    (scroll-up increment) (sit-for 0.06)
-    (scroll-up increment))
-
-  (global-set-key [(wheel-down)] '(lambda () (interactive) (smooth-scroll 1)))
-  (global-set-key [(wheel-up)] '(lambda () (interactive) (smooth-scroll -1)))
+  (when (memq window-system '(w32))
+    (defun smooth-scroll (increment)
+      (scroll-up increment) (sit-for 0.05)
+      (scroll-up increment) (sit-for 0.02)
+      (scroll-up increment) (sit-for 0.02)
+      (scroll-up increment) (sit-for 0.05)
+      (scroll-up increment) (sit-for 0.06)
+      (scroll-up increment))
+  
+    (global-set-key [(wheel-down)] '(lambda () (interactive) (smooth-scroll 1)))
+    (global-set-key [(wheel-up)] '(lambda () (interactive) (smooth-scroll -1))))
 #+END_SRC
 
 (For Mac I use the [[https://github.com/railwaycat/emacs-mac-port][railwaycat]] provided homebrew of the Mac port by Yamamoto Mitsuharu, which also adds a few other nice features like swipe gestures.)

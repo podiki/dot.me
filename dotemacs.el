@@ -511,6 +511,8 @@ point reaches the beginning or end of the buffer, stop there."
   (setq org-startup-indented t)
   ;; syntax highlight code blocks
   (setq org-src-fontify-natively t)
+  ;; use UTF-8 characters for e.g. \alpha and subscripts
+  (setq org-pretty-entities t)
   ;; org-babel languages
   (org-babel-do-load-languages
     'org-babel-load-languages

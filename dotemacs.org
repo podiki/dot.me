@@ -567,6 +567,8 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
     (setq org-startup-indented t)
     ;; syntax highlight code blocks
     (setq org-src-fontify-natively t)
+    ;; use UTF-8 characters for e.g. \alpha and subscripts
+    (setq org-pretty-entities t)
     ;; org-babel languages
     (org-babel-do-load-languages
       'org-babel-load-languages

@@ -33,7 +33,7 @@
     (defvar dropbox "c:/Users/John/Desktop/Dropbox/"))
 
   (when (memq window-system '(mac ns))
-    (defvar dropbox "/Users/John/Desktop/Dropbox"))
+    (defvar dropbox "/Users/john/Desktop/Dropbox/"))
 #+END_SRC
 ** Initial size, appearance, etc.
 #+BEGIN_SRC emacs-lisp
@@ -74,8 +74,10 @@
   (defadvice ansi-term (after advise-ansi-term-coding-system)
       (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
   (ad-activate 'ansi-term)
-
-  ;; transient-mark-mode related (commands from masterinemacs)
+#+END_SRC
+** Movement customization
+*** transient-mark-mode related (commands from [[https://masteringemacs.org/article/fixing-mark-commands-transient-mark-mode][MasteringEmacs]])
+#+BEGIN_SRC emacs-lisp
   (defun push-mark-no-activate ()
     "Pushes `point' to `mark-ring' and does not activate the region
   Equivalent to \\[set-mark-command] when \\[transient-mark-mode] is disabled"
@@ -95,8 +97,9 @@
     (exchange-point-and-mark)
     (deactivate-mark nil))
   (define-key global-map [remap exchange-point-and-mark] 'exchange-point-and-mark-no-activate)
-
-  ;; smarter move-to-beginning-of-line from emacsredux
+#+END_SRC
+*** smarter move-to-beginning-of-line (from [[http://emacsredux.com/blog/2013/05/22/smarter-navigation-to-the-beginning-of-a-line/][emacsredux]])
+#+BEGIN_SRC emacs-lisp
   (defun smarter-move-beginning-of-line (arg)
     "Move point back to indentation of beginning of line.
 
@@ -123,13 +126,24 @@
   ;; remap C-a to `smarter-move-beginning-of-line'
   (global-set-key [remap move-beginning-of-line]
                   'smarter-move-beginning-of-line)
-
-  ;; hop back and forth between edit points
-  ;; (via http://pragmaticemacs.com/emacs/move-through-edit-points/)
-  ;; changes described by "C-u 0 C-c b ,"
+#+END_SRC
+*** hop back and forth between edit point (via [[http://pragmaticemacs.com/emacs/move-through-edit-points/][pragmaticemacs]]), changes described by "C-u 0 C-c b ,"
+#+BEGIN_SRC emacs-lisp
   (use-package goto-chg
     :bind (("C-c b ," . goto-last-change)
            ("C-c b ." . goto-last-change-reverse)))
+#+END_SRC
+*** faster pop-to-mark (via [[http://endlessparentheses.com/faster-pop-to-mark-command.html?source=rss][endlessparentheses]])
+#+BEGIN_SRC emacs-lisp
+  ;; When popping the mark, continue popping until the cursor
+  ;; actually moves
+  (defadvice pop-to-mark-command (around ensure-new-position activate)
+    (let ((p (point)))
+      (dotimes (i 10)
+        (when (= p (point)) ad-do-it))))
+
+  ;; Allow pressing C-u C-SPC C-SPC etc. instead
+  (setq set-mark-command-repeat-pop t)
 #+END_SRC
 
 ** Smooth scroll (Windows)
@@ -180,7 +194,7 @@ for package listing and browsing
   ;(load-theme 'sanityinc-tomorrow-eighties 1)
 
   (use-package color-theme-solarized
-    :disabled t
+    :defer t
     :config
     ;; for light version (default is dark)
     (setq frame-background-mode 'light)

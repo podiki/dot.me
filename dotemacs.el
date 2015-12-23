@@ -23,7 +23,7 @@
   (defvar dropbox "c:/Users/John/Desktop/Dropbox/"))
 
 (when (memq window-system '(mac ns))
-  (defvar dropbox "/Users/John/Desktop/Dropbox"))
+  (defvar dropbox "/Users/john/Desktop/Dropbox/"))
 
 ;; initial size
 (setq default-frame-alist '((width . 90)
@@ -63,7 +63,6 @@
     (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
 (ad-activate 'ansi-term)
 
-;; transient-mark-mode related (commands from masterinemacs)
 (defun push-mark-no-activate ()
   "Pushes `point' to `mark-ring' and does not activate the region
 Equivalent to \\[set-mark-command] when \\[transient-mark-mode] is disabled"
@@ -84,7 +83,6 @@ This is the same as using \\[set-mark-command] with the prefix argument."
   (deactivate-mark nil))
 (define-key global-map [remap exchange-point-and-mark] 'exchange-point-and-mark-no-activate)
 
-;; smarter move-to-beginning-of-line from emacsredux
 (defun smarter-move-beginning-of-line (arg)
   "Move point back to indentation of beginning of line.
 
@@ -112,12 +110,19 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key [remap move-beginning-of-line]
                 'smarter-move-beginning-of-line)
 
-;; hop back and forth between edit points
-;; (via http://pragmaticemacs.com/emacs/move-through-edit-points/)
-;; changes described by "C-u 0 C-c b ,"
 (use-package goto-chg
   :bind (("C-c b ," . goto-last-change)
          ("C-c b ." . goto-last-change-reverse)))
+
+;; When popping the mark, continue popping until the cursor
+;; actually moves
+(defadvice pop-to-mark-command (around ensure-new-position activate)
+  (let ((p (point)))
+    (dotimes (i 10)
+      (when (= p (point)) ad-do-it))))
+
+;; Allow pressing C-u C-SPC C-SPC etc. instead
+(setq set-mark-command-repeat-pop t)
 
 (when (memq window-system '(w32))
   (defun smooth-scroll (increment)
@@ -149,7 +154,7 @@ point reaches the beginning or end of the buffer, stop there."
 ;(load-theme 'sanityinc-tomorrow-eighties 1)
 
 (use-package color-theme-solarized
-  :disabled t
+  :defer t
   :config
   ;; for light version (default is dark)
   (setq frame-background-mode 'light)

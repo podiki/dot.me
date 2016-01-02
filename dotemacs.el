@@ -170,7 +170,7 @@ point reaches the beginning or end of the buffer, stop there."
 ;; also use powerline-reset so that powerline/spaceline is also reset
 (defadvice load-theme 
   (before theme-dont-propagate activate)
-  (mapcar #'disable-theme custom-enabled-themes)
+  (mapc #'disable-theme custom-enabled-themes)
   (when (package-installed-p 'powerline)
     (powerline-reset)))
 
@@ -649,6 +649,12 @@ point reaches the beginning or end of the buffer, stop there."
   (sp-local-pair 'lisp-mode "(" ")" :wrap "M-(")
   (sp-local-pair 'lisp-mode "\"" "\"" :wrap "M-\""))
 
+;;; Use Common Lisp indenting
+(add-hook 'lisp-mode-hook
+          (lambda ()
+            (set (make-local-variable 'lisp-indent-function)
+                 'common-lisp-indent-function)))
+;;; From quicklisp, but prefer current slime in melpa
 ;; (load (expand-file-name "~/quicklisp/slime-helper.el"))
 (use-package slime
   :config
@@ -836,3 +842,17 @@ point reaches the beginning or end of the buffer, stop there."
 ;;   (action . ac-math-action-latex)
 ;;   (symbol . "l")
 ;;  ))
+
+(use-package emms-setup
+  :ensure emms
+  :config
+  (emms-devel)
+  (emms-default-players)
+  ;; for Mac use built-in afplay
+  (when (memq window-system '(mac ns))
+        (define-emms-simple-player afplay '(file)
+          (regexp-opt '(".mp3" ".m4a" ".aac"))
+          "afplay")
+        (setq emms-player-list `(,emms-player-afplay))
+        (setq emms-source-file-default-directory
+              "~/Music/iTunes/iTunes Media/Music/")))

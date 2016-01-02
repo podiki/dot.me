@@ -210,7 +210,7 @@ for package listing and browsing
   ;; also use powerline-reset so that powerline/spaceline is also reset
   (defadvice load-theme 
     (before theme-dont-propagate activate)
-    (mapcar #'disable-theme custom-enabled-themes)
+    (mapc #'disable-theme custom-enabled-themes)
     (when (package-installed-p 'powerline)
       (powerline-reset)))
 
@@ -740,6 +740,12 @@ Set up to behave like paredit in lisp modes
 ** Lisp and SLIME
 Slime and other lisp stuff
 #+BEGIN_SRC emacs-lisp
+  ;;; Use Common Lisp indenting
+  (add-hook 'lisp-mode-hook
+            (lambda ()
+              (set (make-local-variable 'lisp-indent-function)
+                   'common-lisp-indent-function)))
+  ;;; From quicklisp, but prefer current slime in melpa
   ;; (load (expand-file-name "~/quicklisp/slime-helper.el"))
   (use-package slime
     :config
@@ -951,4 +957,22 @@ This is a nice distraction free writing environment, but currently has a bug wit
   ;;   (action . ac-math-action-latex)
   ;;   (symbol . "l")
   ;;  ))
+#+END_SRC
+* Fun stuff
+** EMMS for music playing
+Make sure mp3info is installed (and found by emacs)
+#+BEGIN_SRC emacs-lisp
+  (use-package emms-setup
+    :ensure emms
+    :config
+    (emms-devel)
+    (emms-default-players)
+    ;; for Mac use built-in afplay
+    (when (memq window-system '(mac ns))
+          (define-emms-simple-player afplay '(file)
+            (regexp-opt '(".mp3" ".m4a" ".aac"))
+            "afplay")
+          (setq emms-player-list `(,emms-player-afplay))
+          (setq emms-source-file-default-directory
+                "~/Music/iTunes/iTunes Media/Music/")))
 #+END_SRC

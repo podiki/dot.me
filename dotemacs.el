@@ -162,19 +162,24 @@ point reaches the beginning or end of the buffer, stop there."
 
 (use-package molokai-theme
   :config
+  (setq frame-background-mode 'dark)
   (load-theme 'molokai))
 
-;; disable previous custom-theme before loading a new one
-;; (via https://emacs.stackexchange.com/questions/3112/how-to-reset-color-theme
-;; and referencing http://stackoverflow.com/a/15595000/729907)
-;; also use powerline-reset so that powerline/spaceline is also reset
 (defadvice load-theme 
   (before theme-dont-propagate activate)
   (mapc #'disable-theme custom-enabled-themes)
   (when (package-installed-p 'powerline)
     (powerline-reset)))
 
-;; Font
+(defun toggle-day-night-theme ()
+  "Switch between two (day/night) themes."
+  (interactive)
+  (if (eq frame-background-mode 'light)
+      (progn (setq frame-background-mode 'dark)
+             (load-theme 'molokai))
+      (progn (setq frame-background-mode 'light)
+             (load-theme 'solarized))))
+
 (when (memq window-system '(mac ns))
   (set-face-attribute 'default nil :family "Inconsolata" :height 130)
   ; extra unicode characters via:
@@ -675,6 +680,20 @@ point reaches the beginning or end of the buffer, stop there."
 ;; highlight-sexp
 (use-package highlight-sexp
   :config
+  ;; turn off hl-line-mode locally
+  ;; (add-hook 'lisp-mode-hook (lambda ()
+  ;;                             (setq-local global-hl-line-mode nil)))
+  ;; (add-hook 'emacs-lisp-mode-hook (lambda ()
+  ;;                                   (setq-local global-hl-line-mode nil)))
+
+  ;; for light themes, set to be just darker than background
+  ;; (otherwise (re)set to default purple)
+  (add-hook 'highlight-sexp-mode-hook (lambda ()
+                                        (if (equal frame-background-mode 'light)
+                                            (setq hl-sexp-background-color
+                                                  (color-darken-name
+                                                   (face-background 'default) 10))
+                                            (setq hl-sexp-background-color "#4b3b4b"))))
   (add-hook 'lisp-mode-hook 'highlight-sexp-mode)
   (add-hook 'emacs-lisp-mode-hook 'highlight-sexp-mode))
 ;; for leuven theme, default purple is unreadable

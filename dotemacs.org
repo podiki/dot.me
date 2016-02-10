@@ -216,7 +216,7 @@ Disable previous custom-theme before loading a new one (via [[https://emacs.stac
       (powerline-reset)))
 #+END_SRC
 
-And a function for switching between two (day/night) themes, modified from [[https://github.com/sellout/emacs-color-theme-solarized/issues/167][GitHub discussion]]
+And a function for switching between two (day/night) themes, modified from this [[https://github.com/sellout/emacs-color-theme-solarized/issues/167][GitHub discussion]]
 #+BEGIN_SRC emacs-lisp
   (defun toggle-day-night-theme ()
     "Switch between two (day/night) themes."
@@ -225,7 +225,12 @@ And a function for switching between two (day/night) themes, modified from [[htt
         (progn (setq frame-background-mode 'dark)
                (load-theme 'molokai))
         (progn (setq frame-background-mode 'light)
-               (load-theme 'solarized))))
+               (load-theme 'solarized)))
+    ;; reload highlight-sexp-mode to update highlight color
+    ;; but seems to leave some parts highlighted incorrectly
+    (if (bound-and-true-p highlight-sexp-mode)
+        (progn (highlight-sexp-mode)
+               (highlight-sexp-mode))))
 #+END_SRC
 *** Fonts
 #+BEGIN_SRC emacs-lisp
@@ -348,6 +353,13 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
            ("C-c C-<"     . mc/mark-all-like-this)))
 #+END_SRC
 
+** which-key
+#+BEGIN_SRC emacs-lisp
+  (use-package which-key
+    :config
+    (setq which-key-idle-delay 0.5)
+    (which-key-mode))
+#+END_SRC
 ** Line numbers with linum
 #+BEGIN_SRC emacs-lisp
   ;; Show line-number and column-number in the mode line
@@ -585,6 +597,8 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
 #+END_SRC
 
 * Org-mode
+** Basic setup
+Use org-plus-contrib for extras in org-mode. Note that other packages that depend on org will install plain org (though this shouldn't cause any problems, it is annoying when installing something new). Fix this by [[https://lists.gnu.org/archive/html/emacs-orgmode/2014-12/msg00287.html][creating a dummy package]], as there is no way to tell the package manager that org is accounted for. Also add a file org-autoloads.el to prevent startup errors (though of no real consequence I think).
 #+BEGIN_SRC emacs-lisp
   (use-package org
     :ensure org-plus-contrib
@@ -641,14 +655,27 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
 
   ;; htmlize for nicer html output
   (use-package htmlize)
-
-  ;; export presentations using reveal.js
+#+END_SRC
+** For presentations with reveal.js
+#+BEGIN_SRC emacs-lisp
   (use-package ox-reveal
     :config
     ;; use CDN copy by default
     (setq org-reveal-root "http://cdn.jsdelivr.net/reveal.js/3.0.0/"))
 #+END_SRC
-
+** Blog posting with org2blog
+#+BEGIN_SRC emacs-lisp
+  (use-package org2blog-autoloads
+    :ensure org2blog
+    :defer t
+    :config
+    (require 'auth-source)
+    (setq org2blog/wp-blog-alist
+          `(("stuff-blog"
+             :url "http://stuff.9bladed.com/xmlrpc.php"
+             :username ,(getf (car (auth-source-search :host "stuff-blog"))
+                              :user)))))
+#+END_SRC
 * Programming
 ** Magit
 Magit for source control with git/github. Some modifications necessary for dealing with paths in Windows with msys2.
@@ -742,6 +769,8 @@ Set up to behave like paredit in lisp modes
     :config
     (smartparens-global-mode 1)
     (show-smartparens-global-mode 1)
+    ;; for some (e.g. molokai) themes this is the wrong color
+    (setq sp-highlight-pair-overlay nil)
     ;; paredit-like setup for lisp
     (add-hook 'lisp-mode-hook 'turn-on-smartparens-strict-mode)
     (add-hook 'emacs-lisp-mode-hook 'turn-on-smartparens-strict-mode)

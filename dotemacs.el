@@ -178,7 +178,12 @@ point reaches the beginning or end of the buffer, stop there."
       (progn (setq frame-background-mode 'dark)
              (load-theme 'molokai))
       (progn (setq frame-background-mode 'light)
-             (load-theme 'solarized))))
+             (load-theme 'solarized)))
+  ;; reload highlight-sexp-mode to update highlight color
+  ;; but seems to leave some parts highlighted incorrectly
+  (if (bound-and-true-p highlight-sexp-mode)
+      (progn (highlight-sexp-mode)
+             (highlight-sexp-mode))))
 
 (when (memq window-system '(mac ns))
   (set-face-attribute 'default nil :family "Inconsolata" :height 130)
@@ -288,6 +293,11 @@ point reaches the beginning or end of the buffer, stop there."
          ("C->"         . mc/mark-next-like-this)
          ("C-<"         . mc/mark-previous-like-this)
          ("C-c C-<"     . mc/mark-all-like-this)))
+
+(use-package which-key
+  :config
+  (setq which-key-idle-delay 0.5)
+  (which-key-mode))
 
 ;; Show line-number and column-number in the mode line
 (line-number-mode 1)
@@ -568,11 +578,21 @@ point reaches the beginning or end of the buffer, stop there."
 ;; htmlize for nicer html output
 (use-package htmlize)
 
-;; export presentations using reveal.js
 (use-package ox-reveal
   :config
   ;; use CDN copy by default
   (setq org-reveal-root "http://cdn.jsdelivr.net/reveal.js/3.0.0/"))
+
+(use-package org2blog-autoloads
+  :ensure org2blog
+  :defer t
+  :config
+  (require 'auth-source)
+  (setq org2blog/wp-blog-alist
+        `(("stuff-blog"
+           :url "http://stuff.9bladed.com/xmlrpc.php"
+           :username ,(getf (car (auth-source-search :host "stuff-blog"))
+                            :user)))))
 
 (use-package magit
   :pin melpa-stable
@@ -645,6 +665,8 @@ point reaches the beginning or end of the buffer, stop there."
   :config
   (smartparens-global-mode 1)
   (show-smartparens-global-mode 1)
+  ;; for some (e.g. molokai) themes this is the wrong color
+  (setq sp-highlight-pair-overlay nil)
   ;; paredit-like setup for lisp
   (add-hook 'lisp-mode-hook 'turn-on-smartparens-strict-mode)
   (add-hook 'emacs-lisp-mode-hook 'turn-on-smartparens-strict-mode)

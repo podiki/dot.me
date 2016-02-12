@@ -186,7 +186,7 @@ point reaches the beginning or end of the buffer, stop there."
              (highlight-sexp-mode))))
 
 (when (memq window-system '(mac ns))
-  (set-face-attribute 'default nil :family "Inconsolata" :height 130)
+  (set-face-attribute 'default nil :family "Input Mono Narrow" :height 120)
   ; extra unicode characters via:
   ; https://github.com/joodie/emacs-literal-config/blob/master/emacs.org
   (when (functionp 'set-fontset-font)

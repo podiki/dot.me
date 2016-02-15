@@ -526,6 +526,7 @@ point reaches the beginning or end of the buffer, stop there."
   :ensure org-plus-contrib
   :pin org
   :config
+  (setq org-directory (concat dropbox "org"))
   (add-hook 'org-mode-hook 'visual-line-mode)
   ;; use indented view by default
   (setq org-startup-indented t)
@@ -559,10 +560,10 @@ point reaches the beginning or end of the buffer, stop there."
   (setq org-lowest-priority ?C)
   (setq org-default-priority ?A)
   ;; todo file(s)
-  (setq org-agenda-files (list (concat dropbox "org/todoes.org")))
+  (setq org-agenda-files (list (concat org-directory "org/todoes.org")))
   ;; todo capture template with default priority and scheduled for today
   (setq org-capture-templates
-    '(("t" "todo" entry (file+headline (concat dropbox "org/todoes.org") "Tasks")
+    '(("t" "todo" entry (file+headline (concat org-directory "org/todoes.org") "Tasks")
        "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp
                                      (org-read-date nil t \"+0d\"))\n")))
   :bind (("C-c a" . org-agenda))

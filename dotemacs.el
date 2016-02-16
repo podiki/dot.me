@@ -189,13 +189,8 @@ point reaches the beginning or end of the buffer, stop there."
   (set-face-attribute 'default nil :family "Input Mono Narrow" :height 120)
   ; extra unicode characters via:
   ; https://github.com/joodie/emacs-literal-config/blob/master/emacs.org
-  (when (functionp 'set-fontset-font)
-    (set-fontset-font "fontset-default"
-                      'unicode
-                      (font-spec :family "DejaVu Sans Mono for Powerline"
-                                 :width 'normal
-                                 :size 12.4
-                                 :weight 'normal))))
+  ; http://endlessparentheses.com/manually-choose-a-fallback-font-for-unicode.html
+  (set-fontset-font "fontset-default" nil (font-spec :name "Symbola")))
 
 (when (memq window-system '(w32))
   (set-face-attribute 'default nil :font "InputMono" :height 85)
@@ -534,6 +529,8 @@ point reaches the beginning or end of the buffer, stop there."
   (setq org-src-fontify-natively t)
   ;; use UTF-8 characters for e.g. \alpha and subscripts
   (setq org-pretty-entities t)
+  ;; replace the folded section "..."s
+  (setq org-ellipsis "…")
   ;; org-babel languages
   (org-babel-do-load-languages
     'org-babel-load-languages

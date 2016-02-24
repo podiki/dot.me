@@ -540,6 +540,27 @@ point reaches the beginning or end of the buffer, stop there."
       (lisp . t)
       (latex . t)
       (maxima . t)))
+  ;; LaTeX customization
+  (setq org-latex-pdf-process (list "latexmk -f -lualatex -pdf %f"))
+  (add-to-list 'org-latex-classes
+               '("my-org-plain"
+                 "\\documentclass[11pt, letterpaper]{article}
+                  \\usepackage[hmargin = 1in, vmargin = 1in]{geometry}
+                  \\usepackage{fontspec}
+                  \\setmainfont[ItalicFont     = Palatino Linotype Italic,
+                                BoldFont       = Palatino Linotype Bold,
+                                BoldItalicFont = Palatino Linotype Bold Italic]
+                               {Palatino Linotype}
+                  \\usepackage[pdftex, colorlinks=true, plainpages=false, pdfpagelabels]{hyperref}
+                  \\pagestyle{empty}
+                  \\title{}
+                  [NO-DEFAULT-PACKAGES]
+                  [PACKAGES]"
+                 ("\\section{%s}"       . "\\section*{%s}")
+                 ("\\subsection{%s}"    . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}"     . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}"  . "\\subparagraph*{%s}")))
   ;; todo and agenda customization
   ;; warn of upcoming deadlines in next week
   (setq org-deadline-warning-days 7)

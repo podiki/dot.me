@@ -540,6 +540,11 @@ point reaches the beginning or end of the buffer, stop there."
       (lisp . t)
       (latex . t)
       (maxima . t)))
+  ;; To partially italic/bold/underline/strikethrough
+  ;; from http://stackoverflow.com/a/24540651
+  (setcar org-emphasis-regexp-components " \t('\"{[:alpha:]")
+  (setcar (nthcdr 1 org-emphasis-regexp-components) "[:alpha:]- \t.,:!?;'\")}\\")
+  (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
   ;; LaTeX customization
   (setq org-latex-pdf-process (list "latexmk -f -lualatex -pdf %f"))
   (add-to-list 'org-latex-classes

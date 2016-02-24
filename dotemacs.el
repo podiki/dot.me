@@ -520,6 +520,7 @@ point reaches the beginning or end of the buffer, stop there."
 (use-package org
   :ensure org-plus-contrib
   :pin org
+  :defer t
   :config
   (setq org-directory (concat dropbox "org"))
   (add-hook 'org-mode-hook 'visual-line-mode)
@@ -546,18 +547,17 @@ point reaches the beginning or end of the buffer, stop there."
   (setcar (nthcdr 1 org-emphasis-regexp-components) "[:alpha:]- \t.,:!?;'\")}\\")
   (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
   ;; LaTeX customization
+  (require 'ox-latex)
   (setq org-latex-pdf-process (list "latexmk -f -lualatex -pdf %f"))
   (add-to-list 'org-latex-classes
-               '("my-org-plain"
+               '("latex-general"
                  "\\documentclass[11pt, letterpaper]{article}
                   \\usepackage[hmargin = 1in, vmargin = 1in]{geometry}
                   \\usepackage{fontspec}
-                  \\setmainfont[ItalicFont     = Palatino Linotype Italic,
-                                BoldFont       = Palatino Linotype Bold,
-                                BoldItalicFont = Palatino Linotype Bold Italic]
-                               {Palatino Linotype}
+                  \\usepackage{unicode-math}
+                  \\setmainfont{TeX Gyre Pagella}
+                  \\setmathfont{TeX Gyre Pagella Math}
                   \\usepackage[pdftex, colorlinks=true, plainpages=false, pdfpagelabels]{hyperref}
-                  \\pagestyle{empty}
                   \\title{}
                   [NO-DEFAULT-PACKAGES]
                   [PACKAGES]"

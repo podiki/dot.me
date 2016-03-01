@@ -206,6 +206,10 @@ point reaches the beginning or end of the buffer, stop there."
                               :height 85
                               :weight 'normal))))
 
+(when (memq window-system '(x))
+  (set-face-attribute 'default nil :family "Input Mono Narrow" :height 110)
+  (set-fontset-font "fontset-default" nil (font-spec :name "Symbola")))
+
 ;; powerline modeline
 ;; (display problem with terminal emacs?)
 ;(require 'powerline)

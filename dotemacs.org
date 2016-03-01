@@ -254,6 +254,10 @@ And a function for switching between two (day/night) themes, modified from this 
                                 ;; :size 12.2
                                 :height 85
                                 :weight 'normal))))
+
+  (when (memq window-system '(x))
+    (set-face-attribute 'default nil :family "Input Mono Narrow" :height 110)
+    (set-fontset-font "fontset-default" nil (font-spec :name "Symbola")))
 #+END_SRC
 
 ** Modeline

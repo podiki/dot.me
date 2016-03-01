@@ -34,6 +34,9 @@
 
   (when (memq window-system '(mac ns))
     (defvar dropbox "/Users/john/Desktop/Dropbox/"))
+
+  (when (memq window-system '(x))
+    (defvar dropbox "/home/john/Dropbox/"))
 #+END_SRC
 ** Initial size, appearance, etc.
 #+BEGIN_SRC emacs-lisp

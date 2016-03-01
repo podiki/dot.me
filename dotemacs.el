@@ -25,6 +25,9 @@
 (when (memq window-system '(mac ns))
   (defvar dropbox "/Users/john/Desktop/Dropbox/"))
 
+(when (memq window-system '(x))
+  (defvar dropbox "/home/john/Dropbox/"))
+
 ;; initial size
 (setq default-frame-alist '((width . 90)
                             (height . 55)))

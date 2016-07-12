@@ -256,7 +256,7 @@ And a function for switching between two (day/night) themes, modified from this 
                                 :weight 'normal))))
 
   (when (memq window-system '(x))
-    (set-face-attribute 'default nil :family "Input Mono Narrow" :height 110)
+    (set-face-attribute 'default nil :family "Input Mono Narrow" :height 100)
     (set-fontset-font "fontset-default" nil (font-spec :name "Symbola")))
 #+END_SRC
 
@@ -600,7 +600,8 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
 
 * Org-mode
 ** Basic setup
-Use org-plus-contrib for extras in org-mode. Note that other packages that depend on org will install plain org (though this shouldn't cause any problems, it is annoying when installing something new). Fix this by [[https://lists.gnu.org/archive/html/emacs-orgmode/2014-12/msg00287.html][creating a dummy package]], as there is no way to tell the package manager that org is accounted for. Also add a file org-autoloads.el to prevent startup errors (though of no real consequence I think).
+- Use org-plus-contrib for extras in org-mode. Note that other packages that depend on org will install plain org (though this shouldn't cause any problems, it is annoying when installing something new). Fix this by [[https://lists.gnu.org/archive/html/emacs-orgmode/2014-12/msg00287.html][creating a dummy package]], as there is no way to tell the package manager that org is accounted for. Also add a file org-autoloads.el to prevent startup errors (though of no real consequence I think).
+- Some todo/agenda customization from the [[http://pragmaticemacs.com/emacs/org-mode-basics-vii-a-todo-list-with-schedules-and-deadlines/][Pragmatic Emacs blog]]
 #+BEGIN_SRC emacs-lisp
   (use-package org
     :ensure org-plus-contrib
@@ -656,6 +657,15 @@ Use org-plus-contrib for extras in org-mode. Note that other packages that depen
     (setq org-deadline-warning-days 7)
     ;; show tasks for next fornight
     (setq org-agenda-span 'fortnight)
+    ;;don't show tasks as scheduled if they are already shown as a deadline
+    (setq org-agenda-skip-scheduled-if-deadline-is-shown t)
+    ;;don't give awarning colour to tasks with impending deadlines
+    ;;if they are scheduled to be done
+    (setq org-agenda-skip-deadline-prewarning-if-scheduled (quote pre-scheduled))
+    ;;don't show tasks that are scheduled or have deadlines in the
+    ;;normal todo list
+    (setq org-agenda-todo-ignore-deadlines (quote all))
+    (setq org-agenda-todo-ignore-scheduled (quote all))
     ;; sort tasks in order of when they are due and then by priority
     (setq org-agenda-sorting-strategy
       (quote
@@ -824,8 +834,7 @@ Slime and other lisp stuff
   (use-package slime
     :config
     (setq inferior-lisp-program "sbcl")
-    (setq slime-contribs '(slime-fancy))
-    (slime-setup '(slime-fancy)))
+    (setq slime-contribs '(slime-fancy)))
   ;; ac-slime
   ;; now using company-mode instead
   ;; (add-hook 'slime-mode-hook 'set-up-slime-ac)

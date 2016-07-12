@@ -207,7 +207,7 @@ point reaches the beginning or end of the buffer, stop there."
                               :weight 'normal))))
 
 (when (memq window-system '(x))
-  (set-face-attribute 'default nil :family "Input Mono Narrow" :height 110)
+  (set-face-attribute 'default nil :family "Input Mono Narrow" :height 100)
   (set-fontset-font "fontset-default" nil (font-spec :name "Symbola")))
 
 ;; powerline modeline
@@ -578,6 +578,15 @@ point reaches the beginning or end of the buffer, stop there."
   (setq org-deadline-warning-days 7)
   ;; show tasks for next fornight
   (setq org-agenda-span 'fortnight)
+  ;;don't show tasks as scheduled if they are already shown as a deadline
+  (setq org-agenda-skip-scheduled-if-deadline-is-shown t)
+  ;;don't give awarning colour to tasks with impending deadlines
+  ;;if they are scheduled to be done
+  (setq org-agenda-skip-deadline-prewarning-if-scheduled (quote pre-scheduled))
+  ;;don't show tasks that are scheduled or have deadlines in the
+  ;;normal todo list
+  (setq org-agenda-todo-ignore-deadlines (quote all))
+  (setq org-agenda-todo-ignore-scheduled (quote all))
   ;; sort tasks in order of when they are due and then by priority
   (setq org-agenda-sorting-strategy
     (quote
@@ -717,8 +726,7 @@ point reaches the beginning or end of the buffer, stop there."
 (use-package slime
   :config
   (setq inferior-lisp-program "sbcl")
-  (setq slime-contribs '(slime-fancy))
-  (slime-setup '(slime-fancy)))
+  (setq slime-contribs '(slime-fancy)))
 ;; ac-slime
 ;; now using company-mode instead
 ;; (add-hook 'slime-mode-hook 'set-up-slime-ac)

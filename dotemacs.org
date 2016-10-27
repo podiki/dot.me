@@ -46,6 +46,7 @@
 
   ;; no system bell or toolbar, scrollbar, delete goes to trash
   (setq visible-bell 1)
+  (menu-bar-mode -1)
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
   (setq delete-by-moving-to-trash 1)
@@ -166,10 +167,35 @@ Found [[http://zwell.net/content/emacs.html][this attempt]] (works okay so far) 
     (global-set-key [(wheel-up)] '(lambda () (interactive) (smooth-scroll -1))))
 #+END_SRC
 
+*** TODO Fix this to be better
+Also tried adding some other [[https://stackoverflow.com/questions/3631220/fix-to-get-smooth-scrolling-in-emacs][settings]]
+#+BEGIN_SRC emacs-lisp
+  (when (memq window-system '(x))
+    (defun smooth-scroll (increment)
+      (scroll-up increment) (sit-for 0.04)
+      (scroll-up increment) (sit-for 0.01)
+      (scroll-up increment) (sit-for 0.01)
+      (scroll-up increment) (sit-for 0.04)
+      (scroll-up increment) (sit-for 0.05)
+      (scroll-up increment))
+
+    (setq redisplay-dont-pause t
+          scroll-margin 1
+          scroll-step 1
+          scroll-conservatively 10000
+          scroll-preserve-screen-position 1)
+
+    (global-set-key [(mouse-5)] '(lambda () (interactive) (smooth-scroll 1)))
+    (global-set-key [(mouse-4)] '(lambda () (interactive) (smooth-scroll -1))))
+#+END_SRC
+
 (For Mac I use the [[https://github.com/railwaycat/emacs-mac-port][railwaycat]] provided homebrew of the Mac port by Yamamoto Mitsuharu, which also adds a few other nice features like swipe gestures.)
 ** Server
 #+BEGIN_SRC emacs-lisp
-  (server-start)
+  (use-package server
+    :config
+    (unless (server-running-p)
+    (server-start)))
 #+END_SRC
 ** Paradox
 for package listing and browsing
@@ -256,7 +282,7 @@ And a function for switching between two (day/night) themes, modified from this 
                                 :weight 'normal))))
 
   (when (memq window-system '(x))
-    (set-face-attribute 'default nil :family "Input Mono Narrow" :height 100)
+    (set-face-attribute 'default nil :family "M+ 1m" :weight 'normal :height 200)
     (set-fontset-font "fontset-default" nil (font-spec :name "Symbola")))
 #+END_SRC
 
@@ -291,7 +317,7 @@ And a function for switching between two (day/night) themes, modified from this 
 #+END_SRC
 
 ** IDO/smex
-Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matching, vertical display of completions, and smex for command ido
+Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matching, vertical display of completions, and smex for command ido. defadvice for opening files as root (via [[http://emacsredux.com/blog/2013/04/21/edit-files-as-root/][Emacs Redux]])
 #+BEGIN_SRC emacs-lisp
   ;; IDO mode
   (use-package ido
@@ -301,7 +327,12 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
     (setq ido-use-filename-at-point 'guess)
     ;; show recent files in buffer list
     (setq ido-use-virtual-buffers 1)
-    (setq ido-everywhere 1))
+    (setq ido-everywhere 1)
+    (defadvice ido-find-file (after find-file-sudo activate)
+    "Find file as root if necessary."
+    (unless (and buffer-file-name
+                 (file-writable-p buffer-file-name))
+      (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name)))))
   ;; Use ido everywhere
   (use-package ido-ubiquitous
     :ensure t
@@ -561,8 +592,12 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
 *** Neotree for a file tree side panel
 #+BEGIN_SRC emacs-lisp
   (use-package neotree
-    :bind ("<f8>" . neotree-toggle))
+    :bind ("<f8>" . neotree-toggle)
+    :config
+    (setq neo-theme (if window-system 'icons 'arrow))
+    (setq neo-smart-open t))
 #+END_SRC
+*** Other
 #+BEGIN_SRC emacs-lisp
   ;; show path info for buffers with same name
   (require 'uniquify)
@@ -949,7 +984,7 @@ This is a nice distraction free writing environment, but currently has a bug wit
 * LaTeX configuration
 #+BEGIN_SRC emacs-lisp
   ; Enable AucTeX
-  (use-package tex-site
+  (use-package tex
     :ensure auctex
     :config
     (setq TeX-auto-save 1)

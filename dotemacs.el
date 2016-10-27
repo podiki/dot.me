@@ -34,6 +34,7 @@
 
 ;; no system bell or toolbar, scrollbar, delete goes to trash
 (setq visible-bell 1)
+(menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 (setq delete-by-moving-to-trash 1)
@@ -139,7 +140,28 @@ point reaches the beginning or end of the buffer, stop there."
   (global-set-key [(wheel-down)] '(lambda () (interactive) (smooth-scroll 1)))
   (global-set-key [(wheel-up)] '(lambda () (interactive) (smooth-scroll -1))))
 
-(server-start)
+(when (memq window-system '(x))
+  (defun smooth-scroll (increment)
+    (scroll-up increment) (sit-for 0.04)
+    (scroll-up increment) (sit-for 0.01)
+    (scroll-up increment) (sit-for 0.01)
+    (scroll-up increment) (sit-for 0.04)
+    (scroll-up increment) (sit-for 0.05)
+    (scroll-up increment))
+
+  (setq redisplay-dont-pause t
+        scroll-margin 1
+        scroll-step 1
+        scroll-conservatively 10000
+        scroll-preserve-screen-position 1)
+
+  (global-set-key [(mouse-5)] '(lambda () (interactive) (smooth-scroll 1)))
+  (global-set-key [(mouse-4)] '(lambda () (interactive) (smooth-scroll -1))))
+
+(use-package server
+  :config
+  (unless (server-running-p)
+  (server-start)))
 
 (use-package paradox)
 
@@ -207,7 +229,7 @@ point reaches the beginning or end of the buffer, stop there."
                               :weight 'normal))))
 
 (when (memq window-system '(x))
-  (set-face-attribute 'default nil :family "Input Mono Narrow" :height 100)
+  (set-face-attribute 'default nil :family "M+ 1m" :weight 'normal :height 200)
   (set-fontset-font "fontset-default" nil (font-spec :name "Symbola")))
 
 ;; powerline modeline
@@ -245,7 +267,12 @@ point reaches the beginning or end of the buffer, stop there."
   (setq ido-use-filename-at-point 'guess)
   ;; show recent files in buffer list
   (setq ido-use-virtual-buffers 1)
-  (setq ido-everywhere 1))
+  (setq ido-everywhere 1)
+  (defadvice ido-find-file (after find-file-sudo activate)
+  "Find file as root if necessary."
+  (unless (and buffer-file-name
+               (file-writable-p buffer-file-name))
+    (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name)))))
 ;; Use ido everywhere
 (use-package ido-ubiquitous
   :ensure t
@@ -489,7 +516,10 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key "\C-c\C-ge" 'writegood-reading-ease)
 
 (use-package neotree
-  :bind ("<f8>" . neotree-toggle))
+  :bind ("<f8>" . neotree-toggle)
+  :config
+  (setq neo-theme (if window-system 'icons 'arrow))
+  (setq neo-smart-open t))
 
 ;; show path info for buffers with same name
 (require 'uniquify)
@@ -814,7 +844,7 @@ point reaches the beginning or end of the buffer, stop there."
   (setq imaxima-use-maxima-mode-flag t))
 
 ; Enable AucTeX
-(use-package tex-site
+(use-package tex
   :ensure auctex
   :config
   (setq TeX-auto-save 1)

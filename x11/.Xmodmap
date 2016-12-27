@@ -1,0 +1,16 @@
+!
+! make capslock an control
+!
+clear lock
+clear control
+keycode 66 = Control_L
+add control = Control_L Control_R
+
+!
+! switch [] and ()
+! http://almostobsolete.net/switch-brackets-with-xmodmap.html
+!
+keysym bracketleft = parenleft braceleft
+keysym bracketright = parenright braceright
+keysym 9 = 9 bracketleft
+keysym 0 = 0 bracketright

@@ -653,6 +653,8 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
     (setq org-pretty-entities t)
     ;; replace the folded section "..."s
     (setq org-ellipsis "…")
+    ;; export backends
+    (setq org-export-backends (append org-export-backends '(md)))
     ;; org-babel languages
     (org-babel-do-load-languages
       'org-babel-load-languages
@@ -1110,4 +1112,12 @@ Make sure mp3info is installed (and found by emacs)
           (setq emms-player-list `(,emms-player-afplay))
           (setq emms-source-file-default-directory
                 "~/Music/iTunes/iTunes Media/Music/")))
+#+END_SRC
+** Icons. All of them.
+#+BEGIN_SRC emacs-lisp
+  (use-package all-the-icons)
+
+  (use-package all-the-icons-dired
+   :config
+   (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 #+END_SRC

@@ -569,6 +569,8 @@ point reaches the beginning or end of the buffer, stop there."
   (setq org-pretty-entities t)
   ;; replace the folded section "..."s
   (setq org-ellipsis "…")
+  ;; export backends
+  (setq org-export-backends (append org-export-backends '(md)))
   ;; org-babel languages
   (org-babel-do-load-languages
     'org-babel-load-languages
@@ -966,3 +968,9 @@ point reaches the beginning or end of the buffer, stop there."
         (setq emms-player-list `(,emms-player-afplay))
         (setq emms-source-file-default-directory
               "~/Music/iTunes/iTunes Media/Music/")))
+
+(use-package all-the-icons)
+
+(use-package all-the-icons-dired
+ :config
+ (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))

@@ -22,7 +22,7 @@
   (require 'use-package))
 (setq use-package-always-ensure t)
 
-(org-babel-load-file "~/codemonkey/dot.me/dotemacs.org")
+(org-babel-load-file "~/codemonkey/dot.me/emacs/dotemacs.org")
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

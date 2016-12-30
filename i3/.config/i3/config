@@ -144,6 +144,9 @@ bindsym $mod+Shift+Tab workspace prev_on_output
 # Jump to urgent window
 bindsym $mod+x [urgent=latest] focus
 
+# Sticky window (i.e. from fullscreen video)
+bindsym $mod+y fullscreen disable; floating enable; resize set 1920 1080; sticky enable; move window to position 0 1080
+
 # Scratchpad
 # Make the currently focused window a scratchpad
 bindsym $mod+Shift+minus move scratchpad

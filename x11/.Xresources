@@ -52,7 +52,15 @@
 Xcursor.theme: Breeze Snow
 Xcursor.size: 48
 
-Xft.dpi: 288
+! DPI
+Xft.dpi: 192
+
+! Fontconfig settings
+Xft.autohint: 0
+Xft.lcdfilter: lcddefault
+Xft.hintstyle: hintslight
+Xft.antialias: 1
+Xft.rgba: rgb
 
 !
 ! URxvt
@@ -61,7 +69,7 @@ Xft.dpi: 288
 URxvt.depth: 32
 URxvt.cursorBlink: true
 ! font
-URxvt.font: xft:Knack Nerd Font:size=18
+URxvt.font: xft:Knack Nerd Font:size=10
 URxvt.letterSpace: -1
 ! no scrollbar
 URxvt.scrollBar: false
@@ -92,4 +100,4 @@ rofi.separator-style:                solid
 
 rofi.width:                          25
 rofi.opacity:                        75
-rofi.font:                           Hack 24
+rofi.font:                           Knack Nerd Font 24

@@ -229,7 +229,7 @@ point reaches the beginning or end of the buffer, stop there."
                               :weight 'normal))))
 
 (when (memq window-system '(x))
-  (set-face-attribute 'default nil :family "M+ 1m" :weight 'normal :height 200)
+  (set-face-attribute 'default nil :family "M+ 1m" :weight 'normal :height 110)
   (set-fontset-font "fontset-default" nil (font-spec :name "Symbola")))
 
 ;; powerline modeline

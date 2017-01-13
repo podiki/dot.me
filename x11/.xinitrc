@@ -25,11 +25,18 @@ fi
 
 # some relevant environment variables
 export QT_QPA_PLATFORMTHEME="qt5ct"
+
+# DPI settings
+# set correct dpi
+xrandr --dpi 192
+# After moving from infinality to freetype 2.7/fontconfig 2.12
+# suddenly fonts got really large, turned dpi down from 288
+# commented out below settings
 # QT HiDPI
-export QT_SCALE_FACTOR=2
+#export QT_SCALE_FACTOR=2
 # GDK 3 (GTK+ 3) HiDPI
-export GDK_SCALE=2
-export GDK_DPI_SCALE=0.5
+#export GDK_SCALE=2
+#export GDK_DPI_SCALE=0.5
 
 # start some nice programs
 
@@ -42,9 +49,6 @@ fi
 
 # MPD daemon start (if no other user instance exists)
 [ ! -s ~/.config/mpd/pid ] && mpd
-
-# set correct dpi
-xrandr --dpi 288
 
 # i3wm
 exec i3

@@ -20,10 +20,10 @@ set $mod Mod4
 #font pango:DejaVu Sans Mono 8
 
 #font pango:Cantarell 8
-font pango:M+ 2p 8
+font pango:M+ 2p 10
 
 # No window titlebars (required for i3-gaps)
-for_window [class="^.*"] border pixel 6
+for_window [class="^.*"] border pixel 2
 
 # Workspaces
 set $workspace1 "1: "
@@ -306,7 +306,7 @@ bar {
         status_command i3blocks
         i3bar_command i3bar -t
         position top
-        font pango:M+ 2p, Awesome 7
+        font pango:M+ 2p, Awesome 11
         colors {
                 #separator  $background
                 background $transparent

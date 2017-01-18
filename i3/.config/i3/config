@@ -181,7 +181,7 @@ exec --no-startup-id xscreensaver -no-splash
 exec --no-startup-id xss-lock -- ~/lock.sh #i3lock -n
 exec --no-startup-id blueshift-tray -c ~/blueshift.conf
 exec --no-startup-id volumeicon
-exec_always --no-startup-id feh --bg-fill ~/_DSC6394.jpg
+exec_always --no-startup-id feh --bg-center ~/Downloads/Wallpapers/04008_dockofbrokendreams_3840x2160.jpg
 
 # compositing with compton
 exec --no-startup-id compton -b

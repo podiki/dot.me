@@ -1,12 +1,3 @@
-;=====================================================
-;
-;   To learn more about how to configure Polybar
-;   go to https://github.com/jaagr/polybar
-;
-;   The README contains alot of information
-;
-;=====================================================
-
 [colors]
 background = #222
 background-alt = #444
@@ -20,16 +11,19 @@ alert = #bd2c40
 margin-top = 5
 margin-bottom = 5
 
-[bar/example]
+[bar/bar1]
 ;monitor = ${env:MONITOR:HDMI-1}
-width = 100%
-height = 27
-offset-x = 0
-offset-y = 0
+width = 3775
+height = 40
+offset-x = 27.5
+offset-y = 5
 
 ;background = ${xrdb:color9}
-background = ${colors.background}
-foreground = ${colors.foreground}
+;background = ${colors.background}
+;foreground = ${colors.foreground}
+
+background = ${xrdb:color18}
+foreground = ${xrdb:color21}
 
 overline-size = 2
 overline-color = #f00
@@ -44,26 +38,21 @@ padding-right = 2
 module-margin-left = 1
 module-margin-right = 2
 
-font-0 = fixed:pixelsize=10
-font-1 = unifont:fontformat=truetype:size=6:heavy;-2
-font-2 = siji:pixelsize=10
+font-0 = Cantarell:size=12
+;font-1 = Knack Nerd Font:size=20
+font-1 = FontAwesome:size=12;-4
 
-modules-left = bspwm i3 xwindow
-modules-center = 
-modules-right = xbacklight volume xkeyboard memory cpu wlan eth battery temperature date powermenu
+modules-left = i3 xwindow
+modules-center = mpd
+modules-right = volume memory cpu wlan battery temperature date
 
 tray-position = right
 tray-padding = 2
 ;tray-transparent = true
 ;tray-background = #0063ff
 
-;wm-restack = bspwm
-;wm-restack = i3
-
-;override-redirect = true
-
-;scroll-up = bspwm-desknext
-;scroll-down = bspwm-deskprev
+wm-restack = i3
+override-redirect = true
 
 ;scroll-up = i3wm-wsnext
 ;scroll-down = i3wm-wsprev
@@ -125,12 +114,12 @@ label-mode-padding = 2
 label-mode-foreground = #000
 label-mode-background = ${colors.primary}
 
-label-focused = %index%
+label-focused = %icon% %name%
 label-focused-background = ${module/bspwm.label-focused-background}
 label-focused-underline = ${module/bspwm.label-focused-underline}
 label-focused-padding = ${module/bspwm.label-focused-padding}
 
-label-unfocused = %index%
+label-unfocused = %icon% %name%
 label-unfocused-padding = ${module/bspwm.label-occupied-padding}
 
 label-urgent = %index%!
@@ -142,6 +131,13 @@ label-visible-background = ${self.label-focused-background}
 label-visible-underline = ${self.label-focused-underline}
 label-visible-padding = ${self.label-focused-padding}
 
+ws-icon-0 = 1: 
+ws-icon-1 = 2: 
+ws-icon-2 = 3: ( )
+ws-icon-3 = 4: 
+ws-icon-4 = 5: 
+ws-icon-default = ♟
+
 [module/mpd]
 type = internal/mpd
 
@@ -150,16 +146,16 @@ format-online = <label-song>  <icon-prev> <icon-seekb> <icon-stop> <toggle> <ico
 label-song-maxlen = 25
 label-song-ellipsis = true
 
-icon-prev = 
-icon-seekb = 
-icon-stop = 
-icon-play = 
-icon-pause = 
-icon-next = 
-icon-seekf = 
+icon-prev = 
+icon-seekb = 
+icon-stop = 
+icon-play = 
+icon-pause = 
+icon-next = 
+icon-seekf = 
 
-icon-random = 
-icon-repeat = 
+icon-random = 
+icon-repeat = 
 
 toggle-on-foreground = ${colors.primary}
 toggle-off-foreground = #66
@@ -189,7 +185,7 @@ card = intel_backlight
 [module/cpu]
 type = internal/cpu
 interval = 2
-format-prefix = " "
+format-prefix = " "
 format-prefix-foreground = ${colors.foreground-alt}
 format-underline = #f90000
 label = %percentage%%
@@ -197,7 +193,7 @@ label = %percentage%%
 [module/memory]
 type = internal/memory
 interval = 2
-format-prefix = " "
+format-prefix = " "
 format-prefix-foreground = ${colors.foreground-alt}
 format-underline = #4bffdc
 label = %percentage_used%%
@@ -211,15 +207,16 @@ format-connected = <ramp-signal> <label-connected>
 format-connected-underline = #9f78e1
 format-disconnected-underline = ${self.format-connected-underline}
 
-label-connected = %essid%
+label-connected = %essid% %downspeed:9%/%upspeed:9%
 label-disconnected = %ifname% disconnected
 label-disconnected-foreground = ${colors.foreground-alt}
 
-ramp-signal-0 = 
-ramp-signal-1 = 
-ramp-signal-2 = 
-ramp-signal-3 = 
-ramp-signal-4 = 
+ramp-signal-0 = 😱
+ramp-signal-1 = 😠
+ramp-signal-2 = 😒
+ramp-signal-3 = 😊
+ramp-signal-4 = 😃
+ramp-signal-5 = 😈
 ramp-signal-foreground = ${colors.foreground-alt}
 
 [module/eth]
@@ -243,10 +240,10 @@ interval = 5
 date =
 date-alt = " %Y-%m-%d"
 
-time = %H:%M
+time = "%a %b %-d %-I:%M"
 time-alt = %H:%M:%S
 
-format-prefix = 
+format-prefix = 
 format-prefix-foreground = ${colors.foreground-alt}
 format-underline = #0a6cf5
 
@@ -256,10 +253,10 @@ label = %date% %time%
 type = internal/volume
 
 format-volume = <label-volume> <bar-volume>
-label-volume = VOL
+label-volume = 
 label-volume-foreground = ${root.foreground}
 
-format-muted-prefix = " "
+format-muted-prefix = " "
 format-muted-foreground = ${colors.foreground-alt}
 label-muted = sound muted
 
@@ -293,18 +290,18 @@ format-charging-underline = #ffb52a
 format-discharging = <ramp-capacity> <label-discharging>
 format-discharging-underline = ${self.format-charging-underline}
 
-format-full-prefix = " "
+format-full-prefix = " "
 format-full-prefix-foreground = ${colors.foreground-alt}
 format-full-underline = ${self.format-charging-underline}
 
-ramp-capacity-0 = 
-ramp-capacity-1 = 
-ramp-capacity-2 = 
+ramp-capacity-0 = 
+ramp-capacity-1 = 
+ramp-capacity-2 = 
 ramp-capacity-foreground = ${colors.foreground-alt}
 
-animation-charging-0 = 
-animation-charging-1 = 
-animation-charging-2 = 
+animation-charging-0 = 
+animation-charging-1 = 
+animation-charging-2 = 
 animation-charging-foreground = ${colors.foreground-alt}
 animation-charging-framerate = 750
 
@@ -322,9 +319,9 @@ label = %temperature%
 label-warn = %temperature%
 label-warn-foreground = ${colors.secondary}
 
-ramp-0 = 
-ramp-1 = 
-ramp-2 = 
+ramp-0 = 
+ramp-1 = 
+ramp-2 = 
 ramp-foreground = ${colors.foreground-alt}
 
 [module/powermenu]
@@ -332,7 +329,7 @@ type = custom/menu
 
 format-spacing = 1
 
-label-open =  power
+label-open =  power
 label-open-foreground = ${colors.secondary}
 label-close =  cancel
 label-close-foreground = ${colors.secondary}

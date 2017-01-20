@@ -16,7 +16,7 @@ margin-bottom = 5
 width = 3775
 height = 40
 offset-x = 27.5
-offset-y = 5
+offset-y = 0
 
 ;background = ${xrdb:color9}
 ;background = ${colors.background}
@@ -38,9 +38,9 @@ padding-right = 2
 module-margin-left = 1
 module-margin-right = 2
 
-font-0 = Cantarell:size=12
+font-0 = M+ 2p:size=10
 ;font-1 = Knack Nerd Font:size=20
-font-1 = FontAwesome:size=12;-4
+font-1 = FontAwesome:size=11;-3
 
 modules-left = i3 xwindow
 modules-center = mpd

@@ -1,0 +1,8 @@
+def_key "ctrl_p"
+  scroll_up
+def_key "ctrl_n"
+  scroll_down
+def_key "ctrl_s"
+  find
+def_key "ctrl_s"
+  find_item_forward

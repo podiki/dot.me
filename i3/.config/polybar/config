@@ -1,15 +1,22 @@
 [colors]
-background = #222
-background-alt = #444
-foreground = #dfdfdf
-foreground-alt = #55
-primary = #ffb52a
-secondary = #e60053
-alert = #bd2c40
+background = ${xrdb:color18}
+background-alt = ${xrdb:color8}
+foreground = ${xrdb:color21}
+foreground-alt = ${xrdb:color15}
+primary = ${xrdb:color12}
+secondary = ${xrdb:color13}
+alert = ${xrdb:color9}
 
 [global/wm]
-margin-top = 5
-margin-bottom = 5
+;margin-top = 5
+;margin-bottom = 5
+
+[settings]
+screenchange-reload = true
+;compositing-background = xor
+;compositing-background = screen
+;compositing-foreground = source
+;compositing-border = over
 
 [bar/bar1]
 ;monitor = ${env:MONITOR:HDMI-1}
@@ -17,30 +24,26 @@ width = 3775
 height = 40
 offset-x = 27.5
 offset-y = 0
+radius = 6.0
+fixed-center = false
 
-;background = ${xrdb:color9}
-;background = ${colors.background}
-;foreground = ${colors.foreground}
+background = ${colors.background}
+foreground = ${colors.foreground}
 
-background = ${xrdb:color18}
-foreground = ${xrdb:color21}
+line-size = 3
+line-color = #f00
 
-overline-size = 2
-overline-color = #f00
-underline-size = 2
-underline-color = #00f
-
-border-bottom-size = 2
-border-bottom-color = #333
+border-size = 5
+border-color = #00000000
 
 padding-left = 0
 padding-right = 2
 module-margin-left = 1
 module-margin-right = 2
 
-font-0 = M+ 2p:size=10
+font-0 = M+ 2p:size=20
 ;font-1 = Knack Nerd Font:size=20
-font-1 = FontAwesome:size=11;-3
+font-1 = FontAwesome:size=18;2
 
 modules-left = i3 xwindow
 modules-center = mpd
@@ -141,9 +144,10 @@ ws-icon-default = ♟
 [module/mpd]
 type = internal/mpd
 
-format-online = <label-song>  <icon-prev> <icon-seekb> <icon-stop> <toggle> <icon-seekf> <icon-next>  <icon-repeat> <icon-random>
+format-online = <label-song>  <icon-prev> <icon-stop> <toggle> <icon-next>
+;<label-song>  <icon-prev> <icon-seekb> <icon-stop> <toggle> <icon-seekf> <icon-next>  <icon-repeat> <icon-random>
 
-label-song-maxlen = 25
+label-song-maxlen = 55
 label-song-ellipsis = true
 
 icon-prev = 
@@ -157,9 +161,6 @@ icon-seekf = 
 icon-random = 
 icon-repeat = 
 
-toggle-on-foreground = ${colors.primary}
-toggle-off-foreground = #66
-
 [module/xbacklight]
 type = internal/xbacklight
 
@@ -167,7 +168,7 @@ format = <label> <bar>
 label = BL
 
 bar-width = 10
-bar-indicator = │
+bar-indicator = |
 bar-indicator-foreground = #ff
 bar-indicator-font = 2
 bar-fill = ─
@@ -225,8 +226,8 @@ interface = net0
 interval = 3.0
 
 format-connected-underline = #55aa55
-format-connected-prefix = " "
-format-connected-foreground-foreground = ${colors.foreground-alt}
+format-connected-prefix = "connected-icon "
+format-connected-prefix-foreground = ${colors.foreground-alt}
 label-connected = %local_ip%
 
 format-disconnected-underline = ${self.format-connected-underline}
@@ -243,7 +244,7 @@ date-alt = " %Y-%m-%d"
 time = "%a %b %-d %-I:%M"
 time-alt = %H:%M:%S
 
-format-prefix = 
+format-prefix = 
 format-prefix-foreground = ${colors.foreground-alt}
 format-underline = #0a6cf5
 
@@ -269,7 +270,7 @@ bar-volume-foreground-4 = #55aa55
 bar-volume-foreground-5 = #f5a70a
 bar-volume-foreground-6 = #ff5555
 bar-volume-gradient = false
-bar-volume-indicator = │
+bar-volume-indicator = |
 bar-volume-indicator-font = 2
 bar-volume-indicator-foreground = #ff
 bar-volume-fill = ─
@@ -296,12 +297,16 @@ format-full-underline = ${self.format-charging-underline}
 
 ramp-capacity-0 = 
 ramp-capacity-1 = 
-ramp-capacity-2 = 
+ramp-capacity-2 = 
+ramp-capacity-3 = 
+ramp-capacity-4 = 
 ramp-capacity-foreground = ${colors.foreground-alt}
 
 animation-charging-0 = 
 animation-charging-1 = 
-animation-charging-2 = 
+animation-charging-2 = 
+animation-charging-3 = 
+animation-charging-4 = 
 animation-charging-foreground = ${colors.foreground-alt}
 animation-charging-framerate = 750
 
@@ -320,8 +325,10 @@ label-warn = %temperature%
 label-warn-foreground = ${colors.secondary}
 
 ramp-0 = 
-ramp-1 = 
-ramp-2 = 
+ramp-1 = 
+ramp-2 = 
+ramp-3 = 
+ramp-4 = 
 ramp-foreground = ${colors.foreground-alt}
 
 [module/powermenu]
@@ -331,7 +338,7 @@ format-spacing = 1
 
 label-open =  power
 label-open-foreground = ${colors.secondary}
-label-close =  cancel
+label-close =  cancel
 label-close-foreground = ${colors.secondary}
 label-separator = |
 label-separator-foreground = ${colors.foreground-alt}

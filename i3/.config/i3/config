@@ -26,7 +26,7 @@ set $workspace4 "4: "
 set $workspace5 "5: "
 set $workspace6 "6: "
 set $workspace7 "7: "
-set $workspace8 "8"
+set $workspace8 "8: "
 set $workspace9 "9"
 set $workspace10 "10"
 
@@ -150,8 +150,8 @@ bindsym $mod+minus scratchpad show
 bindsym $mod+q exec ~/lock.sh
 
 # Pulse Audio controls
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +2.5% #increase sound volume
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -2.5% #decrease sound volume
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
 
 # mpc media keys
@@ -174,7 +174,7 @@ exec --no-startup-id xscreensaver -no-splash
 exec --no-startup-id xss-lock -- ~/lock.sh #i3lock -n
 exec --no-startup-id blueshift-tray -c ~/blueshift.conf
 exec --no-startup-id volumeicon
-exec_always --no-startup-id feh --bg-center ~/Downloads/Wallpapers/04008_dockofbrokendreams_3840x2160.jpg
+exec_always --no-startup-id feh --bg-center /home/john/Downloads/Wallpapers/Jealousy\ \(Final\).png
 
 # compositing with compton
 exec --no-startup-id compton -b

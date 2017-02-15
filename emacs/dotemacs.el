@@ -186,9 +186,15 @@ point reaches the beginning or end of the buffer, stop there."
   (load-theme 'solarized))
 
 (use-package molokai-theme
+  :defer t
   :config
   (setq frame-background-mode 'dark)
   (load-theme 'molokai))
+
+(use-package monokai-theme
+  :config
+  (setq frame-background-mode 'dark)
+  (load-theme 'monokai))
 
 (defadvice load-theme 
   (before theme-dont-propagate activate)
@@ -201,7 +207,7 @@ point reaches the beginning or end of the buffer, stop there."
   (interactive)
   (if (eq frame-background-mode 'light)
       (progn (setq frame-background-mode 'dark)
-             (load-theme 'molokai))
+             (load-theme 'monokai))
       (progn (setq frame-background-mode 'light)
              (load-theme 'solarized)))
   ;; reload highlight-sexp-mode to update highlight color
@@ -738,7 +744,7 @@ point reaches the beginning or end of the buffer, stop there."
   (smartparens-global-mode 1)
   (show-smartparens-global-mode 1)
   ;; for some (e.g. molokai) themes this is the wrong color
-  (setq sp-highlight-pair-overlay nil)
+  ;(setq sp-highlight-pair-overlay nil)
   ;; paredit-like setup for lisp
   (add-hook 'lisp-mode-hook 'turn-on-smartparens-strict-mode)
   (add-hook 'emacs-lisp-mode-hook 'turn-on-smartparens-strict-mode)
@@ -748,17 +754,17 @@ point reaches the beginning or end of the buffer, stop there."
   (sp-local-pair 'lisp-mode "(" ")" :wrap "M-(")
   (sp-local-pair 'lisp-mode "\"" "\"" :wrap "M-\""))
 
-;;; Use Common Lisp indenting
-(add-hook 'lisp-mode-hook
-          (lambda ()
-            (set (make-local-variable 'lisp-indent-function)
-                 'common-lisp-indent-function)))
 ;;; From quicklisp, but prefer current slime in melpa
 ;; (load (expand-file-name "~/quicklisp/slime-helper.el"))
 (use-package slime
-  :config
+  :init
   (setq inferior-lisp-program "sbcl")
-  (setq slime-contribs '(slime-fancy)))
+  (setq slime-contribs '(slime-fancy slime-indentation slime-banner))
+  ;; Use Common Lisp indenting
+  (setq lisp-indent-function 'common-lisp-indent-function)
+  (add-hook 'lisp-mode-hook (lambda () (slime-mode t)))
+  (add-hook 'inferior-lisp-mode-hook (lambda () (inferior-slime-mode t))))
+
 ;; ac-slime
 ;; now using company-mode instead
 ;; (add-hook 'slime-mode-hook 'set-up-slime-ac)
@@ -768,7 +774,7 @@ point reaches the beginning or end of the buffer, stop there."
 
 (use-package slime-company
   :config
-  (slime-setup '(slime-company)))
+  (add-to-list 'slime-contribs 'slime-company))
 
 ;; highlight-sexp
 (use-package highlight-sexp
@@ -816,17 +822,15 @@ point reaches the beginning or end of the buffer, stop there."
 (use-package fountain-mode
   :mode "\\.fountain\\'")
 
-;;
-;; markdown
-;;
 (use-package markdown-mode
-  :init
-  (autoload 'markdown-mode "markdown-mode"
-    "Major mode for editing Markdown files" 1)
-  :mode (("\\.text\\'"     . markdown-mode)
-         ("\\.markdown\\'" . markdown-mode)
+  :demand markdown-edit-indirect
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
          ("\\.md\\'"       . markdown-mode)
-         ("README\\.md\\'" . gfm-mode)))
+         ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "multimarkdown")
+  :bind (:markdown-mode-map
+         ("C-c '" . markdown-edit-indirect)))
 
 (use-package olivetti)
 

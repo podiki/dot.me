@@ -30,6 +30,7 @@ zstyle ':completion:*:killall:*' command 'ps -u $USER -o cmd'
 alias ls='ls --color=auto'
 alias ll='ls -lah --color=auto'
 eval "$(thefuck --alias)"
+alias gp='grep --color -rniC 1'
 # Completion for aliases too
 setopt COMPLETE_ALIASES
 

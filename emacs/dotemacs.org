@@ -79,6 +79,15 @@
       (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
   (ad-activate 'ansi-term)
 #+END_SRC
+** Visual line mode
+Use visual line mode in all text buffers
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
+#+END_SRC
+And have some indicators in fringe
+#+BEGIN_SRC emacs-lisp
+  (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+#+END_SRC
 ** Movement customization
 *** transient-mark-mode related (commands from [[https://masteringemacs.org/article/fixing-mark-commands-transient-mark-mode][MasteringEmacs]])
 #+BEGIN_SRC emacs-lisp
@@ -865,7 +874,7 @@ Set up to behave like paredit in lisp modes
     (sp-local-pair 'lisp-mode "\"" "\"" :wrap "M-\""))
 #+END_SRC
 ** Lisp and SLIME
-Slime and other lisp stuff
+*** Slime and other lisp stuff
 #+BEGIN_SRC emacs-lisp
   ;;; From quicklisp, but prefer current slime in melpa
   ;; (load (expand-file-name "~/quicklisp/slime-helper.el"))
@@ -914,7 +923,17 @@ Set highlight background color to be slightly darker than the background color (
   ;; for leuven theme, default purple is unreadable
   ;;(setq hl-sexp-background-color "#EAF2F5")
 #+END_SRC
-
+*** Local lookup in info draft ANSI Common Lisp standard
+(via http://users-phys.au.dk/harder/dpans.html)
+#+BEGIN_SRC emacs-lisp
+  (use-package info-look
+    :config
+    (info-lookup-add-help
+      :mode 'lisp-mode
+      :regexp "[^][()'\" \t\n]+"
+      :ignore-case t
+      :doc-spec '(("(ansicl)Symbol Index" nil nil nil))))
+#+END_SRC
 ** Python
 Commented out for now as I haven't used python in a while, will need to be updated in the future
 #+BEGIN_SRC emacs-lisp

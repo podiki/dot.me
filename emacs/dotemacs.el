@@ -67,6 +67,10 @@
     (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
 (ad-activate 'ansi-term)
 
+(add-hook 'text-mode-hook 'turn-on-visual-line-mode)
+
+(setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+
 (defun push-mark-no-activate ()
   "Pushes `point' to `mark-ring' and does not activate the region
 Equivalent to \\[set-mark-command] when \\[transient-mark-mode] is disabled"
@@ -797,6 +801,14 @@ point reaches the beginning or end of the buffer, stop there."
   (add-hook 'emacs-lisp-mode-hook 'highlight-sexp-mode))
 ;; for leuven theme, default purple is unreadable
 ;;(setq hl-sexp-background-color "#EAF2F5")
+
+(use-package info-look
+  :config
+  (info-lookup-add-help
+    :mode 'lisp-mode
+    :regexp "[^][()'\" \t\n]+"
+    :ignore-case t
+    :doc-spec '(("(ansicl)Symbol Index" nil nil nil))))
 
 ;; use python-mode.el
 ;; err...doesn't seem to work, loads python.el (Python vs py mode), fix later

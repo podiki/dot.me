@@ -213,7 +213,7 @@ point reaches the beginning or end of the buffer, stop there."
       (progn (setq frame-background-mode 'dark)
              (load-theme 'monokai))
       (progn (setq frame-background-mode 'light)
-             (load-theme 'solarized)))
+             (load-theme 'spacemacs-light)))
   ;; reload highlight-sexp-mode to update highlight color
   ;; but seems to leave some parts highlighted incorrectly
   (if (bound-and-true-p highlight-sexp-mode)

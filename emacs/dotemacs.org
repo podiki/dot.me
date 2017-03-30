@@ -249,6 +249,12 @@ for package listing and browsing
     :config
     (setq frame-background-mode 'dark)
     (load-theme 'monokai))
+
+  (use-package spacemacs-theme
+    :defer t
+    :config
+    (setq frame-background-mode 'light)
+    (load-theme 'spacemacs-light-theme))
 #+END_SRC
 *** Theme switching
 Disable previous custom-theme before loading a new one (via [[https://emacs.stackexchange.com/questions/3112/how-to-reset-color-theme][this StackExchange answer]] and referencing [[http://stackoverflow.com/a/15595000/729907][this answer]]). Also use powerline-reset so that powerline/spaceline is also reset

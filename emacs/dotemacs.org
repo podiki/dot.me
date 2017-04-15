@@ -41,8 +41,8 @@
 ** Initial size, appearance, etc.
 #+BEGIN_SRC emacs-lisp
   ;; initial size
-  (setq default-frame-alist '((width . 90)
-                              (height . 55)))
+  (setq default-frame-alist '((width . 100)
+                              (height . 50)))
 
   ;; no system bell or toolbar, scrollbar, delete goes to trash
   (setq visible-bell 1)
@@ -246,6 +246,7 @@ for package listing and browsing
     (load-theme 'molokai))
 
   (use-package monokai-theme
+    :defer t
     :config
     (setq frame-background-mode 'dark)
     (load-theme 'monokai))
@@ -254,7 +255,9 @@ for package listing and browsing
     :defer t
     :config
     (setq frame-background-mode 'light)
-    (load-theme 'spacemacs-light-theme))
+    (load-theme 'spacemacs-light))
+
+(load-theme 'spacemacs-light)
 #+END_SRC
 *** Theme switching
 Disable previous custom-theme before loading a new one (via [[https://emacs.stackexchange.com/questions/3112/how-to-reset-color-theme][this StackExchange answer]] and referencing [[http://stackoverflow.com/a/15595000/729907][this answer]]). Also use powerline-reset so that powerline/spaceline is also reset
@@ -335,6 +338,13 @@ And a function for switching between two (day/night) themes, modified from this 
     :config
     (spaceline-spacemacs-theme)
     (setq powerline-default-separator 'wave))
+
+  (use-package spaceline-all-the-icons 
+    :after spaceline
+    :config (spaceline-all-the-icons-theme)
+    (spaceline-all-the-icons--setup-package-updates)
+    (spaceline-all-the-icons--setup-paradox)
+    (spaceline-all-the-icons--setup-neotree))
 #+END_SRC
 
 ** IDO/smex

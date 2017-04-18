@@ -29,8 +29,8 @@
   (defvar dropbox "/home/john/Dropbox/"))
 
 ;; initial size
-(setq default-frame-alist '((width . 90)
-                            (height . 55)))
+(setq default-frame-alist '((width . 100)
+                            (height . 50)))
 
 ;; no system bell or toolbar, scrollbar, delete goes to trash
 (setq visible-bell 1)
@@ -186,19 +186,25 @@ point reaches the beginning or end of the buffer, stop there."
   :defer t
   :config
   ;; for light version (default is dark)
-  (setq frame-background-mode 'light)
-  (load-theme 'solarized))
+  (setq frame-background-mode 'light))
 
 (use-package molokai-theme
   :defer t
   :config
-  (setq frame-background-mode 'dark)
-  (load-theme 'molokai))
+  (setq frame-background-mode 'dark))
 
 (use-package monokai-theme
+  :defer t
   :config
-  (setq frame-background-mode 'dark)
-  (load-theme 'monokai))
+  (setq frame-background-mode 'dark))
+
+(use-package spacemacs-theme
+  :defer t
+  :config
+  (setq frame-background-mode 'light))
+
+(setq frame-background-mode 'light)
+(load-theme 'spacemacs-light t)
 
 (defadvice load-theme 
   (before theme-dont-propagate activate)
@@ -211,9 +217,9 @@ point reaches the beginning or end of the buffer, stop there."
   (interactive)
   (if (eq frame-background-mode 'light)
       (progn (setq frame-background-mode 'dark)
-             (load-theme 'monokai))
+             (load-theme 'spacemacs-dark t))
       (progn (setq frame-background-mode 'light)
-             (load-theme 'spacemacs-light)))
+             (load-theme 'spacemacs-light t)))
   ;; reload highlight-sexp-mode to update highlight color
   ;; but seems to leave some parts highlighted incorrectly
   (if (bound-and-true-p highlight-sexp-mode)
@@ -268,6 +274,13 @@ point reaches the beginning or end of the buffer, stop there."
   :config
   (spaceline-spacemacs-theme)
   (setq powerline-default-separator 'wave))
+
+(use-package spaceline-all-the-icons 
+  :after spaceline
+  :config (spaceline-all-the-icons-theme)
+  (spaceline-all-the-icons--setup-package-updates)
+  (spaceline-all-the-icons--setup-paradox)
+  (spaceline-all-the-icons--setup-neotree))
 
 ;; IDO mode
 (use-package ido

@@ -69,7 +69,7 @@
 
 (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
 
-(setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+;  (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 
 (defun push-mark-no-activate ()
   "Pushes `point' to `mark-ring' and does not activate the region

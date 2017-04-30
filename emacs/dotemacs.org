@@ -86,7 +86,7 @@ Use visual line mode in all text buffers
 #+END_SRC
 And have some indicators in fringe
 #+BEGIN_SRC emacs-lisp
-  (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+;  (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 #+END_SRC
 ** Movement customization
 *** transient-mark-mode related (commands from [[https://masteringemacs.org/article/fixing-mark-commands-transient-mark-mode][MasteringEmacs]])

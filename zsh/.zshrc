@@ -41,6 +41,9 @@ REPORTTIME=10
 DEFAULT_USER=$USER
 TERM='xterm-256color'
 
+# PATH
+PATH="$(ruby -e 'print Gem.user_dir')/bin:$PATH"
+
 # powerlevel9k
 POWERLEVEL9K_MODE='awesome-fontconfig'
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(root_indicator context dir vcs)

@@ -24,6 +24,7 @@ if [ -f "$usermodmap" ]; then
 fi
 
 # some relevant environment variables
+export TERMINAL="termite"
 export QT_QPA_PLATFORMTHEME="qt5ct"
 
 # DPI settings

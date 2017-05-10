@@ -80,8 +80,8 @@ for_window [window_type="menu"] floating enable
 #
 # Gaps
 #
-gaps inner 20
-gaps outer 35
+gaps inner 15
+gaps outer 0
 
 # Gap editting mode
 set $mode_gaps Gaps: (o) outer, (i) inner
@@ -181,7 +181,7 @@ exec --no-startup-id xscreensaver -no-splash
 exec --no-startup-id xss-lock -- ~/lock.sh #i3lock -n
 exec --no-startup-id blueshift-tray -c ~/blueshift.conf
 exec --no-startup-id volumeicon
-exec_always --no-startup-id feh --bg-center /home/john/Downloads/Wallpapers/Jealousy\ \(Final\).png
+exec_always --no-startup-id feh --bg-center /home/john/Downloads/Wallpapers/Skyscraper.png
 
 # compositing with compton
 exec --no-startup-id compton -b

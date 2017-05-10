@@ -170,10 +170,8 @@ point reaches the beginning or end of the buffer, stop there."
 (use-package paradox)
 
 (use-package exec-path-from-shell
-  :if (memq window-system '(mac ns))
   :config
-  (exec-path-from-shell-initialize)
-  (exec-path-from-shell-copy-env "JAVA_HOME"))
+  (exec-path-from-shell-initialize))
 
 ;; temporarily revert to older emacs colorspace for powerline fix
 ;; and solarized (although can probably use new solarized-broken-srgb instead)

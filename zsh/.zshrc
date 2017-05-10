@@ -39,7 +39,7 @@ setopt interactivecomments # pound sign in interactive prompt
 REPORTTIME=10
 
 DEFAULT_USER=$USER
-TERM='xterm-256color'
+#TERM='xterm-256color'
 
 # PATH
 PATH="$(ruby -e 'print Gem.user_dir')/bin:$PATH"
@@ -58,6 +58,7 @@ POWERLEVEL9K_OK_ICON='✓'
 source /usr/share/zsh/scripts/zplug/init.zsh
 
 zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
+zplug "zuxfoucault/colored-man-pages_mod"
 #zplug "marzocchi/zsh-notify"
 
 # Install plugins if there are plugins that have not been installed

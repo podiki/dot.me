@@ -1,106 +1,43 @@
-! jealous.jpg
-! http://www.coolphptools.com/color_extract
+! Colors
+! monokai via terminal.sexy
+! special
+*.foreground:   #f1ebeb
+*.background:   #272822
+*.cursorColor:  #f1ebeb
 
-#define base00 #4b517a
-#define base01 #5a6ca2
-#define base02 #7e7ea2
-#define base03 #9090b4
-#define base04 #b4b4ea
-#define base05 #90a2c6
-#define base06 #a290a2
-#define base07 #b4a2d8
-#define base08 #90c6fc
-#define base09 #a290c6
-#define base0A #eaa2b4
-#define base0B #d8a2fc
-#define base0C #fc9090
-#define base0D #eaa2d8
-#define base0E #d8a2c6
-#define base0F #fca2a2
+! black
+*.color0:       #48483e
+*.color8:       #76715e
 
-*.foreground:   base0A
-*.background:   base00
-*.cursorColor:  base05
+! red
+*.color1:       #dc2566
+*.color9:       #fa2772
 
-*.color0:       base00
-*.color1:       base08
-*.color2:       base0B
-*.color3:       base0A
-*.color4:       base0D
-*.color5:       base0E
-*.color6:       base0C
-*.color7:       base05
+! green
+*.color2:       #8fc029
+*.color10:      #a7e22e
 
-*.color8:       base03
-*.color9:       base08
-*.color10:      base0B
-*.color11:      base0A
-*.color12:      base0D
-*.color13:      base0E
-*.color14:      base0C
-*.color15:      base07
+! yellow
+*.color3:       #d4c96e
+*.color11:      #e7db75
 
-! Note: colors beyond 15 might not be loaded (e.g., xterm, urxvt),
-! use 'shell' template to set these if necessary
-*.color16:      base09
-*.color17:      base0F
-*.color18:      base01
-*.color19:      base02
-*.color20:      base04
-*.color21:      base06
+! blue
+*.color4:       #55bcce
+*.color12:      #66d9ee
 
+! magenta
+*.color5:       #9358fe
+*.color13:      #ae82ff
 
-! Base16 Monokai
-! Scheme: Wimer Hazenberg (http://www.monokai.nl)
+! cyan
+*.color6:       #56b7a5
+*.color14:      #66efd5
 
-! #define base00 #272822
-! #define base01 #383830
-! #define base02 #49483e
-! #define base03 #75715e
-! #define base04 #a59f85
-! #define base05 #f8f8f2
-! #define base06 #f5f4f1
-! #define base07 #f9f8f5
-! #define base08 #f92672
-! #define base09 #fd971f
-! #define base0A #f4bf75
-! #define base0B #a6e22e
-! #define base0C #a1efe4
-! #define base0D #66d9ef
-! #define base0E #ae81ff
-! #define base0F #cc6633
+! white
+*.color7:       #acada1
+*.color15:      #cfd0c2
 
-! *.foreground:   base05
-! *.background:   base00
-! *.cursorColor:  base05
-
-! *.color0:       base00
-! *.color1:       base08
-! *.color2:       base0B
-! *.color3:       base0A
-! *.color4:       base0D
-! *.color5:       base0E
-! *.color6:       base0C
-! *.color7:       base05
-
-! *.color8:       base03
-! *.color9:       base08
-! *.color10:      base0B
-! *.color11:      base0A
-! *.color12:      base0D
-! *.color13:      base0E
-! *.color14:      base0C
-! *.color15:      base07
-
-! ! Note: colors beyond 15 might not be loaded (e.g., xterm, urxvt),
-! ! use 'shell' template to set these if necessary
-! *.color16:      base09
-! *.color17:      base0F
-! *.color18:      base01
-! *.color19:      base02
-! *.color20:      base04
-! *.color21:      base06
-
+! Cursor
 Xcursor.theme: Breeze Snow
 Xcursor.size: 48
 

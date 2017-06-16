@@ -47,7 +47,7 @@ font-1 = FontAwesome:size=18;2
 
 modules-left = i3 xwindow
 modules-center = mpd
-modules-right = volume memory cpu wlan battery temperature date
+modules-right = memory cpu wlan battery temperature date
 
 tray-position = right
 tray-padding = 2

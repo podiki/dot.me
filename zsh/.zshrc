@@ -27,8 +27,8 @@ zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 zstyle ':completion:*:killall:*' command 'ps -u $USER -o cmd'
 
 # Aliases
-alias ls='ls --color=auto'
-alias ll='ls -lah --color=auto'
+alias ls='ls --color=auto -F'
+alias ll='ls -lahF --color=auto'
 eval "$(thefuck --alias)"
 alias gp='grep --color -rniC 1'
 # Completion for aliases too

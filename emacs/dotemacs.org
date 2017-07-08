@@ -946,6 +946,15 @@ Set highlight background color to be slightly darker than the background color (
       :doc-spec '(("(ansicl)Symbol Index" nil nil nil))))
 #+END_SRC
 ** Python
+*** Jupyter/IPython notebook
+#+BEGIN_SRC emacs-lisp
+  (use-package ein
+    :config
+    (setq ein:jupyter-default-server-command "/usr/bin/jupyter"
+          ein:jupyter-default-notebook-directory "~/")
+    (add-hook 'ein:connect-mode-hook 'ein:jedi-setup))
+#+END_SRC
+*** Old
 Commented out for now as I haven't used python in a while, will need to be updated in the future
 #+BEGIN_SRC emacs-lisp
   ;; use python-mode.el

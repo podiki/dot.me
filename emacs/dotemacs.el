@@ -821,6 +821,12 @@ point reaches the beginning or end of the buffer, stop there."
     :ignore-case t
     :doc-spec '(("(ansicl)Symbol Index" nil nil nil))))
 
+(use-package ein
+  :config
+  (setq ein:jupyter-default-server-command "/usr/bin/jupyter"
+        ein:jupyter-default-notebook-directory "~/")
+  (add-hook 'ein:connect-mode-hook 'ein:jedi-setup))
+
 ;; use python-mode.el
 ;; err...doesn't seem to work, loads python.el (Python vs py mode), fix later
 ;; (setq py-install-directory "~/.emacs.d/.cask/24.5.1/elpa/python-mode-20150512.353/")

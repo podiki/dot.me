@@ -821,11 +821,26 @@ point reaches the beginning or end of the buffer, stop there."
     :ignore-case t
     :doc-spec '(("(ansicl)Symbol Index" nil nil nil))))
 
+(use-package company-jedi
+  :config
+  (add-hook 'python-mode-hook 'jedi:setup)
+  (setq jedi:complete-on-dot t)
+  (add-hook 'python-mode-hook
+            (lambda () (add-to-list 'company-backends 'company-jedi))))
+
 (use-package ein
   :config
+  (require 'ein-dev)
+  (add-hook 'ein:connect-mode-hook 'ein:jedi-setup)
+  ;; Doesn't seem like jedi is loaded without running jedi:setup,
+  ;; so as a hack add it to notebook-mode, but only after the list is opened
+  ;; or else there is an error.
+  ;; See issue #204 in emacs-ipython-notebook
+  (add-hook 'ein:notebooklist-first-open-hook
+            (lambda () (add-hook 'ein:notebook-mode-hook 'jedi:setup)))
   (setq ein:jupyter-default-server-command "/usr/bin/jupyter"
         ein:jupyter-default-notebook-directory "~/")
-  (add-hook 'ein:connect-mode-hook 'ein:jedi-setup))
+  (add-to-list 'company-backends 'ein:company-backend))
 
 ;; use python-mode.el
 ;; err...doesn't seem to work, loads python.el (Python vs py mode), fix later

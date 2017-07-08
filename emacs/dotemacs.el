@@ -295,7 +295,7 @@ point reaches the beginning or end of the buffer, stop there."
                (file-writable-p buffer-file-name))
     (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name)))))
 ;; Use ido everywhere
-(use-package ido-ubiquitous
+(use-package ido-completing-read+
   :ensure t
   :config
   (ido-ubiquitous-mode 1))

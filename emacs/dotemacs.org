@@ -360,7 +360,7 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
                  (file-writable-p buffer-file-name))
       (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name)))))
   ;; Use ido everywhere
-  (use-package ido-ubiquitous
+  (use-package ido-completing-read+
     :ensure t
     :config
     (ido-ubiquitous-mode 1))

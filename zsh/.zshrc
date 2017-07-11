@@ -58,7 +58,7 @@ POWERLEVEL9K_OK_ICON='✓'
 source /usr/share/zsh/scripts/zplug/init.zsh
 
 zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
-zplug "zuxfoucault/colored-man-pages_mod"
+zplug "zuxfoucault/colored-man-pages_mod", use:"*.zsh"
 #zplug "marzocchi/zsh-notify"
 
 # Install plugins if there are plugins that have not been installed

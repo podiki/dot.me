@@ -329,10 +329,10 @@ point reaches the beginning or end of the buffer, stop there."
          ("C-c C-c M-x" . execute-extended-command)))
 
 ;; discover
-(use-package discover
-  :ensure nil
-  :config
-  (global-discover-mode 1))
+;; (use-package discover
+;;   :ensure nil
+;;   :config
+;;   (global-discover-mode 1))
 
 ;; expand region intelligently
 (global-set-key (kbd "C-=") 'er/expand-region)
@@ -688,7 +688,7 @@ point reaches the beginning or end of the buffer, stop there."
                             :user)))))
 
 (use-package magit
-  :pin melpa-stable
+  ;; :pin melpa-stable
   :config
   (setq magit-last-seen-setup-instructions "1.4.0")
   :bind (("\C-xg" . magit-status)))
@@ -868,12 +868,11 @@ point reaches the beginning or end of the buffer, stop there."
 
 (use-package markdown-mode
   :demand markdown-edit-indirect
-  :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.md\\'"       . markdown-mode)
          ("\\.markdown\\'" . markdown-mode))
   :init (setq markdown-command "multimarkdown")
-  :bind (:markdown-mode-map
+  :bind (:map markdown-mode-map
          ("C-c '" . markdown-edit-indirect)))
 
 (use-package olivetti)

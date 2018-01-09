@@ -946,6 +946,9 @@ Set highlight background color to be slightly darker than the background color (
       :doc-spec '(("(ansicl)Symbol Index" nil nil nil))))
 #+END_SRC
 ** Python
+#+BEGIN_SRC emacs-lisp
+  (use-package cython-mode)
+#+END_SRC
 *** Jedi
 Using company for completions. Be sure to do `M-x jedi:install-server` whenever jedi is updated (and on initial install). Requires virtualenv (python-virtualenv on Arch).
 #+BEGIN_SRC emacs-lisp
@@ -961,16 +964,9 @@ Using company for completions. Be sure to do `M-x jedi:install-server` whenever 
   (use-package ein
     :config
     (require 'ein-dev)
-    (add-hook 'ein:connect-mode-hook 'ein:jedi-setup)
-    ;; Doesn't seem like jedi is loaded without running jedi:setup,
-    ;; so as a hack add it to notebook-mode, but only after the list is opened
-    ;; or else there is an error.
-    ;; See issue #204 in emacs-ipython-notebook
-    (add-hook 'ein:notebooklist-first-open-hook
-              (lambda () (add-hook 'ein:notebook-mode-hook 'jedi:setup)))
     (setq ein:jupyter-default-server-command "/usr/bin/jupyter"
-          ein:jupyter-default-notebook-directory "~/")
-    (add-to-list 'company-backends 'ein:company-backend))
+          ein:jupyter-default-notebook-directory "~/"
+          ein:completion-backend 'ein:use-company-jedi-backend))
 #+END_SRC
 *** Old
 Commented out for now as I haven't used python in a while, will need to be updated in the future

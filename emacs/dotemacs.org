@@ -753,7 +753,7 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
 
   ;; fancy utf-8 bullets
   (use-package org-bullets
-    :ensure nil ; included in org-plus-contrib
+    :ensure t ; no longer included in org-plus-contrib
     :config
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 

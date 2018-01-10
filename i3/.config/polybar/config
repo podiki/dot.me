@@ -252,7 +252,7 @@ interval = 5
 date =
 date-alt = " %Y-%m-%d"
 
-time = "%a %b %-d %-I:%M"
+time = "%a %b %e %I:%M"
 time-alt = %H:%M:%S
 
 format-prefix = 

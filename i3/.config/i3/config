@@ -181,7 +181,7 @@ exec --no-startup-id xscreensaver -no-splash
 exec --no-startup-id xss-lock -- ~/lock.sh #i3lock -n
 exec --no-startup-id blueshift-tray -c ~/blueshift.conf
 exec --no-startup-id volumeicon
-exec_always --no-startup-id feh --bg-center /home/john/Downloads/Wallpapers/Skyscraper.png
+exec_always --no-startup-id feh --bg-center "/home/john/wallpaper.jpg"
 
 # compositing with compton
 exec --no-startup-id compton -b

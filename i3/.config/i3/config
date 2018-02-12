@@ -153,6 +153,16 @@ bindsym $mod+Shift+minus move scratchpad
 # Show the first scratchpad window
 bindsym $mod+minus scratchpad show
 
+# Marks
+# (via https://www.reddit.com/r/i3wm/comments/2hqd7w/marks_scratchpad_awesome/)
+bindsym $mod+Shift+m mark "messaging1", move scratchpad
+bindsym $mod+m [con_mark="messaging1"] scratchpad show
+bindsym $mod+Shift+n mark "messaging2", move scratchpad
+bindsym $mod+n [con_mark="messaging2"] scratchpad show
+bindsym $mod+Shift+t mark "terminal", move scratchpad
+bindsym $mod+t [con_mark="terminal"] scratchpad show
+
+
 # i3lock-blur
 bindsym $mod+q exec ~/lock.sh
 

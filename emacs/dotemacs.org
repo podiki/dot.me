@@ -684,7 +684,7 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
     ;; org-babel languages
     (org-babel-do-load-languages
       'org-babel-load-languages
-      '((sh . t)
+      '((shell . t)
         (python . t)
         (gnuplot . t)
         (lisp . t)

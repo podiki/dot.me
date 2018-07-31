@@ -1,10 +1,9 @@
-# Lines configured by zsh-newuser-install
 HISTFILE=~/.histfile
 HISTSIZE=10000
 SAVEHIST=10000
-setopt appendhistory autocd
+setopt hist_ignore_dups append_history extended_history autocd
 bindkey -e
-# End of lines configured by zsh-newuser-install
+
 # The following lines were added by compinstall
 zstyle :compinstall filename '/home/john/.zshrc'
 
@@ -18,6 +17,9 @@ setopt extendedhistory
 # superglobs
 setopt extendedglob
 unsetopt caseglob
+
+# correct commands
+setopt correct
 
 # Tab completion from both ends
 setopt completeinword
@@ -34,17 +36,14 @@ alias gp='grep --color -rniC 1'
 # Completion for aliases too
 setopt COMPLETE_ALIASES
 
+#
+# Prompt stuff
+#
 setopt interactivecomments # pound sign in interactive prompt
 # Report CPU stats for long (> 10s) commands
 REPORTTIME=10
 
-DEFAULT_USER=$USER
-#TERM='xterm-256color'
-
-# PATH
-PATH="$(ruby -e 'print Gem.user_dir')/bin:$PATH"
-
-# powerlevel9k
+# powerlevel9k prompt
 POWERLEVEL9K_MODE='awesome-fontconfig'
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(root_indicator context dir vcs)
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status)

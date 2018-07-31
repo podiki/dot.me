@@ -215,9 +215,9 @@ for package listing and browsing
 ** Paths
    When running emacs.app in Mac OS X, copy the path from terminal (this avoids problems with finding aspell, latex, etc.)
 #+BEGIN_SRC emacs-lisp
-  (use-package exec-path-from-shell
-    :config
-    (exec-path-from-shell-initialize))
+  ;; (use-package exec-path-from-shell
+  ;;   :config
+  ;;   (exec-path-from-shell-initialize))
 #+END_SRC
 
 ** Themes and fonts

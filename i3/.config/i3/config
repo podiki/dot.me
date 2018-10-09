@@ -188,8 +188,8 @@ exec dex -ae i3
 exec --no-startup-id udiskie --tray
 exec --no-startup-id xscreensaver -no-splash
 exec --no-startup-id xss-lock -- ~/lock.sh #i3lock -n
-# exec --no-startup-id blueshift-tray -c ~/blueshift.conf
-exec --no-startup-id redshift-gtk
+exec --no-startup-id blueshift-tray -c ~/blueshift.conf
+# exec --no-startup-id redshift-gtk
 exec --no-startup-id volumeicon
 exec_always --no-startup-id feh --bg-center "/home/john/wallpaper.jpg"
 

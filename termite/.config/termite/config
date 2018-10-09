@@ -38,5 +38,5 @@ color7  = #acada1
 color15 = #cfd0c2
 
 [options]
-font = Knack Nerd Font 10
+font = Hack Nerd Font Mono 10
 scrollback_lines = 10000

@@ -89,4 +89,4 @@ rofi.separator-style:                solid
 
 rofi.width:                          25
 rofi.opacity:                        75
-rofi.font:                           Knack Nerd Font 24
+rofi.font:                           Hack Nerd Font Mono 24

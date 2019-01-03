@@ -36,6 +36,9 @@ alias gp='grep --color -rniC 1'
 # Completion for aliases too
 setopt COMPLETE_ALIASES
 
+# Colors from wpgtk
+(cat ~/.config/wpg/sequences &)
+
 #
 # Prompt stuff
 #

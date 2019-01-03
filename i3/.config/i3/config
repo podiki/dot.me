@@ -36,38 +36,27 @@ workspace_auto_back_and_forth yes
 # Don't reset urgency hint right away
 force_display_urgency_hint 1000 ms
 
-# Base16 Monokai by Wimer Hazenberg (http://www.monokai.nl)
-# template by Matt Parnell, @parnmatt
+#
+# Colors
+#
+# Set colors from Xresources
+# NOTE: The '#f0f0f0' in the lines below is the color i3 will use if
+# it fails to get colors from Xresources.
+set_from_resource $coloract i3wm.color9 #f0f0f0
+set_from_resource $colorin  i3wm.color5 #f0f0f0
+set_from_resource $color15  i3wm.color15 #f0f0f0
+set_from_resource $split    i3wm.color10 #f0f0f0
+set_from_resource $coloru   i3wm.color2  #f0f0f0
+set_from_resource $color0   i3wm.color0  #f0f0f0
+set_from_resource $color8   i3wm.color8  #f0f0f0
 
-set $base00 #272822
-set $base01 #383830
-set $base02 #49483e
-set $base03 #75715e
-set $base04 #a59f85
-set $base05 #f8f8f2
-set $base06 #f5f4f1
-set $base07 #f9f8f5
-set $base08 #f92672
-set $base09 #fd971f
-set $base0A #f4bf75
-set $base0B #a6e22e
-set $base0C #a1efe4
-set $base0D #66d9ef
-set $base0E #ae81ff
-set $base0F #cc6633
-
-set $transparent #00000000
-
-client.focused $base0D $base0D $base00 $base01
-client.focused_inactive $base02 $base02 $base03 $base01
-client.unfocused $base01 $base01 $base03 $base01
-client.urgent $base02 $base08 $base07 $base08
-#class                  border      backgr      text        split
-#client.focused          $green  background      $black      $red
-#client.focused_inactive $grey       $grey       $lightgrey  $grey
-#client.unfocused        $grey       $grey       $lightgrey  $grey
-#client.urgent           $red        $red        $black      $red
-#client.background       $back
+# class                 border    backgr    text     indicator child_border
+client.focused          $coloract $coloract $color15 $split    $coloract
+client.focused_inactive $coloract $coloract $color15 $split    $colorin
+client.unfocused        $colorin  $colorin  $color15 $split    $colorin
+client.urgent           $coloru   $coloru   $color15 $coloru   $coloru
+client.placeholder      $color0   $color8   $color15 $color0   $color8
+client.background $color0
 
 # floating for pop up windows, etc.
 for_window [window_role="pop-up"] floating enable
@@ -191,7 +180,7 @@ exec --no-startup-id xss-lock -- ~/lock.sh #i3lock -n
 exec --no-startup-id blueshift-tray -c ~/blueshift.conf
 # exec --no-startup-id redshift-gtk
 exec --no-startup-id volumeicon
-exec_always --no-startup-id feh --bg-center "/home/john/wallpaper.jpg"
+# exec_always --no-startup-id feh --bg-center "/home/john/wallpaper.jpg"
 
 # compositing with compton
 exec --no-startup-id compton -b

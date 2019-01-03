@@ -5,6 +5,8 @@ usermodmap=$HOME/.Xmodmap
 sysresources=/etc/X11/xinit/.Xresources
 sysmodmap=/etc/X11/xinit/.Xmodmap
 
+$HOME/.config/wpg/wp_init.sh
+
 # merge in defaults and keymaps
 
 if [ -f $sysresources ]; then

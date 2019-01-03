@@ -328,18 +328,24 @@ And a function for switching between two (day/night) themes, modified from this 
   (use-package powerline
     :ensure t)
 
-  (use-package spaceline-config
-    :ensure spaceline
-    :config
-    (spaceline-spacemacs-theme)
-    (setq powerline-default-separator 'wave))
+  ;; (use-package spaceline-config
+  ;;   :ensure spaceline
+  ;;   :config
+  ;;   (spaceline-spacemacs-theme)
+  ;;   (setq powerline-default-separator 'wave))
 
-  (use-package spaceline-all-the-icons 
-    :after spaceline
-    :config (spaceline-all-the-icons-theme)
-    (spaceline-all-the-icons--setup-package-updates)
-    (spaceline-all-the-icons--setup-paradox)
-    (spaceline-all-the-icons--setup-neotree))
+  ;; (use-package spaceline-all-the-icons 
+  ;;   :after spaceline
+  ;;   :config (spaceline-all-the-icons-theme)
+  ;;   (spaceline-all-the-icons--setup-package-updates)
+  ;;   (spaceline-all-the-icons--setup-paradox)
+  ;;   (spaceline-all-the-icons--setup-neotree))
+
+  ;; doom-modeline
+  (use-package doom-modeline
+               :ensure t
+               :defer t
+               :hook (after-init . doom-modeline-init))
 #+END_SRC
 
 ** IDO/smex

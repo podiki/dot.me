@@ -251,8 +251,27 @@ for package listing and browsing
     :config
     (setq frame-background-mode 'light))
 
-  (setq frame-background-mode 'light)
-  (load-theme 'spacemacs-light t)
+  (use-package doom-themes
+               :defer t
+               :config
+               ;; Enable flashing mode-line on errors
+               (doom-themes-visual-bell-config)
+               ;; Enable custom neotree theme (uses all-the-icons)
+               (doom-themes-neotree-config)
+               ;; Corrects (and improves) org-mode's native fontification
+               (doom-themes-org-config)
+               (setq frame-background-mode 'dark))
+
+  (setq frame-background-mode 'dark)
+  (load-theme 'doom-dracula t)
+
+  ;; solaire-mode for grossly incandescent buffers
+  (use-package solaire-mode
+               :hook ((change-majore-mode after-revert ediff-prepare-buffer) . turn-on-solaire-mode)
+               :config
+               (solaire-global-mode +1)
+               (add-hook 'minibuffer-setup-hook #'solaire-mode-in-minibuffer)
+               (solaire-mode-swap-bg))
 #+END_SRC
 *** Theme switching
 Disable previous custom-theme before loading a new one (via [[https://emacs.stackexchange.com/questions/3112/how-to-reset-color-theme][this StackExchange answer]] and referencing [[http://stackoverflow.com/a/15595000/729907][this answer]]). Also use powerline-reset so that powerline/spaceline is also reset
@@ -271,9 +290,9 @@ And a function for switching between two (day/night) themes, modified from this 
     (interactive)
     (if (eq frame-background-mode 'light)
         (progn (setq frame-background-mode 'dark)
-               (load-theme 'spacemacs-dark t))
+               (load-theme 'doom-dracula t))
         (progn (setq frame-background-mode 'light)
-               (load-theme 'spacemacs-light t)))
+               (load-theme 'doom-nord-light t)))
     ;; reload highlight-sexp-mode to update highlight color
     ;; but seems to leave some parts highlighted incorrectly
     (if (bound-and-true-p highlight-sexp-mode)
@@ -325,8 +344,8 @@ And a function for switching between two (day/night) themes, modified from this 
   ;(add-to-list 'sml/replacer-regexp-list '("^~/codemonkey/" ":CM:") t)
 
   ;; powerline modeline, also required for spaceline
-  (use-package powerline
-    :ensure t)
+  ;; (use-package powerline
+  ;;   :ensure t)
 
   ;; (use-package spaceline-config
   ;;   :ensure spaceline
@@ -345,7 +364,12 @@ And a function for switching between two (day/night) themes, modified from this 
   (use-package doom-modeline
                :ensure t
                :defer t
-               :hook (after-init . doom-modeline-init))
+               :hook (after-init . doom-modeline-init)
+               :config
+               (setq doom-modeline-icon t)
+               (setq doom-modeline-major-mode-icon t)
+               (setq doom-modeline-major-mode-color-icon t)
+               (setq doom-modeline-github nil))
 #+END_SRC
 
 ** IDO/smex
@@ -505,6 +529,11 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
 
   ;; highlight current line
   (global-hl-line-mode 1)
+
+  ;; highlight current line number
+  (use-package hlinum
+               :config
+               (hlinum-activate))
 #+END_SRC
 
 ** Color-identifiers and highlight symbols

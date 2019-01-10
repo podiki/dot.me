@@ -1,7 +1,117 @@
+;; -*-lisp-*-
+
 (in-package :stumpwm)
+
+;;==============================================================================
+;; swank setup
+;;==============================================================================
 
 (require :swank)
 (swank-loader:init)
 (swank:create-server :port 4004
                      :style swank:*communication-style*
                      :dont-close t)
+
+;;==============================================================================
+;; basic settings
+;;==============================================================================
+
+(setf *mouse-focus-policy* :sloppy)
+
+;;==============================================================================
+;; modules
+;;==============================================================================
+
+(set-module-dir "~/stumpwm")
+(load-module "end-session")
+(load-module "swm-gaps")
+(load-module "ttf-fonts")
+
+;; scratchpad from https://github.com/herbertjones/my-stumpwm-config
+(load "~/stumpwm/window.lisp")
+(load "~/stumpwm/scratchpad.lisp")
+
+;;==============================================================================
+;; looks
+;;==============================================================================
+(set-font (make-instance 'xft:font
+                         :family "Hack Nerd Font Mono"
+                         :subfamily "Regular"
+                         :size 12))
+
+;;==============================================================================
+;; key bindings
+;;==============================================================================
+
+;; default terminal binding
+(define-key *root-map* (kbd "c") "exec termite")
+;; pule audio controls
+(define-key *top-map* (kbd "XF86AudioRaiseVolume")
+  "exec pactl set-sink-volume 0 +2.5%")
+(define-key *top-map* (kbd "XF86AudioLowerVolume")
+  "exec pactl set-sink-volume 0 -2.5%")
+(define-key *top-map* (kbd "XF86AudioMute")
+  "exec pactl set-sink-mute 0 toggle")
+;; mpc media keys
+(define-key *top-map* (kbd "XF86AudioPrev") "exec mpc prev")
+(define-key *top-map* (kbd "XF86AudioNext") "exec mpc next")
+(define-key *top-map* (kbd "XF86AudioPlay") "exec mpc toggle")
+
+;; rofi
+(define-key *top-map* (kbd "s-d") "exec rofi -show combi")
+
+;; scratchpad
+(defcommand scratchpad-term () ()
+  (scratchpad:toggle-floating-scratchpad "term" "termite"
+                                         :initial-gravity :center))
+(define-key *top-map* (kbd "s-t") "scratchpad-term")
+
+(defcommand scratchpad-rambox () ()
+  (scratchpad:toggle-floating-scratchpad "rambox" "rambox"
+                                         :initial-gravity :center))
+(define-key *top-map* (kbd "s-m") "scratchpad-rambox")
+
+(defcommand scratchpad-signal () ()
+  (scratchpad:toggle-floating-scratchpad "signal" "signal-desktop --use-tray-icon"
+                                         :initial-gravity :center))
+(define-key *top-map* (kbd "s-n") "scratchpad-signal")
+
+
+;;==============================================================================
+;; those sweet gaps
+;;==============================================================================
+
+;; Head gaps run along the 4 borders of the monitor(s)
+;; Inner gaps run along all the 4 borders of a window
+;; Outer gaps add more padding to the outermost borders of a window (touching
+;; the screen border)
+(setf swm-gaps:*head-gaps-size*  0
+      swm-gaps:*inner-gaps-size* 20
+      swm-gaps:*outer-gaps-size* 10)
+
+;; Call command is toggle-gaps
+;; Start with gaps enabled
+(if (not swm-gaps:*gaps-on*)
+    (swm-gaps:toggle-gaps))
+
+;; =============================================================================
+;;   startup programs
+;; =============================================================================
+
+;; use dex for autostart .desktop entries
+(run-shell-command "dex -ae stump")
+(run-shell-command "udiskie --tray")
+(run-shell-command "xscreensaver -no-splash")
+(run-shell-command "blueshift-tray -c ~/blueshift.conf")
+(run-shell-command "volumeicon")
+;; polybar
+(run-shell-command "$HOME/.config/polybar/launch.sh")
+;; compositing with compton
+(run-shell-command "compton -b")
+;; flashfocus
+(run-shell-command "flashfocus")
+
+;; xiccd seems to not fully load(?) X atom ICC profile, so do this also
+;; but doesn't seem to work (need to wait for xiccd first?), and end up
+;; running it again after startup
+(run-shell-command "dispwin -L")

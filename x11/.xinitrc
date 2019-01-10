@@ -54,4 +54,7 @@ fi
 [ ! -s ~/.config/mpd/pid ] && mpd
 
 # i3wm
-exec i3 # --shmlog-size=26214400
+# exec i3 # --shmlog-size=26214400
+
+# stumpwm
+exec sbcl --load ~/.config/stumpwm/startstump.lisp

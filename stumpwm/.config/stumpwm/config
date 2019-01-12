@@ -17,6 +17,7 @@
 ;;==============================================================================
 
 (setf *mouse-focus-policy* :sloppy)
+(run-shell-command "xsetroot -cursor_name left_ptr")
 
 ;;==============================================================================
 ;; modules
@@ -28,8 +29,7 @@
 (load-module "ttf-fonts")
 
 ;; scratchpad from https://github.com/herbertjones/my-stumpwm-config
-(load "~/stumpwm/window.lisp")
-(load "~/stumpwm/scratchpad.lisp")
+(load-module "scratchpad")
 
 ;;==============================================================================
 ;; looks

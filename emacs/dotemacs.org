@@ -363,7 +363,6 @@ And a function for switching between two (day/night) themes, modified from this 
   ;; doom-modeline
   (use-package doom-modeline
                :ensure t
-               :defer t
                :hook (after-init . doom-modeline-init)
                :config
                (setq doom-modeline-icon t)

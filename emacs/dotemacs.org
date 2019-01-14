@@ -344,8 +344,8 @@ And a function for switching between two (day/night) themes, modified from this 
   ;(add-to-list 'sml/replacer-regexp-list '("^~/codemonkey/" ":CM:") t)
 
   ;; powerline modeline, also required for spaceline
-  ;; (use-package powerline
-  ;;   :ensure t)
+  (use-package powerline
+    :ensure t)
 
   ;; (use-package spaceline-config
   ;;   :ensure spaceline

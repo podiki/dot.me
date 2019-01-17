@@ -16,6 +16,22 @@
 ;; basic settings
 ;;==============================================================================
 
+(set-prefix-key (kbd "C-i"))
+
+(setf *message-window-gravity* :center
+      *input-window-gravity* :center
+      *window-border-style* :thin
+      *message-window-padding* 10
+      *maxsize-border-width* 5
+      *normal-border-width* 5
+      *transient-border-width* 2
+      stumpwm::*float-window-border* 2
+      stumpwm::*float-window-title-height* 5)
+
+(set-normal-gravity :center)
+(set-maxsize-gravity :center)
+(set-transient-gravity :center)
+
 (setf *mouse-focus-policy* :sloppy)
 (run-shell-command "xsetroot -cursor_name left_ptr")
 
@@ -76,6 +92,29 @@
                                          :initial-gravity :center))
 (define-key *top-map* (kbd "s-n") "scratchpad-signal")
 
+;; toggles
+(defvar *toggle-map* (make-sparse-keymap))
+(define-key *root-map* (kbd "t") '*toggle-map*)
+(define-key *toggle-map* (kbd "g") "toggle-gaps")
+(define-key *toggle-map* (kbd "m") "mode-line")
+(define-key *toggle-map* (kbd "f") "float-this")
+(define-key *toggle-map* (kbd "u") "unfloat-this")
+(define-key *toggle-map* (kbd "a") "toggle-always-show")
+(define-key *toggle-map* (kbd "t") "toggle-always-on-top")
+
+;; group switching
+(define-key *top-map* (kbd "s-Tab") "gnext")
+(define-key *top-map* (kbd "s-ISO_Left_Tab") "gprev")
+(define-key *top-map* (kbd "s-1") "gselect fire")
+(define-key *top-map* (kbd "s-2") "gselect chrome")
+(define-key *top-map* (kbd "s-3") "gselect school")
+(define-key *top-map* (kbd "s-4") "gselect code")
+(define-key *top-map* (kbd "s-5") "gselect term")
+(define-key *top-map* (kbd "s-6") "gselect photo")
+(define-key *top-map* (kbd "s-7") "gselect movie")
+(define-key *top-map* (kbd "s-8") "gselect steam")
+(define-key *top-map* (kbd "s-9") "gselect read")
+(define-key *top-map* (kbd "s-0") "gselect music")
 
 ;;==============================================================================
 ;; those sweet gaps

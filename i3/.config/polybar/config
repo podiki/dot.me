@@ -42,8 +42,8 @@ module-margin-left = 1
 module-margin-right = 2
 
 ;font-0 = M+ 2p:size=20
-font-0 = Hack Nerd Font Mono:size=20
-font-1 = FontAwesome:size=18;2
+font-0 = Hack Nerd Font:size=20
+font-1 = FontAwesome:size=20;2
 
 modules-left = ewmh xwindow
 modules-center = mpd
@@ -56,7 +56,6 @@ tray-maxsize = 45
 ;tray-transparent = true
 ;tray-background = #0063ff
 
-wm-restack = i3
 override-redirect = false
 
 ;scroll-up = i3wm-wsnext
@@ -108,6 +107,59 @@ enable-click = true
 ; Create scroll handlers used to cycle desktops
 ; Default: true
 enable-scroll = true
+
+; icon-[0-9]+ = <desktop-name>;<icon>
+; NOTE: The desktop name needs to match the name configured by the WM
+; You can get a list of the defined desktops using:
+; $ xprop -root _NET_DESKTOP_NAMES
+icon-0 = fire;1: 
+icon-1 = chrome;2: 
+icon-2 = school;3: 
+icon-3 = code;4: ( )
+icon-4 = term;5: 
+icon-5 = photo;6: 
+icon-6 = movie;7: 
+icon-7 = steam;8: 
+icon-8 = read;9: 
+icon-9 = music;10: 
+icon-default = 
+
+; Available tags:
+;   <label-monitor>
+;   <label-state> - gets replaced with <label-(active|urgent|occupied|empty)>
+; Default: <label-state>
+format = <label-state>
+
+; Available tokens:
+;   %name%
+; Default: %name%
+label-monitor = %name%
+
+; Available tokens:
+;   %name%
+;   %icon%
+;   %index%
+; Default: %icon%  %name%
+label-active = %icon%
+label-active-padding = 1
+label-active-foreground = #000
+label-active-background = ${colors.background-alt}
+label-active-underline = ${colors.primary}
+
+label-occupied = %icon%
+label-occupied-padding = 1
+label-occupied-underline = #555555
+
+label-urgent = %icon%!
+label-urgent-padding = 1
+label-urgent-foreground = #000000
+label-urgent-background = ${colors.alert}
+label-urgent-underline = #9b0a20
+
+label-empty = %icon%
+label-empty-padding = 1
+label-empty-foreground = #55
+
 
 [module/i3]
 type = internal/i3

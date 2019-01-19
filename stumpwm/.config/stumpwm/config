@@ -16,7 +16,7 @@
 ;; basic settings
 ;;==============================================================================
 
-(set-prefix-key (kbd "C-i"))
+(set-prefix-key (kbd "C-m"))
 
 (setf *message-window-gravity* :center
       *input-window-gravity* :center
@@ -115,6 +115,12 @@
 (define-key *top-map* (kbd "s-8") "gselect steam")
 (define-key *top-map* (kbd "s-9") "gselect read")
 (define-key *top-map* (kbd "s-0") "gselect music")
+
+;; window moving
+(define-key *top-map* (kbd "s-Right") "move-window right")
+(define-key *top-map* (kbd "s-Left") "move-window left")
+(define-key *top-map* (kbd "s-Up") "move-window up")
+(define-key *top-map* (kbd "s-Down") "move-window down")
 
 ;;==============================================================================
 ;; those sweet gaps

@@ -270,11 +270,13 @@ type = internal/network
 interface = wlp2s0
 interval = 3.0
 
-format-connected = <ramp-signal> <label-connected>
+;; <ramp-signal> to include icon with signal strength
+format-connected = <label-connected>
 format-connected-underline = #9f78e1
 format-disconnected-underline = ${self.format-connected-underline}
 
-label-connected = %essid% %downspeed:9%/%upspeed:9%
+;; %essid% to include SSID name
+label-connected = %downspeed:9%/%upspeed:9%
 label-disconnected = %ifname% disconnected
 label-disconnected-foreground = ${colors.foreground}
 

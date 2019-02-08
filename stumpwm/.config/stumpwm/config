@@ -103,24 +103,42 @@
 (define-key *toggle-map* (kbd "t") "toggle-always-on-top")
 
 ;; group switching
+(defun switch-group-smart (group)
+  "Switch to the named group, or to the previously active group if already
+   the current group."
+  (if (not (equal group (group-name (current-group))))
+      ;; this must be a stupid roundabout way, but I fail at direct calling
+      (run-commands (concat "gselect " group))
+      (gother)))
+
+(defcommand switch-group (group) ((:string "Group: "))
+  (switch-group-smart group))
+
 (define-key *top-map* (kbd "s-Tab") "gnext")
 (define-key *top-map* (kbd "s-ISO_Left_Tab") "gprev")
-(define-key *top-map* (kbd "s-1") "gselect fire")
-(define-key *top-map* (kbd "s-2") "gselect chrome")
-(define-key *top-map* (kbd "s-3") "gselect school")
-(define-key *top-map* (kbd "s-4") "gselect code")
-(define-key *top-map* (kbd "s-5") "gselect term")
-(define-key *top-map* (kbd "s-6") "gselect photo")
-(define-key *top-map* (kbd "s-7") "gselect movie")
-(define-key *top-map* (kbd "s-8") "gselect steam")
-(define-key *top-map* (kbd "s-9") "gselect read")
-(define-key *top-map* (kbd "s-0") "gselect music")
+(define-key *top-map* (kbd "s-1") "switch-group fire")
+(define-key *top-map* (kbd "s-2") "switch-group chrome")
+(define-key *top-map* (kbd "s-3") "switch-group school")
+(define-key *top-map* (kbd "s-4") "switch-group code")
+(define-key *top-map* (kbd "s-5") "switch-group term")
+(define-key *top-map* (kbd "s-6") "switch-group photo")
+(define-key *top-map* (kbd "s-7") "switch-group movie")
+(define-key *top-map* (kbd "s-8") "switch-group steam")
+(define-key *top-map* (kbd "s-9") "switch-group read")
+(define-key *top-map* (kbd "s-0") "switch-group music")
 
 ;; window moving
 (define-key *top-map* (kbd "s-Right") "move-window right")
 (define-key *top-map* (kbd "s-Left") "move-window left")
 (define-key *top-map* (kbd "s-Up") "move-window up")
 (define-key *top-map* (kbd "s-Down") "move-window down")
+
+;; focus swtiching
+(define-key *top-map* (kbd "s-h") "move-focus left")
+(define-key *top-map* (kbd "s-j") "move-focus down")
+(define-key *top-map* (kbd "s-k") "move-focus up")
+(define-key *top-map* (kbd "s-l") "move-focus right")
+(define-key *top-map* (kbd "s-o") "fnext")
 
 ;;==============================================================================
 ;; those sweet gaps

@@ -39,7 +39,7 @@
  '(jdee-db-spec-breakpoint-face-colors (cons "#f0f0f0" "#9ca0a4"))
  '(package-selected-packages
    (quote
-    (solaire-mode hlinum doom-themes doom-modeline which-key use-package timesheet spacemacs-theme spaceline-all-the-icons smex smartparens slime-company rainbow-delimiters paradox ox-reveal org2blog org-plus-contrib org-bullets olivetti neotree multiple-cursors monokai-theme molokai-theme markdown-mode magit latex-pretty-symbols langtool imenu-list ido-vertical-mode ido-ubiquitous highlight-symbol highlight-sexp goto-chg fountain-mode flycheck-color-mode-line flx-ido exec-path-from-shell emms ein diminish define-word cython-mode company-quickhelp company-math company-jedi company-auctex color-theme-solarized color-identifiers-mode arch-packer all-the-icons-dired)))
+    (pdf-tools solaire-mode hlinum doom-themes doom-modeline which-key use-package timesheet spacemacs-theme spaceline-all-the-icons smex smartparens slime-company rainbow-delimiters paradox ox-reveal org2blog org-plus-contrib org-bullets olivetti neotree multiple-cursors monokai-theme molokai-theme markdown-mode magit latex-pretty-symbols langtool imenu-list ido-vertical-mode ido-ubiquitous highlight-symbol highlight-sexp goto-chg fountain-mode flycheck-color-mode-line flx-ido exec-path-from-shell emms ein diminish define-word cython-mode company-quickhelp company-math company-jedi company-auctex color-theme-solarized color-identifiers-mode arch-packer all-the-icons-dired)))
  '(paradox-github-token t)
  '(pdf-view-midnight-colors (quote ("#655370" . "#fbf8ef")))
  '(timesheet-invoice-number 2)

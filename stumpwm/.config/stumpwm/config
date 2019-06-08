@@ -74,7 +74,7 @@
 (define-key *top-map* (kbd "XF86AudioPlay") "exec mpc toggle")
 
 ;; rofi
-(define-key *top-map* (kbd "s-d") "exec rofi -show combi")
+(define-key *top-map* (kbd "s-d") "exec rofi -show run")
 
 ;; scratchpad
 (defcommand scratchpad-term () ()
@@ -178,3 +178,16 @@
 ;; but doesn't seem to work (need to wait for xiccd first?), and end up
 ;; running it again after startup
 (run-shell-command "dispwin -L")
+
+;; =============================================================================
+;;   setup groups
+;; =============================================================================
+
+(grename "fire")
+(gnew "chrome")
+(gnew "school")
+(gnew "code")
+(gnew "term")
+(gnew "photo")
+(gnew "movie")
+(gnew "steam")

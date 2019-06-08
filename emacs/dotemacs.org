@@ -749,6 +749,8 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                    ("\\paragraph{%s}"     . "\\paragraph*{%s}")
                    ("\\subparagraph{%s}"  . "\\subparagraph*{%s}")))
+    ;; time duration format instead of days
+    (setq org-duration-format (quote h:mm))
     ;; todo and agenda customization
     ;; warn of upcoming deadlines in next week
     (setq org-deadline-warning-days 7)
@@ -756,7 +758,7 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
     (setq org-agenda-span 'fortnight)
     ;;don't show tasks as scheduled if they are already shown as a deadline
     (setq org-agenda-skip-scheduled-if-deadline-is-shown t)
-    ;;don't give awarning colour to tasks with impending deadlines
+    ;;don't give awarning color to tasks with impending deadlines
     ;;if they are scheduled to be done
     (setq org-agenda-skip-deadline-prewarning-if-scheduled (quote pre-scheduled))
     ;;don't show tasks that are scheduled or have deadlines in the

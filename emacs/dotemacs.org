@@ -797,11 +797,34 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
   (use-package htmlize)
 #+END_SRC
 ** For presentations with reveal.js
+Moved to newer fork org-re-reveal (but org-reveal active again?)
 #+BEGIN_SRC emacs-lisp
-  (use-package ox-reveal
-    :config
-    ;; use CDN copy by default
-    (setq org-reveal-root "http://cdn.jsdelivr.net/reveal.js/3.0.0/"))
+  (use-package org-re-reveal
+               :config
+               ;; head.min.js (first file in the list) not needed for recent versions
+              (setq org-re-reveal-script-files (cdr org-re-reveal-script-files)))
+
+  ;; (use-package ox-reveal
+  ;;   :config
+  ;;   ;; use CDN copy by default
+  ;;   (setq org-reveal-root "http://cdn.jsdelivr.net/reveal.js/3.0.0/"))
+#+END_SRC
+** HTML embed images
+This code redefines how images are handled in HTML export to embed them in the code. Run this code before HTML export if wanting to make single file without needing external images. From [[https://www.reddit.com/r/orgmode/comments/7dyywu/creating_a_selfcontained_html/dq6dhv3][this Reddit comment]].
+#+BEGIN_SRC emacs-lisp :tangle no
+  (defun replace-in-string (what with in)
+    (replace-regexp-in-string (regexp-quote what) with in nil 'literal))
+
+  (defun org-html--format-image (source attributes info)
+    (progn
+      (setq source (replace-in-string "%20" " " source))
+      (format "<img src=\"data:image/%s;base64,%s\"%s />"
+              (or (file-name-extension source) "")
+              (base64-encode-string
+               (with-temp-buffer
+                 (insert-file-contents-literally source)
+                (buffer-string)))
+              (file-name-nondirectory source))))
 #+END_SRC
 ** Blog posting with org2blog
 #+BEGIN_SRC emacs-lisp

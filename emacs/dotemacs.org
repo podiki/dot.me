@@ -946,9 +946,10 @@ Set up to behave like paredit in lisp modes
 ** Lisp and SLIME
 *** Slime and other lisp stuff
 #+BEGIN_SRC emacs-lisp
-  ;;; From quicklisp, but prefer current slime in melpa
-  ;; (load (expand-file-name "~/quicklisp/slime-helper.el"))
+  ;;; From quicklisp, instead of current slime in melpa
+  (load (expand-file-name "~/quicklisp/slime-helper.el"))
   (use-package slime
+    :ensure nil
     :init
     (setq inferior-lisp-program "sbcl")
     (setq slime-contribs '(slime-fancy slime-indentation slime-banner))

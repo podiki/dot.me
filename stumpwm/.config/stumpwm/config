@@ -79,17 +79,23 @@
 ;; scratchpad
 (defcommand scratchpad-term () ()
   (scratchpad:toggle-floating-scratchpad "term" "termite"
-                                         :initial-gravity :center))
+                                         :initial-gravity :center
+                                         :initial-width 1900
+                                         :initial-height 1200))
 (define-key *top-map* (kbd "s-t") "scratchpad-term")
 
 (defcommand scratchpad-rambox () ()
   (scratchpad:toggle-floating-scratchpad "rambox" "rambox"
-                                         :initial-gravity :center))
+                                         :initial-gravity :center
+                                         :initial-width 1960
+                                         :initial-height 1400))
 (define-key *top-map* (kbd "s-m") "scratchpad-rambox")
 
 (defcommand scratchpad-signal () ()
   (scratchpad:toggle-floating-scratchpad "signal" "signal-desktop --use-tray-icon"
-                                         :initial-gravity :center))
+                                         :initial-gravity :center
+                                         :initial-width 1600
+                                         :initial-height 1000))
 (define-key *top-map* (kbd "s-n") "scratchpad-signal")
 
 ;; toggles

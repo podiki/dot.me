@@ -713,6 +713,8 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
     (setq org-pretty-entities t)
     ;; replace the folded section "..."s
     (setq org-ellipsis "…")
+    ;; pre-9.2 templates from <
+    (require 'org-tempo)
     ;; export backends
     (setq org-export-backends (append org-export-backends '(md)))
     ;; org-babel languages

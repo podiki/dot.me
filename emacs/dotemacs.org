@@ -268,9 +268,9 @@ for package listing and browsing
   ;; solaire-mode for grossly incandescent buffers
   (use-package solaire-mode
                :hook ((change-majore-mode after-revert ediff-prepare-buffer) . turn-on-solaire-mode)
+               (minibuffer-setup . solaire-mode-in-minibuffer)
                :config
                (solaire-global-mode +1)
-               (add-hook 'minibuffer-setup-hook #'solaire-mode-in-minibuffer)
                (solaire-mode-swap-bg))
 #+END_SRC
 *** Theme switching
@@ -292,7 +292,7 @@ And a function for switching between two (day/night) themes, modified from this 
         (progn (setq frame-background-mode 'dark)
                (load-theme 'doom-dracula t))
         (progn (setq frame-background-mode 'light)
-               (load-theme 'doom-nord-light t)))
+               (load-theme 'zaiste t)))
     ;; reload highlight-sexp-mode to update highlight color
     ;; but seems to leave some parts highlighted incorrectly
     (if (bound-and-true-p highlight-sexp-mode)
@@ -320,7 +320,7 @@ And a function for switching between two (day/night) themes, modified from this 
                                 :weight 'normal))))
 
   (when (memq window-system '(x))
-    (set-face-attribute 'default nil :family "Hack Nerd Font Mono" :weight 'normal :height 110)
+    (set-face-attribute 'default nil :family "Iosevka Term" :weight 'normal :height 115)
     (set-fontset-font "fontset-default" nil (font-spec :name "Symbola")))
 #+END_SRC
 
@@ -441,6 +441,21 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
            ("C-c C-<"     . mc/mark-all-like-this)))
 #+END_SRC
 
+** ivy
+#+begin_src emacs-lisp
+  (use-package ivy
+    :config
+    ;; ivy completion everywhere
+    (ivy-mode 1)
+    (setq ivy-use-virtual-buffers t ; include recent files and bookmarks
+          ivy-count-format "(%d/%d) " ; display index and count
+          )
+    :bind
+    (("C-s"     . swiper-isearch)
+     ("M-x"     . counsel-M-x)
+     ("C-x C-f" . counsel-find-file)))
+#+end_src
+
 ** which-key
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
@@ -458,7 +473,11 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
   ;; Line number in left margin using linum
   ;;
 
-  (global-linum-mode 1)
+  ;; (global-linum-mode 1)
+  ;; linum mode for text and prog-mode derived buffers
+  ;; (can't have it for pdf-tools)
+  (add-hook 'text-mode-hook 'linum-mode)
+  (add-hook 'prog-mode-hook 'linum-mode)
   ;; (set-face-attribute 'linum nil :height 100)
 
   ;; Fix from EmacsWiki to have space before the line contents with right-
@@ -692,7 +711,20 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
         (message "Opening file...")
       (message "Aborting")))
 #+END_SRC
-
+*** Dired
+#+begin_src emacs-lisp
+  (use-package dired
+    :ensure nil
+    :hook (dired-mode . dired-hide-details-mode)
+    :config
+    ;; colorful columns
+    (use-package diredfl
+      :config
+      (diredfl-global-mode 1))
+    (use-package dired-git-info
+      :bind (:map dired-mode-map
+                  (")" . dired-git-info-mode))))
+#+end_src
 * Org-mode
 ** Basic setup
 - Use org-plus-contrib for extras in org-mode. Note that other packages that depend on org will install plain org (though this shouldn't cause any problems, it is annoying when installing something new). Fix this by [[https://lists.gnu.org/archive/html/emacs-orgmode/2014-12/msg00287.html][creating a dummy package]], as there is no way to tell the package manager that org is accounted for. Also add a file org-autoloads.el to prevent startup errors (though of no real consequence I think).
@@ -723,6 +755,7 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
       '((shell . t)
         (python . t)
         (gnuplot . t)
+        (ledger . t)
         (lisp . t)
         (latex . t)
         (maxima . t)))
@@ -754,6 +787,7 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
     ;; time duration format instead of days
     (setq org-duration-format (quote h:mm))
     ;; todo and agenda customization
+    (setq org-todo-keywords '((sequence "TODO(t)" "WAITING" "|" "ABANDONDED(b)" "DONE(d)")))
     ;; warn of upcoming deadlines in next week
     (setq org-deadline-warning-days 7)
     ;; show tasks for next fornight
@@ -779,15 +813,22 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
     (setq org-lowest-priority ?C)
     (setq org-default-priority ?A)
     ;; todo file(s)
-    (setq org-agenda-files (list (concat org-directory "/todoes.org")))
+    (setq org-agenda-files (list (concat org-directory "/todoes.org")
+                                 (concat org-directory "/gcal-main.org")
+                                 (concat org-directory "/gcal-cw.org")
+                                 (concat org-directory "/2019-fall-notes.org")))
     ;; todo capture template with default priority and scheduled for today
     (setq org-capture-templates
-      '(("t" "todo" entry (file+headline (concat org-directory "/todoes.org") "Tasks")
-         "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp
-                                       (org-read-date nil t \"+0d\"))\n")))
-    :bind (("C-c a" . org-agenda))
-    :bind  (:map global-map
-          ("C-c c" . org-capture)))
+          '(("t" "todo" entry (file+headline ("todoes.org") "Tasks")
+             "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n")
+            ("e" "email todo" entry (file+olp "2019-fall-notes.org"
+                                     "Week 1" "Email")
+             "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")))
+    :bind
+    (("C-c a" . org-agenda)
+     ("C-c c" . org-capture)
+     ("C-c l" . org-store-link)
+     ("C-c b" . org-switchb)))
 
   ;; fancy utf-8 bullets
   (use-package org-bullets
@@ -829,18 +870,275 @@ This code redefines how images are handled in HTML export to embed them in the c
               (file-name-nondirectory source))))
 #+END_SRC
 ** Blog posting with org2blog
+No longer using this
 #+BEGIN_SRC emacs-lisp
-  (use-package org2blog-autoloads
-    :ensure org2blog
-    :defer t
-    :config
-    (require 'auth-source)
-    (setq org2blog/wp-blog-alist
-          `(("stuff-blog"
-             :url "http://stuff.9bladed.com/xmlrpc.php"
-             :username ,(getf (car (auth-source-search :host "stuff-blog"))
-                              :user)))))
+  ;; (use-package org2blog-autoloads
+  ;;   :ensure org2blog
+  ;;   :defer t
+  ;;   :config
+  ;;   (require 'auth-source)
+  ;;   (setq org2blog/wp-blog-alist
+  ;;         `(("stuff-blog"
+  ;;            :url "http://stuff.9bladed.com/xmlrpc.php"
+  ;;            :username ,(getf (car (auth-source-search :host "stuff-blog"))
+  ;;                             :user)))))
 #+END_SRC
+** Calendar
+Sync with Google Calendar using org-gcal
+#+begin_src emacs-lisp
+  (use-package org-gcal
+    :config
+    (let* ((auth (car (auth-source-search :host "gcal")))
+           (id (plist-get auth :user))
+           (secret (funcall (plist-get auth :secret))))
+      (setq org-gcal-client-id id
+            org-gcal-client-secret secret
+            org-gcal-file-alist
+            '(("sweet.cheesus@gmail.com" .  "~/Dropbox/org/gcal-main.org")
+              ("r5vjfchooeucd91dhoh8mq2f7ngpvmmk@import.calendar.google.com" . "~/Dropbox/org/gcal-cw.org"))
+            org-gcal-notify-p nil)))
+#+end_src
+
+Pretty view with calfw
+#+begin_src emacs-lisp
+  (use-package calfw
+    :config
+    (require 'calfw-org))
+#+end_src
+
+And org-super-agenda
+#+begin_src emacs-lisp
+  (use-package org-super-agenda)
+#+end_src
+** Research
+*** pdf-tools
+pdf-tools for viewing pdfs in emacs
+#+begin_src emacs-lisp
+  (use-package pdf-tools
+    :config
+    (pdf-tools-install)
+    ;; open pdfs scaled to fit page
+    (setq-default pdf-view-display-size 'fit-page)
+    ;; use isearch instead of swiper
+    (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward))
+#+end_src
+*** org-ref
+org-ref for reference management
+#+begin_src emacs-lisp
+  (use-package org-ref
+    :config
+    (let ((org-ref-dir (concat org-directory "/science-style-lr/")))
+      (setq reftex-default-bibliography (list (concat org-ref-dir "references.bib"))
+            org-ref-bibliography-notes (concat org-ref-dir "notes.org")
+            org-ref-default-bibliography (list (concat org-ref-dir "references.bib"))
+            org-ref-pdf-directory (concat org-ref-dir "papers/")))
+
+    ;; add org-noter field to use in org-ref
+    ;; via https://github.com/jkitchin/org-ref/issues/455
+    ;; set the bibtex field containing the pdf path
+    (setq bibtex-completion-pdf-field "file")
+
+    (defun my/get-pdf-filename (key)
+      (let ((results (bibtex-completion-find-pdf key)))
+        (if (equal 0 (length results))
+            (org-ref-get-pdf-filename key)
+          (car results))))
+  
+    (setq org-ref-create-notes-hook
+          '((lambda ()
+                      (org-entry-put
+                       nil
+                       "NOTER_DOCUMENT"
+                       (my/get-pdf-filename (org-entry-get
+                                             (point) "Custom_ID")))
+                      (org-narrow-to-subtree)
+                      (insert
+                       (format "cite:%s"
+                               (org-entry-get
+                                (point)
+                                "Custom_ID")))))))
+#+end_src
+*** org-noter
+org-noter to take notes associated with pdfs
+#+begin_src emacs-lisp
+  (use-package org-noter
+    :config (setq org-noter-default-notes-file-names '("notes.org")
+                  org-noter-notes-search-path (list (concat org-directory "/science-style-lr/"))))
+#+end_src
+* Email
+** mu4e
+*** basics
+#+begin_src emacs-lisp
+  (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
+  (use-package mu4e
+      :ensure nil
+      :bind ([f5] . mu4e)
+      :config
+      ;; use mu4e for e-mail in emacs
+      (setq mail-user-agent 'mu4e-user-agent)
+      ;; email addresses
+      (setq mu4e-user-mail-address-list '("kehayias@sas.upenn.edu"
+                                          "kehayias@upenn.edu"
+                                          "john.kehayias@gmail.com"
+                                          "john.kehayias@vanderbilt.edu"
+                                          "john.kehayias@ipmu.jp"
+                                          "kehayias@physics.ucsc.edu"))
+      ;; mu4e config
+      (setq mu4e-maildir       "~/.mail"
+            mu4e-refile-folder "/gmail/all"
+            mu4e-sent-folder   "/gmail/sent"
+            mu4e-trash-folder  "/gmail/trash"
+            mu4e-drafts-folder "/gmail/drafts"
+            ;; mbsync (isync) for IMAP syncing
+            mu4e-get-mail-command "mbsync gmail"
+            ;; sync every 5 minutes (though get new messages via goimapnotify)
+            mu4e-update-interval 300
+            ;; rename files when moving (for mbsync)
+            mu4e-change-filenames-when-moving t
+            ;; Gmail handles sent messages
+            ;; mu4e-sent-messages-behavior 'delete
+            mu4e-sent-messages-behavior 'sent
+            ;; use mu4e for e-mail in emacs
+            mail-user-agent 'mu4e-user-agent
+            ;; format=flowed for plain text wrapping
+            ;; has issues in e.g. gmail, so don't use for now
+            ;; Another possibility: https://vxlabs.com/2019/08/25/format-flowed-with-long-lines/
+            ;; but then get overly long lines in wide windows, for example
+            ;; mu4e-compose-format-flowed t
+            ;; setup some handy shortcuts
+            ;; you can quickly switch to your Inbox -- press ``ji''
+            ;; then, when you want archive some messages, move them to
+            ;; the 'All Mail' folder by pressing ``ma''.
+            mu4e-maildir-shortcuts
+            '(("/gmail/Inbox"  . ?i)
+              ("/gmail/drafts" . ?d)
+              ("/gmail/sent"   . ?s)
+              ("/gmail/trash"  . ?t)
+              ("/gmail/all"    . ?a))
+            mu4e-headers-fields
+            '((:human-date . 12)
+              (:flags      . 6)
+              (:from       . 25)
+              (:subject    . nil ))
+            ;; use 'fancy' non-ascii characters in various places in mu4e
+            mu4e-use-fancy-chars t
+            ;; attempt to show images when viewing messages
+            mu4e-view-show-images t
+            ;; prefer html
+            mu4e-view-prefer-html t
+            ;; don't show related messages
+            mu4e-headers-include-related nil
+            ;; don't show multiple copies of same message
+            mu4e-headers-skip-duplicates t)
+
+      ;; To get Gmail-like behavior when using the delete action,
+      ;; i.e. deleting from inbox removes duplicate in All Mail and goes
+      ;; in trash folder
+      ;; Note: Gmail set with Auto-Expunge off and "Move the message to the Trash"
+      ;; as what to do with messages deleted and expunged from all IMAP folders
+      ;; Thanks to https://github.com/djcb/mu/issues/1136
+      (setf (alist-get 'trash mu4e-marks)
+            (list :char '("d" . "▼")
+                  :prompt "dtrash"
+                  :dyn-target (lambda (target msg)
+                                (mu4e-get-trash-folder msg))
+                  :action (lambda (docid msg target)
+                            ;; Here's the main difference to the regular trash mark,
+                            ;; no +T before -N so the message is not marked as
+                            ;; IMAP-deleted:
+                            (mu4e~proc-move docid
+                                            (mu4e~mark-check-target target)
+                                            "-N"))))
+    
+      ;; rename draft autosaves so they don't get synced by mbsync
+      ;; from https://emacs.stackexchange.com/a/24430
+      (defun draft-auto-save-buffer-name-handler (operation &rest args)
+        "for `make-auto-save-file-name' set '.' in front of the file name;
+         do nothing for other operations"
+        (if
+            (and buffer-file-name (eq operation 'make-auto-save-file-name))
+            (concat (file-name-directory buffer-file-name)
+                    "."
+                    (file-name-nondirectory buffer-file-name))
+          (let ((inhibit-file-name-handlers
+                 (cons 'draft-auto-save-buffer-name-handler
+                       (and (eq inhibit-file-name-operation operation)
+                            inhibit-file-name-handlers)))
+                (inhibit-file-name-operation operation))
+            (apply operation args))))
+
+      (add-to-list 'file-name-handler-alist
+                   '("drafts/cur/" . draft-auto-save-buffer-name-handler))
+    
+      ;; viewing options
+      ;; view in browser action
+      (add-to-list 'mu4e-view-actions
+                   '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+      ;; brighter for dark themes
+      (setq shr-color-visible-luminance-min 80)
+      ;; don't pollute recentf with mail
+      (setq recentf-exclude '("^/tmp/" "^/home/john/\\.mail/"))
+      :hook
+      (mu4e-view-mode-hook . visual-line-mode)
+      ;; emulate some eww key-bindings for html view
+      (mu4e-view-mode-hook . (lambda()
+                               (local-set-key (kbd "<tab>") 'shr-next-link)
+                               (local-set-key (kbd "<backtab>") 'shr-previous-link))))
+#+end_src
+*** org-mu4e
+#+begin_src emacs-lisp
+  (require 'org-mu4e)
+  ;; link to email not query
+  (setq org-mu4e-link-query-in-headers-mode nil)
+#+end_src
+*** org-msg
+Compose nice HTML messages using the power of org-mode
+#+begin_src emacs-lisp
+  (use-package org-msg
+    :config
+    (setq org-msg-options "html-postamble:nil H:5 num:nil ^:{} toc:nil")
+    (setq org-msg-startup "hidestars indent inlineimages")
+    (setq org-msg-greeting-fmt "\nDear %s,\n\n")
+    ;; to have greeting be a mailto link
+    (setq org-msg-greeting-fmt-mailto nil)
+    (org-msg-mode))
+#+end_src
+*** notifications
+Use mu4e-alert
+#+begin_src emacs-lisp
+  (use-package mu4e-alert
+    :config
+    (mu4e-alert-set-default-style 'libnotify)
+    ;; don't notify for trashed messages or in all
+    (setq mu4e-alert-interesting-mail-query
+          (concat "flag:unread"
+                  " AND NOT maildir:/gmail/all"
+                  " AND NOT flag:trashed"
+                  " AND NOT maildir:/gmail/trash"))
+    :init
+    (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
+    (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display))
+#+end_src
+** Sending mail
+Sending mail with built-in message mode and smtpmail
+#+begin_src emacs-lisp
+  (setq message-send-mail-function 'smtpmail-send-it
+        ;; don't keep message buffers
+        message-kill-buffer-on-exit t
+        smtpmail-smtp-server "smtp.office365.com"
+        smtpmail-local-domain "office365.com"
+        ; smtpmail-smtp-server "smtp.gmail.com"
+        smtpmail-smtp-service 587
+        smtpmail-stream-type 'starttls
+        ;; so we don't get i-did-not-set--mail-host-address--so-tickle-me
+        mail-host-address "sas.upenn.edu"
+        user-full-name "John Kehayias"
+        user-mail-address "kehayias@sas.upenn.edu"
+        ;; format reply line as On day, month day, year at time,
+        ;; name with email wrote
+        message-citation-line-format "On %a, %b %d, %Y at %I:%M %p, %f wrote:\n"
+        message-citation-line-function 'message-insert-formatted-citation-line)
+#+end_src
 * Programming
 ** Magit
 Magit for source control with git/github. Some modifications necessary for dealing with paths in Windows with msys2.
@@ -1080,6 +1378,14 @@ This is a nice distraction free writing environment, but currently has a bug wit
 #+BEGIN_SRC emacs-lisp
   (use-package olivetti)
 #+END_SRC
+
+** Ledger
+#+begin_src emacs-lisp
+  (use-package ledger-mode
+    :mode ("\\.journal\\'"))
+
+  (use-package flycheck-ledger)
+#+end_src
 
 * Maxima math
 ** For Mac, with brew installed ghostscript, maxima, etc. (and TeX through MacTeX) we need to manually include the imaxima .el files.

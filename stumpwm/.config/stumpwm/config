@@ -72,6 +72,30 @@
 (define-key *top-map* (kbd "XF86AudioPrev") "exec mpc prev")
 (define-key *top-map* (kbd "XF86AudioNext") "exec mpc next")
 (define-key *top-map* (kbd "XF86AudioPlay") "exec mpc toggle")
+;; lock
+(define-key *top-map* (kbd "s-q") "exec ~/lock.sh")
+
+;; Emacs keys for Firefox (from StumpWM manual)
+(define-remapped-keys
+    `((,(lambda (win)
+          (string-equal "Firefox" (window-class win)))
+        ("C-n"   . "Down")
+        ("C-p"   . "Up")
+        ("C-f"   . "Right")
+        ("C-b"   . "Left")
+        ("C-v"   . "Next")
+        ("M-v"   . "Prior")
+        ("M-w"   . "C-c")
+        ("C-w"   . "C-x")
+        ("C-x"   . "C-w") ; switch close tab to 'cut'
+        ("C-s"   . "/")
+        ("C-/"   . "C-z")
+        ("C-y"   . "C-v")
+        ("M-<"   . "Home")
+        ("M->"   . "End")
+        ("C-M-b" . "M-Left")
+        ("C-M-f" . "M-Right")
+        ("C-k"   . ("C-S-End" "C-x")))))
 
 ;; rofi
 (define-key *top-map* (kbd "s-d") "exec rofi -show run")
@@ -179,6 +203,8 @@
 (run-shell-command "compton -b")
 ;; flashfocus
 (run-shell-command "flashfocus")
+;; lock on idle
+(run-shell-command "xss-lock -- ~/lock.sh")
 
 ;; xiccd seems to not fully load(?) X atom ICC profile, so do this also
 ;; but doesn't seem to work (need to wait for xiccd first?), and end up

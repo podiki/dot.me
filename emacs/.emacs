@@ -20,7 +20,8 @@
 
 (eval-when-compile
   (require 'use-package))
-(setq use-package-always-ensure t)
+(setq use-package-verbose 1
+      use-package-always-ensure t)
 
 (org-babel-load-file "~/codemonkey/dot.me/emacs/dotemacs.org")
 (custom-set-variables

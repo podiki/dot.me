@@ -209,7 +209,8 @@ Also tried adding some other [[https://stackoverflow.com/questions/3631220/fix-t
 ** Paradox
 for package listing and browsing
 #+BEGIN_SRC emacs-lisp
-  (use-package paradox)
+  (use-package paradox
+    :defer t)
 #+END_SRC
 
 ** Paths
@@ -887,6 +888,7 @@ No longer using this
 Sync with Google Calendar using org-gcal
 #+begin_src emacs-lisp
   (use-package org-gcal
+    :defer t
     :config
     (let* ((auth (car (auth-source-search :host "gcal")))
            (id (plist-get auth :user))
@@ -902,6 +904,7 @@ Sync with Google Calendar using org-gcal
 Pretty view with calfw
 #+begin_src emacs-lisp
   (use-package calfw
+    :defer t
     :config
     (require 'calfw-org))
 #+end_src
@@ -915,6 +918,7 @@ And org-super-agenda
 pdf-tools for viewing pdfs in emacs
 #+begin_src emacs-lisp
   (use-package pdf-tools
+    :defer t
     :config
     (pdf-tools-install)
     ;; open pdfs scaled to fit page
@@ -926,6 +930,7 @@ pdf-tools for viewing pdfs in emacs
 org-ref for reference management
 #+begin_src emacs-lisp
   (use-package org-ref
+    :defer t
     :config
     (let ((org-ref-dir (concat org-directory "/science-style-lr/")))
       (setq reftex-default-bibliography (list (concat org-ref-dir "references.bib"))
@@ -1322,6 +1327,7 @@ Using company for completions. Be sure to do `M-x jedi:install-server` whenever 
 *** Jupyter/IPython notebook
 #+BEGIN_SRC emacs-lisp
   (use-package ein
+    :defer t
     :config
     (require 'ein-dev)
     (setq ein:jupyter-default-server-command "/usr/bin/jupyter"
@@ -1496,6 +1502,7 @@ This is a nice distraction free writing environment, but currently has a bug wit
 
   ;; auto-complete using company-mode auctex and math backends
   (use-package company-auctex
+    :defer t
     :config
     (company-auctex-init))
   (use-package company-math
@@ -1526,6 +1533,7 @@ Make sure mp3info is installed (and found by emacs)
 #+BEGIN_SRC emacs-lisp
   (use-package emms-setup
     :ensure emms
+    :defer t
     :config
     (emms-devel)
     (emms-default-players)

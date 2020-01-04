@@ -324,7 +324,6 @@ And a function for switching between two (day/night) themes, modified from this 
     (set-face-attribute 'default nil :family "Iosevka Term" :weight 'normal :height 115)
     (set-fontset-font "fontset-default" nil (font-spec :name "Symbola")))
 #+END_SRC
-
 ** Modeline
 #+BEGIN_SRC emacs-lisp
   ;; powerline modeline
@@ -372,7 +371,17 @@ And a function for switching between two (day/night) themes, modified from this 
                (setq doom-modeline-github nil))
 #+END_SRC
 
-** IDO/smex
+** Dashboard
+#+begin_src emacs-lisp
+  (use-package dashboard
+    :config
+    (setq dashboard-startup-banner 'logo
+          dashboard-set-heading-icons t
+          dashboard-set-file-icons t
+          show-week-agenda-p t)
+    (dashboard-setup-startup-hook))
+#+end_src
+** IDO and smex
 Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matching, vertical display of completions, and smex for command ido. defadvice for opening files as root (via [[http://emacsredux.com/blog/2013/04/21/edit-files-as-root/][Emacs Redux]])
 #+BEGIN_SRC emacs-lisp
   ;; IDO mode
@@ -450,13 +459,88 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
     (ivy-mode 1)
     (setq ivy-use-virtual-buffers t ; include recent files and bookmarks
           ivy-count-format "(%d/%d) " ; display index and count
-          )
+          ;; fuzzy matching except for swiper
+          ivy-re-builders-alist '((swiper         . ivy--regex-plus)
+                                  (swiper-isearch . ivy--regex-plus)
+                                  (t              . ivy--regex-fuzzy)))
     :bind
     (("C-s"     . swiper-isearch)
      ("M-x"     . counsel-M-x)
-     ("C-x C-f" . counsel-find-file)))
+     ("C-x C-f" . counsel-find-file)
+     ("C-c C-r" . ivy-resume)))
 #+end_src
 
+#+begin_src emacs-lisp
+  (use-package swiper
+    :after ivy
+    :config
+    (setq swiper-action-recenter nil
+          swiper-goto-start-of-match t))
+#+end_src
+
+Floating display with ivy-posframe
+#+begin_src emacs-lisp
+  (use-package ivy-posframe
+    :config
+    (setq ivy-posframe-display-functions-alist
+          '((swiper          . nil)
+            ; (complete-symbol . ivy-posframe-display-at-point)
+            ; (counsel-M-x     . ivy-posframe-display-at-window-bottom-left)
+            (t               . ivy-posframe-display-at-point))
+          ivy-posframe-height-alist '((t . 20))
+          ivy-posframe-parameters '((internal-border-width . 10))
+          ivy-posframe-width 70)
+    (ivy-posframe-mode 1))
+#+end_src
+
+More info with ivy-rich (with config starting from a [[https://www.reddit.com/r/emacs/comments/ehjcu2/screenshot_polishing_my_emacs_who_said_an_old/fcmbozm/][Reddit post/comment]])
+#+begin_src emacs-lisp
+  (use-package ivy-rich
+    :preface
+    (defun ivy-rich-switch-buffer-icon (candidate)
+      (with-current-buffer
+          (get-buffer candidate)
+        (let ((icon (all-the-icons-icon-for-mode major-mode)))
+          (if (symbolp icon)
+              (all-the-icons-icon-for-mode 'fundamental-mode)
+            icon))))
+      :init
+    (setq ivy-rich-display-transformers-list ; max column width sum = (ivy-poframe-width - 1)
+          '(ivy-switch-buffer
+            (:columns
+             ((ivy-rich-switch-buffer-icon (:width 2))
+              (ivy-rich-candidate (:width 35))
+              (ivy-rich-switch-buffer-project (:width 15 :face success))
+              (ivy-rich-switch-buffer-major-mode (:width 13 :face warning)))
+             :predicate
+             (lambda (cand) (get-buffer cand)))
+            counsel-M-x
+            (:columns
+             ((counsel-M-x-transformer (:width 35))
+              (ivy-rich-counsel-function-docstring (:width 34 :face font-lock-doc-face))))
+            counsel-describe-function
+            (:columns
+             ((counsel-describe-function-transformer (:width 35))
+              (ivy-rich-counsel-function-docstring (:width 34 :face font-lock-doc-face))))
+            counsel-describe-variable
+            (:columns
+             ((counsel-describe-variable-transformer (:width 35))
+              (ivy-rich-counsel-variable-docstring (:width 34 :face font-lock-doc-face))))
+            package-install
+            (:columns
+             ((ivy-rich-candidate (:width 25))
+              (ivy-rich-package-version (:width 12 :face font-lock-comment-face))
+              (ivy-rich-package-archive-summary (:width 7 :face font-lock-builtin-face))
+              (ivy-rich-package-install-summary (:width 23 :face font-lock-doc-face))))
+            counsel-recentf
+            (:columns
+             ((ivy-rich-candidate (:width 0.8)) ; return the candidate itself
+              (ivy-rich-file-last-modified-time (:face font-lock-comment-face)))) ; return the last modified time of the file
+            ))
+    :config
+    (ivy-rich-mode +1)
+    (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
+#+end_src
 ** which-key
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
@@ -969,6 +1053,62 @@ org-noter to take notes associated with pdfs
   (use-package org-noter
     :config (setq org-noter-default-notes-file-names '("notes.org")
                   org-noter-notes-search-path (list (concat org-directory "/science-style-lr/"))))
+#+end_src
+** Clocktable link fix
+Links don't work well in a clocktable, at least when exported to html. The issue is how the links are created, which just use the headline name, but not uniquely. The solution is to have ~CUSTOM_ID~ set for each headline, make sure these are generated as needed, and use them to create a unique link.
+
+This is a function to get and create ~CUSTOM_ID~ for an entry, from [[https://writequit.org/articles/emacs-org-mode-generate-ids.html][this blog post]], which also goes into some detail about why this is needed more generally.
+
+#+begin_src emacs-lisp
+  (defun my/org-custom-id-get (&optional pom create prefix)
+    "Get the CUSTOM_ID property of the entry at point-or-marker POM.
+     If POM is nil, refer to the entry at point. If the entry does
+     not have an CUSTOM_ID, the function returns nil. However, when
+     CREATE is non nil, create a CUSTOM_ID if none is present
+     already. PREFIX will be passed through to `org-id-new'. In any
+     case, the CUSTOM_ID of the entry is returned."
+    (interactive)
+    (org-with-point-at pom)
+    (let ((id (org-entry-get nil "CUSTOM_ID")))
+      (cond
+        ((and id (stringp id) (string-match "\\S-" id))
+         id)
+        (create
+         (setq id (org-id-new (concat prefix "h")))
+         (org-entry-put pom "CUSTOM_ID" id)
+         (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
+         id))))
+#+end_src
+
+Now we add advice to the clocktable generating code to give ids to all entries that the clocktable will use. While we can use the ~:match~ parameter, ~:scope~ doesn't match exactly from it's use in a clocktable to ~org-map-entries~ so it becomes ~tree~ in some cases (note: some cases aren't handled, like ~treeN~). The advice function has to run before the clock code or else the adding of the ids messes up some formatting (probably because the point no longer matches where it started).
+
+#+begin_src emacs-lisp
+  (defun my/org-custom-ids-generate (args)
+    (let* ((params (org-combine-plists org-clocktable-defaults args))
+           (match (plist-get params :match))
+           (scope (plist-get params :scope)))
+      (org-map-entries (lambda () (my/org-custom-id-get (point) 'create))
+                       match
+                       (if (or (eq scope 'tree)
+                               (eq scope 'subtree))
+                           'tree
+                         scope))))
+
+  (eval-after-load "org-clock"
+    '(advice-add 'org-dblock-write:clocktable
+    :before
+    #'my/org-custom-ids-generate))
+#+end_src
+
+Finally, we do a quick and dirty hack to patch (using el-patch) the clocktable formatting code to use these ids to generate better links.
+
+#+begin_src emacs-lisp
+  (use-package advice-patch)
+
+  (eval-after-load "org-clock"
+    '(advice-patch 'org-clock-get-table-data
+      '(progn (ignore search) (format "#%s" (my/org-custom-id-get nil t)))
+      '(format "file:%s::%s" (buffer-file-name) search)))
 #+end_src
 * Email
 ** mu4e

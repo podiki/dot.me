@@ -3,7 +3,6 @@
 * Basics and General Config
 ** Custom-set-variables
 #+BEGIN_SRC emacs-lisp
-
   (custom-set-variables
    ;; custom-set-variables was added by Custom.
    ;; If you edit it by hand, you could mess it up, so be careful.
@@ -11,19 +10,8 @@
    ;; If there is more than one, they won't work right.
    '(custom-safe-themes
      (quote
-       ("8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" "b571f92c9bfaf4a28cb64ae4b4cdbda95241cd62cf07d942be44dc8f46c491f4" "f5eb916f6bd4e743206913e6f28051249de8ccfd070eae47b5bde31ee813d55f" "26614652a4b3515b4bbbb9828d71e206cc249b67c9142c06239ed3418eff95e2" "f0b0710b7e1260ead8f7808b3ee13c3bb38d45564e369cbe15fc6d312f0cd7a0" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "e56f1b1c1daec5dbddc50abd00fcd00f6ce4079f4a7f66052cf16d96412a09a9" "b71d5d49d0b9611c0afce5c6237aacab4f1775b74e513d8ba36ab67dfab35e5a" "628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "9dae95cdbed1505d45322ef8b5aa90ccb6cb59e0ff26fef0b8f411dfc416c552" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" "756597b162f1be60a12dbd52bab71d40d6a2845a3e3c2584c6573ee9c332a66e" "cdc7555f0b34ed32eb510be295b6b967526dd8060e5d04ff0dce719af789f8e5" "6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" default)))
- '(paradox-github-token t))
-
-  ;; Package manager and sources, using Cask
-;;  (when (memq window-system '(mac ns))
-;;    (let ((default-directory "/usr/local/share/emacs/site-lisp/"))
-;;      (normal-top-level-add-subdirs-to-load-path))
-;;    (require 'cask "cask.el"))
-;;  (when (memq window-system '(w32))
-;;    (require 'cask "~/.cask/cask.el"))
-;;  (cask-initialize)
-;;  (require 'pallet)
-;;  (pallet-mode t)
+      ("8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" "b571f92c9bfaf4a28cb64ae4b4cdbda95241cd62cf07d942be44dc8f46c491f4" "f5eb916f6bd4e743206913e6f28051249de8ccfd070eae47b5bde31ee813d55f" "26614652a4b3515b4bbbb9828d71e206cc249b67c9142c06239ed3418eff95e2" "f0b0710b7e1260ead8f7808b3ee13c3bb38d45564e369cbe15fc6d312f0cd7a0" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "e56f1b1c1daec5dbddc50abd00fcd00f6ce4079f4a7f66052cf16d96412a09a9" "b71d5d49d0b9611c0afce5c6237aacab4f1775b74e513d8ba36ab67dfab35e5a" "628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "9dae95cdbed1505d45322ef8b5aa90ccb6cb59e0ff26fef0b8f411dfc416c552" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" "756597b162f1be60a12dbd52bab71d40d6a2845a3e3c2584c6573ee9c332a66e" "cdc7555f0b34ed32eb510be295b6b967526dd8060e5d04ff0dce719af789f8e5" "6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" default)))
+   '(paradox-github-token t))
 #+END_SRC
 
 ** Some variables
@@ -388,6 +376,7 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
 #+BEGIN_SRC emacs-lisp
   ;; IDO mode
   (use-package ido
+    :disabled
     :config
     (ido-mode 1)
     (setq ido-enable-flex-matching 1)
@@ -402,7 +391,7 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
       (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name)))))
   ;; Use ido everywhere
   (use-package ido-completing-read+
-    :ensure t
+    :disabled
     :config
     (ido-ubiquitous-mode 1))
 
@@ -443,7 +432,7 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
   ;;   (global-discover-mode 1))
 
   ;; expand region intelligently
-  (global-set-key (kbd "C-=") 'er/expand-region)
+  ;; (global-set-key (kbd "C-=") 'er/expand-region)
 
   ;; multiple cursors
   (use-package multiple-cursors
@@ -453,7 +442,7 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
            ("C-c C-<"     . mc/mark-all-like-this)))
 #+END_SRC
 
-** ivy
+** ivy and friends
 #+begin_src emacs-lisp
   (use-package ivy
     :config
@@ -472,12 +461,21 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
      ("C-c C-r" . ivy-resume)))
 #+end_src
 
+swiper
 #+begin_src emacs-lisp
   (use-package swiper
     :after ivy
     :config
     (setq swiper-action-recenter nil
           swiper-goto-start-of-match t))
+#+end_src
+
+counsel
+#+begin_src emacs-lisp
+  (use-package counsel
+    :after swiper
+    :bind (("C-x C-r" . counsel-recentf)
+           ("<f7>"    . counsel-imenu)))
 #+end_src
 
 Floating display with ivy-posframe
@@ -488,10 +486,10 @@ Floating display with ivy-posframe
           '((swiper          . nil)
             ; (complete-symbol . ivy-posframe-display-at-point)
             ; (counsel-M-x     . ivy-posframe-display-at-window-bottom-left)
-            (t               . ivy-posframe-display-at-point))
+            (t               . ivy-posframe-display-at-frame-bottom-window-center))
           ivy-posframe-height-alist '((t . 20))
           ivy-posframe-parameters '((internal-border-width . 10))
-          ivy-posframe-width 70)
+          ivy-posframe-width 75)
     (ivy-posframe-mode 1))
 #+end_src
 
@@ -536,12 +534,28 @@ More info with ivy-rich (with config starting from a [[https://www.reddit.com/r/
               (ivy-rich-package-install-summary (:width 23 :face font-lock-doc-face))))
             counsel-recentf
             (:columns
-             ((ivy-rich-candidate (:width 0.8)) ; return the candidate itself
+             ((ivy-rich-candidate (:width 35)) ; return the candidate itself
               (ivy-rich-file-last-modified-time (:face font-lock-comment-face)))) ; return the last modified time of the file
             ))
     :config
     (ivy-rich-mode +1)
     (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
+#+end_src
+
+Clocking helper
+#+begin_src emacs-lisp
+  (use-package counsel-org-clock
+    :config
+    (setq counsel-org-clock-default-action 'clock-dwim
+          counsel-org-clock-goto-fallback-function #'org-clock-in-last)
+    :bind
+    (("M-g M-j" . counsel-org-clock-goto)
+     ("<f8>"    . counsel-org-clock-context)))
+#+end_src
+
+Hydra
+#+begin_src emacs-lisp
+  (use-package hydra)
 #+end_src
 ** which-key
 #+BEGIN_SRC emacs-lisp
@@ -645,8 +659,8 @@ More info with ivy-rich (with config starting from a [[https://www.reddit.com/r/
 #+BEGIN_SRC emacs-lisp
   ;; color-identifiers-mode
   (use-package color-identifiers-mode
-    :init
-    (add-hook 'after-init-hook 'global-color-identifiers-mode))
+    :hook
+    (after-init . global-color-identifiers-mode))
 
   ;; highlight symbols in buffer
   (use-package highlight-symbol
@@ -656,7 +670,8 @@ More info with ivy-rich (with config starting from a [[https://www.reddit.com/r/
            ("M-<F3>" . highlight-symbol-query-replace))
     :config
     (setq highlight-symbol-idle-delay 0)
-    (add-hook 'prog-mode-hook 'highlight-symbol-mode))
+    :hook
+    (prog-mode . highlight-symbol-mode))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -758,7 +773,7 @@ More info with ivy-rich (with config starting from a [[https://www.reddit.com/r/
 *** Neotree for a file tree side panel
 #+BEGIN_SRC emacs-lisp
   (use-package neotree
-    :bind ("<f8>" . neotree-toggle)
+    :bind ("<f9>" . neotree-toggle)
     :config
     (setq neo-theme (if window-system 'icons 'arrow))
     (setq neo-smart-open t))
@@ -783,7 +798,7 @@ More info with ivy-rich (with config starting from a [[https://www.reddit.com/r/
 
   ;; get rid of `find-file-read-only' and replace it with something
   ;; more useful.
-  (global-set-key (kbd "C-x C-r") 'ido-recentf-open)
+  ;; (global-set-key (kbd "C-x C-r") 'ido-recentf-open) ; now counsel
 
   ;; enable recent files mode.
   (recentf-mode 1)
@@ -823,8 +838,7 @@ More info with ivy-rich (with config starting from a [[https://www.reddit.com/r/
     :defer t
     :config
     (setq org-directory (concat dropbox "org"))
-    (add-hook 'org-mode-hook 'visual-line-mode)
-    ;; use indented view by default
+      ;; use indented view by default
     (setq org-startup-indented t)
     ;; syntax highlight code blocks
     (setq org-src-fontify-natively t)
@@ -903,25 +917,28 @@ More info with ivy-rich (with config starting from a [[https://www.reddit.com/r/
     (setq org-agenda-files (list (concat org-directory "/todoes.org")
                                  (concat org-directory "/gcal-main.org")
                                  (concat org-directory "/gcal-cw.org")
-                                 (concat org-directory "/2019-fall-notes.org")))
+                                 (concat org-directory "/2020-spring-notes.org")))
     ;; todo capture template with default priority and scheduled for today
     (setq org-capture-templates
           '(("t" "todo" entry (file+headline ("todoes.org") "Tasks")
              "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n")
-            ("e" "email todo" entry (file+olp "2019-fall-notes.org"
-                                     "Week 1" "Email")
+            ("e" "email todo" entry (file+olp "2020-spring-notes.org"
+                                     "Pre-semester")
              "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")))
     :bind
     (("C-c a" . org-agenda)
+     ("<f6>"  . org-agenda-list)
      ("C-c c" . org-capture)
      ("C-c l" . org-store-link)
-     ("C-c b" . org-switchb)))
+     ("C-c b" . org-switchb))
+    :hook
+    (org-mode . visual-line-mode))
 
   ;; fancy utf-8 bullets
   (use-package org-bullets
     :ensure t ; no longer included in org-plus-contrib
-    :config
-    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+    :hook
+    (org-mode . (lambda () (org-bullets-mode 1))))
 
   ;; htmlize for nicer html output
   (use-package htmlize)
@@ -983,7 +1000,7 @@ Sync with Google Calendar using org-gcal
             org-gcal-client-secret secret
             org-gcal-file-alist
             '(("sweet.cheesus@gmail.com" .  "~/Dropbox/org/gcal-main.org")
-              ("r5vjfchooeucd91dhoh8mq2f7ngpvmmk@import.calendar.google.com" . "~/Dropbox/org/gcal-cw.org"))
+              ("u8vo3jc5fiva545r6icssgap369nti8b@import.calendar.google.com" . "~/Dropbox/org/gcal-cw.org"))
             org-gcal-notify-p nil)))
 #+end_src
 
@@ -1284,9 +1301,9 @@ Use mu4e-alert
                   " AND NOT maildir:/gmail/all"
                   " AND NOT flag:trashed"
                   " AND NOT maildir:/gmail/trash"))
-    :init
-    (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
-    (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display))
+    :hook
+    ((after-init . mu4e-alert-enable-notifications)
+     (after-init . mu4e-alert-enable-mode-line-display)))
 #+end_src
 ** Sending mail
 Sending mail with built-in message mode and smtpmail
@@ -1372,8 +1389,8 @@ Some keybindings to behave more like auto-complete (in another use-package for n
 #+BEGIN_SRC emacs-lisp
   ;; flycheck
   (use-package flycheck
-    :init
-    (add-hook 'after-init-hook #'global-flycheck-mode))
+    :hook
+    (after-init . global-flycheck-mode))
   ;; color the modeline by flycheck status
   ;; (compatibility issue with previous color theme/powerline :()
   ;; seems okay now with smart-mode-line
@@ -1482,6 +1499,7 @@ Set highlight background color to be slightly darker than the background color (
 Using company for completions. Be sure to do `M-x jedi:install-server` whenever jedi is updated (and on initial install). Requires virtualenv (python-virtualenv on Arch).
 #+BEGIN_SRC emacs-lisp
   (use-package company-jedi
+    :defer t
     :config
     (add-hook 'python-mode-hook 'jedi:setup)
     (setq jedi:complete-on-dot t)

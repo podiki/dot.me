@@ -556,6 +556,7 @@ Clocking helper
 Hydra
 #+begin_src emacs-lisp
   (use-package hydra)
+  (use-package ivy-hydra)
 #+end_src
 ** which-key
 #+BEGIN_SRC emacs-lisp
@@ -889,17 +890,20 @@ Hydra
     (setq org-duration-format (quote h:mm))
     ;; todo and agenda customization
     (setq org-todo-keywords '((sequence "TODO(t)" "WAITING" "|" "ABANDONDED(b)" "DONE(d)")))
+    ;; enforce dependencies
+    (setq org-enforce-todo-dependencies t
+          org-enforce-todo-checkbox-dependencies t)
     ;; warn of upcoming deadlines in next week
     (setq org-deadline-warning-days 7)
     ;; show tasks for next fornight
     (setq org-agenda-span 'fortnight)
-    ;;don't show tasks as scheduled if they are already shown as a deadline
+    ;; don't show tasks as scheduled if they are already shown as a deadline
     (setq org-agenda-skip-scheduled-if-deadline-is-shown t)
-    ;;don't give awarning color to tasks with impending deadlines
-    ;;if they are scheduled to be done
+    ;; don't give awarning color to tasks with impending deadlines
+    ;; if they are scheduled to be done
     (setq org-agenda-skip-deadline-prewarning-if-scheduled (quote pre-scheduled))
-    ;;don't show tasks that are scheduled or have deadlines in the
-    ;;normal todo list
+    ;; don't show tasks that are scheduled or have deadlines in the
+    ;; normal todo list
     (setq org-agenda-todo-ignore-deadlines (quote all))
     (setq org-agenda-todo-ignore-scheduled (quote all))
     ;; sort tasks in order of when they are due and then by priority
@@ -920,7 +924,7 @@ Hydra
                                  (concat org-directory "/2020-spring-notes.org")))
     ;; todo capture template with default priority and scheduled for today
     (setq org-capture-templates
-          '(("t" "todo" entry (file+headline ("todoes.org") "Tasks")
+          '(("t" "todo" entry (file+headline "todoes.org" "Tasks")
              "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n")
             ("e" "email todo" entry (file+olp "2020-spring-notes.org"
                                      "Pre-semester")
@@ -1493,7 +1497,8 @@ Set highlight background color to be slightly darker than the background color (
 #+END_SRC
 ** Python
 #+BEGIN_SRC emacs-lisp
-  (use-package cython-mode)
+  (use-package cython-mode
+    :defer t)
 #+END_SRC
 *** Jedi
 Using company for completions. Be sure to do `M-x jedi:install-server` whenever jedi is updated (and on initial install). Requires virtualenv (python-virtualenv on Arch).

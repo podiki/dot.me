@@ -908,10 +908,10 @@ Hydra
     ;; normal todo list
     (setq org-agenda-todo-ignore-deadlines (quote all))
     (setq org-agenda-todo-ignore-scheduled (quote all))
-    ;; sort tasks in order of when they are due and then by priority
+    ;; sort tasks in order of tiem, then when they are due, then by priority
     (setq org-agenda-sorting-strategy
       (quote
-       ((agenda deadline-up priority-down)
+       ((agenda time-up deadline-up priority-down category-keep)
         (todo priority-down category-keep)
         (tags priority-down category-keep)
         (search category-keep))))
@@ -920,10 +920,10 @@ Hydra
     (setq org-lowest-priority ?C)
     (setq org-default-priority ?A)
     ;; todo file(s)
-    (setq org-agenda-files (list (concat org-directory "/todoes.org")
+    (setq org-agenda-files (list (concat org-directory "/2020-spring-notes.org")
+                                 (concat org-directory "/todoes.org")
                                  (concat org-directory "/gcal-main.org")
-                                 (concat org-directory "/gcal-cw.org")
-                                 (concat org-directory "/2020-spring-notes.org")))
+                                 (concat org-directory "/gcal-cw.org")))
     ;; todo capture template with default priority and scheduled for today
     (setq org-capture-templates
           '(("t" "todo" entry (file+headline "todoes.org" "Tasks")

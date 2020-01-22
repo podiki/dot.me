@@ -283,10 +283,20 @@ And a function for switching between two (day/night) themes, modified from this 
         (progn (setq frame-background-mode 'light)
                (load-theme 'zaiste t)))
     ;; reload highlight-sexp-mode to update highlight color
-    ;; but seems to leave some parts highlighted incorrectly
-    (if (bound-and-true-p highlight-sexp-mode)
-        (progn (highlight-sexp-mode)
-               (highlight-sexp-mode))))
+    ;; (not checking with if bound-and-true-p highlight-sexp-mode)
+    ;; and re-fontify all buffers (e.g. reset org-mode * color)
+    (save-current-buffer
+      (mapcar (lambda (buffer)
+                (set-buffer buffer)
+                (let ((hsm highlight-sexp-mode))
+                  (when hsm
+                    ;; explicitly remove the sexp overlay to prevent it
+                    ;; sticking around with wrong color
+                    (hl-sexp-delete-overlay)
+                    (highlight-sexp-mode)
+                    (highlight-sexp-mode))
+                  (font-lock-fontify-buffer)))
+              (buffer-list))))
 #+END_SRC
 *** Fonts
 #+BEGIN_SRC emacs-lisp
@@ -547,7 +557,8 @@ Clocking helper
   (use-package counsel-org-clock
     :config
     (setq counsel-org-clock-default-action 'clock-dwim
-          counsel-org-clock-goto-fallback-function #'org-clock-in-last)
+          counsel-org-clock-goto-fallback-function #'org-clock-in-last
+          counsel-org-clock-history-limit 10)
     :bind
     (("M-g M-j" . counsel-org-clock-goto)
      ("<f8>"    . counsel-org-clock-context)))

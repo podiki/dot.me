@@ -35,6 +35,9 @@
 (setf *mouse-focus-policy* :sloppy)
 (run-shell-command "xsetroot -cursor_name left_ptr")
 
+;; for scrolling not working (only on desktop it seems)
+(setf (getenv "GDK_CORE_DEVICE_EVENTS") "1")
+
 ;;==============================================================================
 ;; modules
 ;;==============================================================================
@@ -194,7 +197,7 @@
 ;; use dex for autostart .desktop entries
 (run-shell-command "dex -ae stump")
 (run-shell-command "udiskie --tray")
-(run-shell-command "xscreensaver -no-splash")
+; (run-shell-command "xscreensaver -no-splash")
 (run-shell-command "blueshift-tray -c ~/blueshift.conf")
 (run-shell-command "volumeicon")
 ;; polybar

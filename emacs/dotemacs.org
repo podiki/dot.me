@@ -1257,7 +1257,7 @@ Mixed variable and fixed pitch fonts
                             (mu4e~proc-move docid
                                             (mu4e~mark-check-target target)
                                             "-N"))))
-    
+
       ;; rename draft autosaves so they don't get synced by mbsync
       ;; from https://emacs.stackexchange.com/a/24430
       (defun draft-auto-save-buffer-name-handler (operation &rest args)
@@ -1277,7 +1277,7 @@ Mixed variable and fixed pitch fonts
 
       (add-to-list 'file-name-handler-alist
                    '("drafts/cur/" . draft-auto-save-buffer-name-handler))
-    
+
       ;; viewing options
       ;; view in browser action
       (add-to-list 'mu4e-view-actions
@@ -1287,11 +1287,11 @@ Mixed variable and fixed pitch fonts
       ;; don't pollute recentf with mail
       (setq recentf-exclude '("^/tmp/" "^/home/john/\\.mail/"))
       :hook
-      (mu4e-view-mode-hook . visual-line-mode)
+      (mu4e-view-mode . visual-line-mode)
       ;; emulate some eww key-bindings for html view
-      (mu4e-view-mode-hook . (lambda()
-                               (local-set-key (kbd "<tab>") 'shr-next-link)
-                               (local-set-key (kbd "<backtab>") 'shr-previous-link))))
+      (mu4e-view-mode . (lambda()
+                          (local-set-key (kbd "<tab>") 'shr-next-link)
+                          (local-set-key (kbd "<backtab>") 'shr-previous-link))))
 #+end_src
 *** org-mu4e
 #+begin_src emacs-lisp

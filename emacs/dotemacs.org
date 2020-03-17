@@ -1232,6 +1232,8 @@ Mixed variable and fixed pitch fonts
             mu4e-use-fancy-chars t
             ;; attempt to show images when viewing messages
             mu4e-view-show-images t
+            ;; show addresses
+            mu4e-view-show-addresses t
             ;; prefer html
             mu4e-view-prefer-html t
             ;; don't show related messages

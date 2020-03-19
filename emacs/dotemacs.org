@@ -1357,9 +1357,9 @@ Magit for source control with git/github. Some modifications necessary for deali
     ;; :pin melpa-stable
     :config
     (setq magit-last-seen-setup-instructions "1.4.0")
-    :bind (("\C-xg" . magit-status)))
+    :bind (("\C-xg" . magit-status))
     :init
-    (add-hook 'magit-process-find-password-functions 'magit-process-password-auth-source)
+    (add-hook 'magit-process-find-password-functions 'magit-process-password-auth-source))
 
   ;; for windows paths in msys2 with default install directory
   ;; modified from solutions in https://github.com/magit/magit/issues/1318

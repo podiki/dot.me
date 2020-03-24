@@ -957,6 +957,13 @@ Hydra
     (org-mode . visual-line-mode))
 
   ;; fancy utf-8 bullets
+  (use-package org-superstar
+    :hook
+    (org-mode . (lambda () (org-superstar-mode 1)))
+    :config
+    (org-superstar-configure-like-org-bullets)
+    (setf org-superstar-special-todo-items t))
+
   (use-package org-bullets
     :ensure t ; no longer included in org-plus-contrib
     :hook

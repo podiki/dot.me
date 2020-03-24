@@ -66,11 +66,11 @@
 (define-key *root-map* (kbd "c") "exec termite")
 ;; pule audio controls
 (define-key *top-map* (kbd "XF86AudioRaiseVolume")
-  "exec pactl set-sink-volume 0 +2.5%")
+  "exec pactl set-sink-volume @DEFAULT_SINK@ +2.5%")
 (define-key *top-map* (kbd "XF86AudioLowerVolume")
-  "exec pactl set-sink-volume 0 -2.5%")
+  "exec pactl set-sink-volume @DEFAULT_SINK@ -2.5%")
 (define-key *top-map* (kbd "XF86AudioMute")
-  "exec pactl set-sink-mute 0 toggle")
+  "exec pactl set-sink-mute @DEFAULT_SINK@ toggle")
 ;; mpc media keys
 (define-key *top-map* (kbd "XF86AudioPrev") "exec mpc prev")
 (define-key *top-map* (kbd "XF86AudioNext") "exec mpc next")

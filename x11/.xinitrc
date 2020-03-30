@@ -31,7 +31,11 @@ export QT_QPA_PLATFORMTHEME="qt5ct"
 
 # DPI settings
 # set correct dpi
-xrandr --dpi 192
+case $HOSTNAME in
+    (azazel) xrandr --dpi 192;;
+    (raven)  xrandr --dpi 144;;
+esac
+
 # After moving from infinality to freetype 2.7/fontconfig 2.12
 # suddenly fonts got really large, turned dpi down from 288
 # commented out below settings

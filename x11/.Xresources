@@ -3,7 +3,15 @@ Xcursor.theme: Breeze_Snow
 Xcursor.size: 48
 
 ! DPI
-Xft.dpi: 192
+#ifndef DPI
+    #ifdef SRVR_azazel
+        #define DPI 192
+    #elif SRVR_raven
+        #define DPI 144
+    #endif
+#endif
+
+Xft.dpi: DPI
 
 ! Fontconfig settings
 Xft.autohint: 0

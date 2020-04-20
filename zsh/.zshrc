@@ -75,6 +75,13 @@ if [[ "$TERM" == (screen*|xterm*|rxvt*|termite*) ]]; then
 fi
 
 #
+# ssh with pgp
+#
+export GPG_TTY="$(tty)"
+export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+gpgconf --launch gpg-agent
+
+#
 # zplug
 #
 source /usr/share/zsh/scripts/zplug/init.zsh

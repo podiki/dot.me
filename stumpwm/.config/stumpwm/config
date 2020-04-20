@@ -3,16 +3,6 @@
 (in-package :stumpwm)
 
 ;;==============================================================================
-;; swank setup
-;;==============================================================================
-
-(require :swank)
-(swank-loader:init)
-(swank:create-server :port 4004
-                     :style swank:*communication-style*
-                     :dont-close t)
-
-;;==============================================================================
 ;; basic settings
 ;;==============================================================================
 
@@ -32,7 +22,7 @@
 (set-maxsize-gravity :center)
 (set-transient-gravity :center)
 
-(setf *mouse-focus-policy* :sloppy)
+(setf *mouse-focus-policy* :click)
 (run-shell-command "xsetroot -cursor_name left_ptr")
 
 ;; for scrolling not working (only on desktop it seems)
@@ -102,6 +92,7 @@
 
 ;; rofi
 (define-key *top-map* (kbd "s-d") "exec rofi -show run")
+(define-key *top-map* (kbd "s-p") "exec rofi-pass")
 
 ;; scratchpad
 (defcommand scratchpad-term () ()
@@ -202,8 +193,8 @@
 (run-shell-command "volumeicon")
 ;; polybar
 (run-shell-command "$HOME/.config/polybar/launch.sh")
-;; compositing with compton
-(run-shell-command "compton -b")
+;; compositing with picom
+(run-shell-command "picom -b")
 ;; flashfocus
 (run-shell-command "flashfocus")
 ;; lock on idle

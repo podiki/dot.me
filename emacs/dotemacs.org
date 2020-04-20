@@ -1471,7 +1471,7 @@ Set up to behave like paredit in lisp modes
     :ensure nil
     :init
     (setq inferior-lisp-program "sbcl")
-    (setq slime-contribs '(slime-fancy slime-indentation slime-banner))
+    (setq slime-contribs '(slime-banner))
     ;; Use Common Lisp indenting
     (setq lisp-indent-function 'common-lisp-indent-function)
     (add-hook 'lisp-mode-hook (lambda () (slime-mode t)))

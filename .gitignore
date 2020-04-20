@@ -1,2 +1,6 @@
+### Emacs ###
+# -*- mode: gitignore; -*-
+*~
+\#*\#
 dotemacs.el
 error.log

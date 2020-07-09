@@ -803,6 +803,9 @@ Hydra
   ;; use ibuffer (like dired) for buffer list
   (global-set-key (kbd "C-x C-b") 'ibuffer)
 
+  ;; global revert mode (check for file changes)
+  (global-auto-revert-mode 1)
+
   ;;
   ;; recent files list with ido completion (via masteringemacs)
   ;;
@@ -1003,18 +1006,18 @@ This code redefines how images are handled in HTML export to embed them in the c
               (file-name-nondirectory source))))
 #+END_SRC
 ** Blog posting with org2blog
-No longer using this
+For [[https://boilingsteam.com][Boiling Steam posts]]
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package org2blog-autoloads
-  ;;   :ensure org2blog
-  ;;   :defer t
-  ;;   :config
-  ;;   (require 'auth-source)
-  ;;   (setq org2blog/wp-blog-alist
-  ;;         `(("stuff-blog"
-  ;;            :url "http://stuff.9bladed.com/xmlrpc.php"
-  ;;            :username ,(getf (car (auth-source-search :host "stuff-blog"))
-  ;;                             :user)))))
+  (use-package org2blog
+    :defer t
+    :config
+    (require 'auth-source)
+    (setq org2blog/wp-blog-alist
+          `(("boilingsteam"
+             :url "https://boilingsteam.com/xmlrpc.php"
+             :username ,(getf (car (auth-source-search :host "boilingsteam"))
+                              :user)))
+          org2blog/wp-image-upload t))
 #+END_SRC
 ** Calendar
 Sync with Google Calendar using org-gcal

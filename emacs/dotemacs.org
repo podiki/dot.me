@@ -319,11 +319,21 @@ And a function for switching between two (day/night) themes, modified from this 
                                 :weight 'normal))))
 
   (when (memq window-system '(x))
-    (set-face-attribute 'default nil :family "mplus Nerd Font" :weight 'light :height 110)
-    (set-face-attribute 'fixed-pitch nil :family "mplus Nerd Font" :weight 'light :height 110)
+    (set-face-attribute 'default nil :family "Hack Nerd Font" :weight 'light :height 110)
     (set-fontset-font "fontset-default" nil (font-spec :name "Symbola"))
     (set-face-attribute 'variable-pitch nil :family "M+ 2p Light" :height 120))
 #+END_SRC
+
+Mixed pitches
+#+begin_src emacs-lisp
+  (use-package mixed-pitch
+    :config
+    ;; so that links in tables don't mess up alignment
+    (add-to-list 'mixed-pitch-fixed-pitch-faces 'org-link)
+    :hook
+    ;; use in all text modes
+    (text-mode . mixed-pitch-mode))
+#+end_src
 ** Modeline
 #+BEGIN_SRC emacs-lisp
   ;; powerline modeline
@@ -978,10 +988,7 @@ Hydra
 ** For presentations with reveal.js
 Moved to newer fork org-re-reveal (but org-reveal active again?)
 #+BEGIN_SRC emacs-lisp
-  (use-package org-re-reveal
-               :config
-               ;; head.min.js (first file in the list) not needed for recent versions
-              (setq org-re-reveal-script-files (cdr org-re-reveal-script-files)))
+  (use-package org-re-reveal)
 
   ;; (use-package ox-reveal
   ;;   :config
@@ -1169,19 +1176,19 @@ For easy grabbing of links
     ("C-x p i" . org-cliplink))
 #+end_src
 
-Mixed variable and fixed pitch fonts
+Mixed variable and fixed pitch fonts now handled by ~mixed-pitch~ package instead
 #+begin_src emacs-lisp
-  (use-package org-variable-pitch
-    :hook
-    (org-mode . org-variable-pitch-minor-mode)
-    :config
-    ;; fonts
-    (setq org-variable-pitch-fixed-font (face-attribute 'fixed-pitch :family))
-    (set-face-attribute 'org-variable-pitch-face nil
-                        :weight (face-attribute 'fixed-pitch :weight)
-                        :height (face-attribute 'fixed-pitch :height))
-    ;; so that links in tables don't mess up alignment
-    (add-to-list 'org-variable-pitch-fixed-faces 'org-link))
+  ;; (use-package org-variable-pitch
+  ;;   :hook
+  ;;   (org-mode . org-variable-pitch-minor-mode)
+  ;;   :config
+  ;;   ;; fonts
+  ;;   (setq org-variable-pitch-fixed-font (face-attribute 'fixed-pitch :family))
+  ;;   (set-face-attribute 'org-variable-pitch-face nil
+  ;;                       :weight (face-attribute 'fixed-pitch :weight)
+  ;;                       :height (face-attribute 'fixed-pitch :height))
+  ;;   ;; so that links in tables don't mess up alignment
+  ;;   (add-to-list 'org-variable-pitch-fixed-faces 'org-link))
 #+end_src
 * Email
 ** mu4e

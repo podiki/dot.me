@@ -889,9 +889,10 @@ Hydra
         (maxima . t)))
     ;; To partially italic/bold/underline/strikethrough
     ;; from http://stackoverflow.com/a/24540651
-    (setcar org-emphasis-regexp-components " \t('\"{[:alpha:]")
-    (setcar (nthcdr 1 org-emphasis-regexp-components) "[:alpha:]- \t.,:!?;'\")}\\")
-    (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
+    ;; (found this too distracting with URLs messing up formatting)
+    ;; (setcar org-emphasis-regexp-components " \t('\"{[:alpha:]")
+    ;; (setcar (nthcdr 1 org-emphasis-regexp-components) "[:alpha:]- \t.,:!?;'\")}\\")
+    ;; (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
     ;; LaTeX customization
     (require 'ox-latex)
     (setq org-latex-pdf-process (list "latexmk -f -lualatex -pdf %f"))

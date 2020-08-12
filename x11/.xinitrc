@@ -61,4 +61,6 @@ fi
 # exec i3 # --shmlog-size=26214400
 
 # stumpwm
-exec sbcl --load ~/.config/stumpwm/startstump.lisp
+#exec sbcl --load ~/.config/stumpwm/startstump.lisp
+export SBCL_HOME=/usr/lib/sbcl/
+/home/john/quicklisp/local-projects/stumpwm/stumpwm

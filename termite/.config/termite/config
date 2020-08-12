@@ -3,5 +3,5 @@ font = Hack Nerd Font Mono 10
 scrollback_lines = 10000
 
 [colors]
-# 20% background transparency (requires a compositor)
-#background = rgba(64, 64, 64, 0.9)
+# background transparency (requires a compositor)
+background = rgba(0, 0, 0, 0.75)

@@ -76,6 +76,15 @@ And have some indicators in fringe
 #+BEGIN_SRC emacs-lisp
 ;  (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 #+END_SRC
+
+Also, prevent wide lines by wrapping at fill column
+#+begin_src emacs-lisp
+  (use-package visual-fill-column
+    :config
+    (setq fill-column 80)
+    (global-visual-fill-column-mode)
+    (setq-default split-window-preferred-function 'visual-fill-column-split-window-sensibly))
+#+end_src
 ** Movement customization
 *** transient-mark-mode related (commands from [[https://masteringemacs.org/article/fixing-mark-commands-transient-mark-mode][MasteringEmacs]])
 #+BEGIN_SRC emacs-lisp

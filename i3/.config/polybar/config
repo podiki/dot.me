@@ -1,5 +1,5 @@
 [colors]
-background = ${xrdb:color8}
+background = #AA44362F ;${xrdb:color8}
 background-alt = ${xrdb:color14}
 foreground = ${xrdb:color15}
 foreground-alt = ${xrdb:color4}
@@ -19,6 +19,8 @@ screenchange-reload = true
 ;compositing-border = over
 
 [bar/bar1]
+enable-ipc = true
+
 ;monitor = ${env:MONITOR:HDMI-1}
 width = 100%
 height = 50

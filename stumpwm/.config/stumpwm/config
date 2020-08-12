@@ -10,13 +10,13 @@
 
 (setf *message-window-gravity* :center
       *input-window-gravity* :center
-      *window-border-style* :thin
+      *window-border-style* :none
       *message-window-padding* 10
       *maxsize-border-width* 5
       *normal-border-width* 5
       *transient-border-width* 2
-      stumpwm::*float-window-border* 2
-      stumpwm::*float-window-title-height* 5)
+      stumpwm::*float-window-border* 0
+      stumpwm::*float-window-title-height* 0)
 
 (set-normal-gravity :center)
 (set-maxsize-gravity :center)
@@ -93,6 +93,7 @@
 ;; rofi
 (define-key *top-map* (kbd "s-d") "exec rofi -show run")
 (define-key *top-map* (kbd "s-p") "exec rofi-pass")
+(define-key *top-map* (kbd "s-c") "exec rofi -show calc -modi calc -no-show-match -no-sort > /dev/null")
 
 ;; scratchpad
 (defcommand scratchpad-term () ()

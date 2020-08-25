@@ -4,6 +4,7 @@
   (setq gc-cons-threshold 100000000)
 
   (require 'package)
+  (setq package-quickstart t)
   (setq package-enable-at-startup nil)   ; To prevent initialising twice
 
   ;; package archives: org and melpa
@@ -14,8 +15,6 @@
   (add-to-list 'package-archives
                '("melpa-stable" . "https://stable.melpa.org/packages/"))
   
-  (package-initialize)
-
   ;; bootstrap use-package
   (unless (package-installed-p 'use-package)
     (package-refresh-contents)

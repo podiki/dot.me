@@ -199,6 +199,7 @@ Also tried adding some other [[https://stackoverflow.com/questions/3631220/fix-t
 ** Server
 #+BEGIN_SRC emacs-lisp
   (use-package server
+    :ensure nil
     :config
     (unless (server-running-p)
     (server-start)))
@@ -954,7 +955,7 @@ Hydra
     (setq org-lowest-priority ?C)
     (setq org-default-priority ?A)
     ;; todo file(s)
-    (setq org-agenda-files (list (concat org-directory "/2020-spring-notes.org")
+    (setq org-agenda-files (list (concat org-directory "/2020c-fall-notes.org")
                                  (concat org-directory "/todoes.org")
                                  (concat org-directory "/gcal-main.org")
                                  (concat org-directory "/gcal-cw.org")))

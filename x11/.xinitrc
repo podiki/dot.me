@@ -63,4 +63,5 @@ fi
 # stumpwm
 #exec sbcl --load ~/.config/stumpwm/startstump.lisp
 export SBCL_HOME=/usr/lib/sbcl/
-/home/john/quicklisp/local-projects/stumpwm/stumpwm
+#/home/john/quicklisp/local-projects/stumpwm/stumpwm
+xmonad

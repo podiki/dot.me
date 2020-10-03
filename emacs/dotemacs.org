@@ -23,7 +23,7 @@
   (when (memq window-system '(mac ns))
     (defvar dropbox "/Users/john/Desktop/Dropbox/"))
 
-  (when (memq window-system '(x))
+  (when (or (memq window-system '(x)) (memq window-system '(pgtk)))
     (defvar dropbox "/home/john/Dropbox/"))
 #+END_SRC
 ** Initial size, appearance, etc.
@@ -81,7 +81,7 @@ Also, prevent wide lines by wrapping at fill column
 #+begin_src emacs-lisp
   (use-package visual-fill-column
     :config
-    (setq fill-column 80)
+    (setq-default fill-column 90)
     (global-visual-fill-column-mode)
     (setq-default split-window-preferred-function 'visual-fill-column-split-window-sensibly))
 #+end_src
@@ -328,10 +328,15 @@ And a function for switching between two (day/night) themes, modified from this 
                                 :height 85
                                 :weight 'normal))))
 
-  (when (memq window-system '(x))
-    (set-face-attribute 'default nil :family "Hack Nerd Font" :weight 'light :height 110)
-    (set-fontset-font "fontset-default" nil (font-spec :name "Symbola"))
-    (set-face-attribute 'variable-pitch nil :family "M+ 2p Light" :height 120))
+  (when (memq window-system '(x pgtk))
+    (cond ((string= "raven" (system-name))
+           (set-face-attribute 'default nil :family "Hack Nerd Font" :weight 'light :height 150)
+           (set-fontset-font "fontset-default" nil (font-spec :name "Symbola"))
+           (set-face-attribute 'variable-pitch nil :family "M+ 2p Light" :height 150))
+          ((string= "azazel" (system-name))
+           (set-face-attribute 'default nil :family "Hack Nerd Font" :weight 'light :height 110)
+           (set-fontset-font "fontset-default" nil (font-spec :name "Symbola"))
+           (set-face-attribute 'variable-pitch nil :family "M+ 2p Light" :height 120))))
 #+END_SRC
 
 Mixed pitches
@@ -1656,6 +1661,7 @@ This is a nice distraction free writing environment, but currently has a bug wit
   ; Enable AucTeX
   (use-package tex
     :ensure auctex
+    :defer t
     :config
     (setq TeX-auto-save 1)
     (setq TeX-parse-self 1)

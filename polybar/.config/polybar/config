@@ -18,9 +18,7 @@ screenchange-reload = true
 ;compositing-foreground = source
 ;compositing-border = over
 
-[bar/bar1]
-enable-ipc = true
-
+[bar/azazel]
 ;monitor = ${env:MONITOR:HDMI-1}
 width = 100%
 height = 50
@@ -28,6 +26,10 @@ offset-x = 0
 offset-y = 0
 radius = 0.0
 fixed-center = true
+
+enable-ipc = true
+
+wlan-interface = wlp2s0
 
 background = ${colors.background}
 foreground = ${colors.foreground}
@@ -48,7 +50,7 @@ font-2 = Hack Nerd Font:size=20
 font-1 = FontAwesome:size=20;2
 
 modules-left = ewmh xwindow
-modules-center = mpd
+;modules-center = mpd
 modules-right = wlan cpu temperature memory battery date
 
 tray-position = right
@@ -63,6 +65,49 @@ override-redirect = false
 ;scroll-up = i3wm-wsnext
 ;scroll-down = i3wm-wsprev
 
+[bar/raven]
+;monitor = ${env:MONITOR:HDMI-1}
+width = 100%
+height = 40
+offset-x = 0
+offset-y = 0
+radius = 0.0
+fixed-center = true
+
+enable-ipc = true
+
+wlan-interface = eno1
+
+background = ${colors.background}
+foreground = ${colors.foreground}
+
+line-size = 3
+line-color = #f00
+
+border-size = 0
+border-color = #00000000
+
+padding-left = 0
+padding-right = 2
+module-margin-left = 1
+module-margin-right = 2
+
+font-0 = M+ 2p:size=16
+font-2 = Hack Nerd Font:size=16
+font-1 = FontAwesome:size=16;2
+
+modules-left = ewmh xwindow
+;modules-center = mpd
+modules-right = wlan cpu temperature memory battery date
+
+tray-position = right
+tray-padding = 2
+;tray-scale = 1.0
+tray-maxsize = 45
+;tray-transparent = true
+;tray-background = #0063ff
+
+override-redirect = false
 
 [module/xwindow]
 type = internal/xwindow
@@ -100,7 +145,7 @@ type = internal/xworkspaces
 ; on different bars
 ;
 ; Default: false
-pin-workspaces = true
+;pin-workspaces = true ; false for xmonad
 
 ; Create click handler used to focus desktop
 ; Default: true
@@ -269,7 +314,7 @@ label = %percentage_used%%
 
 [module/wlan]
 type = internal/network
-interface = wlp2s0
+interface = ${root.wlan-interface}
 interval = 3.0
 
 ;; <ramp-signal> to include icon with signal strength

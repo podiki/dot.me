@@ -1,0 +1,14 @@
+#+TITLE: Termite configuration
+#+PROPERTY: header-args :tangle "./.config/termite/config" :comments link
+
+#+begin_src conf
+  [options]
+  font = Hack Nerd Font Mono 10
+  scrollback_lines = 10000
+#+end_src
+
+#+begin_src conf
+  [colors]
+  # background transparency (requires a compositor)
+  background = rgba(0, 0, 0, 0.75)
+#+end_src

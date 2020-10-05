@@ -1338,6 +1338,7 @@ Mixed variable and fixed pitch fonts now handled by ~mixed-pitch~ package instea
 Compose nice HTML messages using the power of org-mode
 #+begin_src emacs-lisp
   (use-package org-msg
+    :after mu4e
     :config
     (setq org-msg-options "html-postamble:nil H:5 num:nil ^:{} toc:nil")
     (setq org-msg-startup "hidestars indent inlineimages")

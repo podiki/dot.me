@@ -1,7 +1,16 @@
+# Basic options
+# Set a font and much larger scrollback value
+
+# [[file:../../README.org::*Basic options][Basic options:1]]
 [options]
 font = Hack Nerd Font Mono 10
 scrollback_lines = 10000
+# Basic options:1 ends here
 
+# Colors
+# Set the background color to black with transparency, which requires a compositor
+
+# [[file:../../README.org::*Colors][Colors:1]]
 [colors]
-# background transparency (requires a compositor)
 background = rgba(0, 0, 0, 0.75)
+# Colors:1 ends here

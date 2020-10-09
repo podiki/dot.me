@@ -1,0 +1,172 @@
+#+TITLE: X Configuration
+#+PROPERTY: header-args :tangle-mode (identity #o444)
+
+My [[https://wiki.archlinux.org/index.php/Xorg][Xorg]] configuration. This was first meant to be used directly through [[https://wiki.archlinux.org/index.php/Xinit][~startx~]], but now through a display manager by executing ~.xinitrc~. I prefer this for using window managers (as opposed to desktop environments) and to be sure about certain environment variables, dpi, etc. being set.
+
+I'm not sure the right language setting to use for ~Xmodmap~ and ~Xresources~; set to Fortran to get the comment char for source highlighting at least. However, trying to use ~:comments link~ will not use "!", so no comments tangled into these files.
+
+* Xmodmap
+:PROPERTIES:
+:header-args+: :tangle ".Xmodmap"
+:END:
+Much as I LOVE YELLING IN CAPS, let's turn that key into a more useful control
+#+begin_src fortran
+  clear lock
+  clear control
+  keycode 66 = Control_L
+  add control = Control_L Control_R
+#+end_src
+
+Since Lisp is life, and who uses square brackets, let's switch these (courtesy of [[http://almostobsolete.net/switch-brackets-with-xmodmap.html][this helpful post by Thomas Parslow]])
+#+begin_src fortran
+  keysym bracketleft = parenleft braceleft
+  keysym bracketright = parenright braceright
+  keysym 9 = 9 bracketleft
+  keysym 0 = 0 bracketright
+#+end_src
+
+* Xresources
+:PROPERTIES:
+:header-args+: :tangle ".Xresources"
+:END:
+Set the DPI based on the machine name
+#+begin_src fortran
+  #ifndef DPI
+      #ifdef SRVR_azazel
+          #define DPI 192
+      #elif SRVR_raven
+          #define DPI 144
+      #endif
+  #endif
+
+  Xft.dpi: DPI
+#+end_src
+
+Fontconfig settings
+#+begin_src fortran
+  Xft.autohint: 0
+  Xft.lcdfilter: lcddefault
+  Xft.hintstyle: hintslight
+  Xft.antialias: 1
+  Xft.rgba: rgb
+#+end_src
+
+Set a cursor theme
+#+begin_src fortran
+  Xcursor.theme: Breeze_Snow
+  Xcursor.size: 48
+#+end_src
+
+URxvt settings, no longer used as now use termite instead
+#+begin_src fortran :tangle no
+  URxvt.depth: 32
+  URxvt.cursorBlink: true
+  ! font
+  URxvt.font: xft:Knack Nerd Font:size=10
+  URxvt.letterSpace: -1
+  ! no scrollbar
+  URxvt.scrollBar: false
+  ! clickable urls
+  URxvt.perl-ext-common: default,matcher
+  URxvt.url-launcher: /usr/bin/xdg-open
+  URxvt.matcher.button: 1
+  URxvt.keysym.C-Delete: perl:matcher:last
+  URxvt.keysym.M-Delete: perl:matcher:list
+  URxvt.matcher.rend.0: Uline Bold fg5
+#+end_src
+
+* xinit.rc
+:PROPERTIES:
+:header-args: :tangle ".xinitrc" :shebang "#!/bin/sh" :tangle-mode (identity #o555) :comments both
+:END:
+Make sure this is set with ~+x~ permissions to be used by a display manager and [[https://aur.archlinux.org/packages/xinit-xsession/][xinit-xsession]]. (While using a ~:shebang~ property would set it executable, due to the ~:tangle-mode~ setting at the top of the file, this needs to be set explicitly here.)
+
+** Resources and environment
+Load in the default and user resources and keys
+#+begin_src sh
+  userresources=$HOME/.Xresources
+  usermodmap=$HOME/.Xmodmap
+  sysresources=/etc/X11/xinit/.Xresources
+  sysmodmap=/etc/X11/xinit/.Xmodmap
+
+  # merge in defaults and keymaps
+  if [ -f $sysresources ]; then
+      xrdb -merge $sysresources
+  fi
+
+  if [ -f $sysmodmap ]; then
+      xmodmap $sysmodmap
+  fi
+
+  if [ -f "$userresources" ]; then
+      xrdb -merge "$userresources"
+  fi
+
+  if [ -f "$usermodmap" ]; then
+      xmodmap "$usermodmap"
+  fi
+#+end_src
+
+Environment variables (specific for X, as opposed to ones for all shells)
+#+begin_src sh
+  export TERMINAL="termite"
+  export QT_QPA_PLATFORMTHEME="qt5ct"
+#+end_src
+
+** DPI
+Set DPI based on hostname of the machine
+#+begin_src sh
+  case $HOSTNAME in
+      (azazel) xrandr --dpi 192;;
+      (raven)  xrandr --dpi 144;;
+  esac
+#+end_src
+
+After moving from Infinality to freetype 2.7/fontconfig 2.12 suddenly fonts got really large, turned dpi down from 288 and no longer needed these settings. Some programs may need to be launched with one of these, e.g. Zoom with ~QT_SCALE_FACTOR=1.5 zoom~
+#+begin_src sh :tangle no
+  # QT HiDPI
+  export QT_SCALE_FACTOR=2
+  # GDK 3 (GTK+ 3) HiDPI
+  export GDK_SCALE=2
+  export GDK_DPI_SCALE=0.5
+#+end_src
+
+** Startup programs
+Start any system default programs from ~xinit~
+#+begin_src sh
+  if [ -d /etc/X11/xinit/xinitrc.d ] ; then
+   for f in /etc/X11/xinit/xinitrc.d/?*.sh ; do
+    [ -x "$f" ] && . "$f"
+   done
+   unset f
+  fi
+#+end_src
+
+Colors from [[https://github.com/deviantfero/wpgtk][wpgtk]]
+#+begin_src sh
+  $HOME/.config/wpg/wp_init.sh
+#+end_src
+
+MPD daemon start (if no other user instance exists)
+#+begin_src sh
+  [ ! -s ~/.config/mpd/pid ] && mpd
+#+end_src
+
+** Window Manager
+Previously used [[https://wiki.archlinux.org/index.php/I3][i3]], my first tiling window manager
+#+begin_src sh :tangle no
+  exec i3 # --shmlog-size=26214400
+#+end_src
+
+I love anything Lisp related, so used [[https://wiki.archlinux.org/index.php/Stumpwm][StumpWM]] for a while. Still really like using Lisp to hack and configure a WM, but now trying and learning [[https://wiki.archlinux.org/index.php/Xmonad][xmonad]]. Multiple monitor and/or hotplugging monitors causes me crashes (or at least reloading Stump), e.g. [[https://github.com/stumpwm/stumpwm/issues/763][this issue]].
+#+begin_src sh :tangle no
+  # exec sbcl --load ~/.config/stumpwm/startstump.lisp
+  # for running a compiled version
+  export SBCL_HOME=/usr/lib/sbcl/
+  $HOME/quicklisp/local-projects/stumpwm/stumpwm
+#+end_src
+
+Currently on xmonad
+#+begin_src sh
+  xmonad
+#+end_src

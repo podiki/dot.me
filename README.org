@@ -11,7 +11,14 @@ Standard header for each is
   ,#+PROPERTY: header-args :tangle "./.config/something/config" :mkdirp yes :comments both
 #+end_src
 
-* Progress in converting to literate programming [2/15]
+* stow
+Files are linked using GNU stow, with the following configuration file
+
+#+begin_src sh :tangle "./.stowrc"
+  --target=$HOME
+#+end_src
+
+* Progress in converting to literate programming [3/15]
 - [ ] bash
 - [X] Emacs (in separate way)
 - [ ] Firefox
@@ -24,6 +31,10 @@ Standard header for each is
 - [ ] rofi
 - [ ] stumpwm
 - [X] termite
-- [ ] X11
+- [X] X11
 - [ ] xmonad
 - [ ] zsh
+
+* General resources
+- [[https://orgmode.org/manual/Working-with-Source-Code.html][Working with Source Code (The Org Manual)]]
+- [[https://web.archive.org/web/20190924102437/https://expoundite.net/guides/dotfile-management][Dotfile Management and Documentation with Org-Mode]]

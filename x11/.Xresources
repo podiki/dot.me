@@ -1,8 +1,3 @@
-! Cursor
-Xcursor.theme: Breeze_Snow
-Xcursor.size: 48
-
-! DPI
 #ifndef DPI
     #ifdef SRVR_azazel
         #define DPI 192
@@ -13,28 +8,11 @@ Xcursor.size: 48
 
 Xft.dpi: DPI
 
-! Fontconfig settings
 Xft.autohint: 0
 Xft.lcdfilter: lcddefault
 Xft.hintstyle: hintslight
 Xft.antialias: 1
 Xft.rgba: rgb
 
-!
-! URxvt
-!
-
-URxvt.depth: 32
-URxvt.cursorBlink: true
-! font
-URxvt.font: xft:Knack Nerd Font:size=10
-URxvt.letterSpace: -1
-! no scrollbar
-URxvt.scrollBar: false
-! clickable urls
-URxvt.perl-ext-common: default,matcher
-URxvt.url-launcher: /usr/bin/xdg-open
-URxvt.matcher.button: 1
-URxvt.keysym.C-Delete: perl:matcher:last
-URxvt.keysym.M-Delete: perl:matcher:list
-URxvt.matcher.rend.0: Uline Bold fg5
+Xcursor.theme: Breeze_Snow
+Xcursor.size: 48

@@ -1,0 +1,11 @@
+#!/bin/sh
+# xprofile
+# :PROPERTIES:
+# :header-args: :tangle ".xprofile" :shebang "#!/bin/sh" :tangle-mode (identity #o555) :comments both
+# :END:
+# Need this for (at least) LightDM to get some environment variables, even though I'm using ~.xinitrc~ for launching my DM. For instance, building XMonad with Stack and installing it to ~$HOME/.local/bin~ requires adding that to ~PATH~ which is in ~.zshenv~. So, let's create a profile that will be sourced by LightDM (which it doesn't seem to do, so addedthis to xinit.rc)
+
+
+# [[file:README.org::*xprofile][xprofile:1]]
+[[ -f ~/.zshenv ]] && source ~/.zshenv
+# xprofile:1 ends here

@@ -24,6 +24,8 @@ fi
 if [ -f "$usermodmap" ]; then
     xmodmap "$usermodmap"
 fi
+
+[[ -f ~/.zshenv ]] && source ~/.zshenv
 # Resources and environment:1 ends here
 
 
@@ -78,5 +80,5 @@ $HOME/.config/wpg/wp_init.sh
 # Currently on xmonad
 
 # [[file:README.org::*Window Manager][Window Manager:3]]
-xmonad
+exec xmonad
 # Window Manager:3 ends here

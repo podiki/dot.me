@@ -105,6 +105,8 @@ Load in the default and user resources and keys
   if [ -f "$usermodmap" ]; then
       xmodmap "$usermodmap"
   fi
+
+  [[ -f ~/.zshenv ]] && source ~/.zshenv
 #+end_src
 
 Environment variables (specific for X, as opposed to ones for all shells)
@@ -168,5 +170,15 @@ I love anything Lisp related, so used [[https://wiki.archlinux.org/index.php/Stu
 
 Currently on xmonad
 #+begin_src sh
-  xmonad
+  exec xmonad
+#+end_src
+
+* xprofile
+:PROPERTIES:
+:header-args: :tangle ".xprofile" :shebang "#!/bin/sh" :tangle-mode (identity #o555) :comments both
+:END:
+Need this for (at least) LightDM to get some environment variables, even though I'm using ~.xinitrc~ for launching my DM. For instance, building XMonad with Stack and installing it to ~$HOME/.local/bin~ requires adding that to ~PATH~ which is in ~.zshenv~. So, let's create a profile that will be sourced by LightDM (which it doesn't seem to do, so addedthis to xinit.rc)
+
+#+begin_src sh
+  [[ -f ~/.zshenv ]] && source ~/.zshenv
 #+end_src

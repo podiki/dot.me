@@ -25,6 +25,9 @@ import XMonad.Actions.CopyWindow
 import XMonad.Operations
 import XMonad.Layout.LayoutCombinators
 import XMonad.Layout.LayoutHints
+import XMonad.Layout.ThreeColumns (ThreeCol(ThreeColMid))
+import XMonad.Layout.CenteredMaster
+import MiddleColumn
 
 baseConfig = desktopConfig
 
@@ -112,17 +115,25 @@ myStartupHook = composeAll
 
 myManageHook = composeAll
   [ namedScratchpadManageHook scratchpads
+  , className =? "qv4l2" --> doCenterFloat
+  , className =? "zoom" --> doFloat
   , isDialog --> doCenterFloat
   -- move transient windows like dialogs/alerts on top of their parents
   , transience' ]
 
 -- myLayout = gaps [(U,18), (R,23)] $ Tall 1 (3/100) (1/2) ||| Full  -- leave gaps at the top and right
 
+defaultThreeColumn :: (Float, Float, Float)
+defaultThreeColumn = (0.25, 0.5, 0.25)
+
 myLayout = layoutHintsWithPlacement (0.5, 0.5) -- or use layoutHintsToCenter to reduce gaps
            (tiled
            -- ||| Mirror tiled
            ||| twopane
            -- ||| Mirror twopane
+           ||| getMiddleColumnSaneDefault 1 0.5 defaultThreeColumn
+           ||| centerMaster twopane
+           ||| ThreeColMid 1 (3/100) (1/2)
            ||| emptyBSP
            ||| Spiral R XMonad.Layout.Dwindle.CW (3/2) (11/10) -- R means the non-main windows are put to the right
            ||| ResizableTall 1 (3/100) (1/2) []

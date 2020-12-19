@@ -28,6 +28,8 @@ import XMonad.Layout.LayoutHints
 import XMonad.Layout.ThreeColumns (ThreeCol(ThreeColMid))
 import XMonad.Layout.CenteredMaster
 import MiddleColumn
+import XMonad.Layout.SimpleFloat
+import XMonad.Layout.PerWorkspace (onWorkspace)
 
 baseConfig = desktopConfig
 
@@ -126,7 +128,7 @@ myManageHook = composeAll
 defaultThreeColumn :: (Float, Float, Float)
 defaultThreeColumn = (0.25, 0.5, 0.25)
 
-myLayout = layoutHintsWithPlacement (0.5, 0.5) -- or use layoutHintsToCenter to reduce gaps
+myLayout = onWorkspace "steam" simpleFloat $ layoutHintsWithPlacement (0.5, 0.5) -- or use layoutHintsToCenter to reduce gaps
            (tiled
            -- ||| Mirror tiled
            ||| twopane

@@ -66,6 +66,9 @@
   (defadvice ansi-term (after advise-ansi-term-coding-system)
       (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
   (ad-activate 'ansi-term)
+
+  ;; fix delete key not deleting forward
+  (normal-erase-is-backspace-mode 1)
 #+END_SRC
 ** Visual line mode
 Use visual line mode in all text buffers
@@ -83,7 +86,9 @@ Also, prevent wide lines by wrapping at fill column
     :config
     (setq-default fill-column 90)
     (global-visual-fill-column-mode)
-    (setq-default split-window-preferred-function 'visual-fill-column-split-window-sensibly))
+    (setq-default split-window-preferred-function 'visual-fill-column-split-window-sensibly)
+    :hook
+    (visual-line-mode . visual-fill-column-mode))
 #+end_src
 ** Movement customization
 *** transient-mark-mode related (commands from [[https://masteringemacs.org/article/fixing-mark-commands-transient-mark-mode][MasteringEmacs]])
@@ -1318,7 +1323,7 @@ Mixed variable and fixed pitch fonts now handled by ~mixed-pitch~ package instea
       (add-to-list 'mu4e-view-actions
                    '("ViewInBrowser" . mu4e-action-view-in-browser) t)
       ;; brighter for dark themes
-      (setq shr-color-visible-luminance-min 80)
+      (setq shr-color-visible-luminance-min 0)
       ;; don't pollute recentf with mail
       (setq recentf-exclude '("^/tmp/" "^/home/john/\\.mail/"))
       :hook

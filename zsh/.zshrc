@@ -139,19 +139,9 @@ fi
 # Looks:1 ends here
 
 # Other
-# ssh with pgp
-
-# [[file:README.org::*Other][Other:1]]
-export GPG_TTY="$(tty)"
-export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
-gpgconf --launch gpg-agent
-# Other:1 ends here
-
-
-
 # Plugins with [[https://github.com/zplug/zplug][zplug]]
 
-# [[file:README.org::*Other][Other:2]]
+# [[file:README.org::*Other][Other:1]]
 source /usr/share/zsh/scripts/zplug/init.zsh
 
 zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
@@ -168,4 +158,4 @@ fi
 
 # Then, source plugins and add commands to $PATH
 zplug load --verbose
-# Other:2 ends here
+# Other:1 ends here

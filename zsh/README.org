@@ -15,6 +15,13 @@ Set up a few environment variables we need everywhere, especially the One True E
   export EDITOR='emacsclient -a nano'
 #+end_src
 
+ssh with pgp
+#+begin_src sh
+  export GPG_TTY="$(tty)"
+  export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+  gpgconf --launch gpg-agent
+#+end_src
+
 Add a user local bin to ~PATH~ (right now just for XMonad with Stack, default install location)
 #+begin_src sh
   #typeset -U PATH path
@@ -166,13 +173,6 @@ Set up general keybindings, mostly just didn't have delete key registering corre
 #+end_src
 
 ** Other
-ssh with pgp
-#+begin_src sh
-  export GPG_TTY="$(tty)"
-  export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
-  gpgconf --launch gpg-agent
-#+end_src
-
 Plugins with [[https://github.com/zplug/zplug][zplug]]
 #+begin_src sh
   source /usr/share/zsh/scripts/zplug/init.zsh

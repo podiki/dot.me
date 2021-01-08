@@ -1334,7 +1334,8 @@ Mixed variable and fixed pitch fonts now handled by ~mixed-pitch~ package instea
       (add-to-list 'mu4e-view-actions
                    '("ViewInBrowser" . mu4e-action-view-in-browser) t)
       ;; brighter for dark themes
-      (setq shr-color-visible-luminance-min 0)
+      (setq shr-color-visible-luminance-min 60
+            shr-color-visible-distance-min 5)
       ;; don't pollute recentf with mail
       (setq recentf-exclude '("^/tmp/" "^/home/john/\\.mail/"))
       :hook

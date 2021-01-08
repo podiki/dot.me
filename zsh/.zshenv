@@ -13,19 +13,29 @@ export EDITOR='emacsclient -a nano'
 
 
 
-# Add a user local bin to ~PATH~ (right now just for XMonad with Stack, default install location)
+# ssh with pgp
 
 # [[file:README.org::*.zshenv][.zshenv:2]]
+export GPG_TTY="$(tty)"
+export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+gpgconf --launch gpg-agent
+# .zshenv:2 ends here
+
+
+
+# Add a user local bin to ~PATH~ (right now just for XMonad with Stack, default install location)
+
+# [[file:README.org::*.zshenv][.zshenv:3]]
 #typeset -U PATH path
 #PATH=("$HOME/.local/bin" "$path[@]")
 PATH=$HOME/.local/bin:$PATH
 export PATH
-# .zshenv:2 ends here
+# .zshenv:3 ends here
 
 
 
 # Get colors from [[https://github.com/deviantfero/wpgtk/][wpgtk]] so commands in non-interactive shells also have them
 
-# [[file:README.org::*.zshenv][.zshenv:3]]
+# [[file:README.org::*.zshenv][.zshenv:4]]
 (cat ~/.config/wpg/sequences &)
-# .zshenv:3 ends here
+# .zshenv:4 ends here

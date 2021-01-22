@@ -845,6 +845,8 @@ Hydra
   ;; more useful.
   ;; (global-set-key (kbd "C-x C-r") 'ido-recentf-open) ; now counsel
 
+  ;; don't keep opening connection with TRAMP
+  (add-to-list 'recentf-keep 'file-remote-p)
   ;; enable recent files mode.
   (recentf-mode 1)
 
@@ -968,7 +970,7 @@ Hydra
     (setq org-lowest-priority ?C)
     (setq org-default-priority ?A)
     ;; todo file(s)
-    (setq org-agenda-files (list (concat org-directory "/2020c-fall-notes.org")
+    (setq org-agenda-files (list (concat org-directory "/2021a-spring-notes.org")
                                  (concat org-directory "/todoes.org")
                                  (concat org-directory "/gcal-main.org")
                                  (concat org-directory "/gcal-cw.org")))

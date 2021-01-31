@@ -1366,7 +1366,7 @@ Compose nice HTML messages using the power of org-mode
     (setq org-msg-greeting-fmt-mailto nil)
     (org-msg-mode))
 #+end_src
-*** notifications
+*** Notifications
 Use mu4e-alert
 #+begin_src emacs-lisp
   (use-package mu4e-alert
@@ -1381,6 +1381,13 @@ Use mu4e-alert
     :hook
     ((after-init . mu4e-alert-enable-notifications)
      (after-init . mu4e-alert-enable-mode-line-display)))
+#+end_src
+*** Other customizations
+Pretty icons
+#+begin_src emacs-lisp
+  (use-package mu4e-marker-icons
+    :after mu4e
+    :init (mu4e-marker-icons-mode 1))
 #+end_src
 ** Sending mail
 Sending mail with built-in message mode and smtpmail

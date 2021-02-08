@@ -1,4 +1,5 @@
 #+TITLE: Emacs Configuration
+#+AUTO_TANGLE: t
 
 * Basics and General Config
 ** Custom-set-variables
@@ -1223,6 +1224,13 @@ Mixed variable and fixed pitch fonts now handled by ~mixed-pitch~ package instea
   ;;                       :height (face-attribute 'fixed-pitch :height))
   ;;   ;; so that links in tables don't mess up alignment
   ;;   (add-to-list 'org-variable-pitch-fixed-faces 'org-link))
+#+end_src
+
+Auto tangling of config files
+#+begin_src emacs-lisp
+  (use-package org-auto-tangle
+    :defer t
+    :hook (org-mode . org-auto-tangle-mode))
 #+end_src
 * Email
 ** mu4e

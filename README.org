@@ -9,7 +9,9 @@ Standard header for each is
 #+begin_src org
   ,#+TITLE: Something configuration
   ,#+PROPERTY: header-args :tangle "./.config/something/config" :mkdirp yes :comments both
+  ,#+AUTO_TANGLE: t
 #+end_src
+with the package [[https://github.com/yilkalargaw/org-auto-tangle][org-auto-tangle]] providing a hook to org-mode file saving to tangle the file.
 
 * stow
 Files are linked using GNU stow, with the following configuration file

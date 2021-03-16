@@ -49,7 +49,7 @@ main = do
         `additionalKeysP` myKeys
 
 myKeys = [ ("M-t", namedScratchpadAction scratchpads "term"),
-           ("M-m", namedScratchpadAction scratchpads "rambox"),
+           ("M-m", namedScratchpadAction scratchpads "element"),
            ("M-n", namedScratchpadAction scratchpads "signal"),
            ("M-e", runOrRaiseNext "emacs" (className =? "Emacs")),
            ("M-f", runOrRaiseNext "firefox" (className =? "firefox")),
@@ -71,7 +71,7 @@ myKeys = [ ("M-t", namedScratchpadAction scratchpads "term"),
            ("M-c", spawn "exec rofi -show calc -modi calc -no-show-match -no-sort > /dev/null") ] ++
          --("C-v", viewTest) ]
          [ (otherModMasks ++ "M-" ++ [key], action tag)
-           | (tag, key)  <- zip myWorkspaces "123456789"
+           | (tag, key)  <- zip myWorkspaces "123456"
            , (otherModMasks, action) <- [ ("", toggleOrDoSkip ["NSP"] W.greedyView)
                                           , ("S-", windows . W.shift)]
          ]
@@ -94,7 +94,7 @@ centerWindow win = do
   windows $ W.float win (W.RationalRect ((1 - w) / 2) ((1 - h) / 2) w h)
   return ()
 
-myWorkspaces = ["fire","chrome","school","code","term","photo","movie","steam","read"]
+myWorkspaces = ["fire","school","code","term","photo","steam"]
 
 -- filter out the scratchpad workspace from polybar xworkspaces
 myLogHook = ewmhDesktopsLogHookCustom namedScratchpadFilterOutWorkspace
@@ -169,7 +169,7 @@ scratchpads = [
     NS "term" "termite --title=termscratch" (title =? "termscratch")
         (customFloating $ W.RationalRect (3/5) (4/6) (1/5) (1/6)),
 
-    NS "rambox" "rambox" (className =? "Rambox")
+    NS "element" "element-desktop" (className =? "Element")
         (customFloating $ W.RationalRect (1/8) (1/8) (1/4) (1/4)),
 
     NS "signal" "signal-desktop --use-tray-icon" (className =? "Signal")

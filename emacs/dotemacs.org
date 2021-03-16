@@ -1057,8 +1057,8 @@ For [[https://boilingsteam.com][Boiling Steam posts]]
     ;; https://emacs.stackexchange.com/questions/27694/constructing-an-advice-around-org-html-wrap-image
     (defun org-wp-export-figure-class (s backend info)
       (when (org-export-derived-backend-p backend 'wp)
-        (replace-regexp-in-string "<figure" "<figure class=\"wp-block-image size-large\"" s)
-        (replace-regexp-in-string "<span class=\"figure-number\">Figure [0-9]+: </span>" "" s)))
+        (let ((snew (replace-regexp-in-string "<figure" "<figure class=\"wp-block-image size-large\"" s)))
+          (replace-regexp-in-string "<span class=\"figure-number\">Figure [0-9]+: </span>" "" snew))))
     (add-to-list 'org-export-filter-final-output-functions 'org-wp-export-figure-class))
 #+END_SRC
 ** Calendar

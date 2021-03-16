@@ -162,12 +162,12 @@ enable-scroll = true
 ; $ xprop -root _NET_DESKTOP_NAMES
 icon-0 = fire;1: 
 ;icon-1 = chrome;2: 
-icon-1 = school;3: 
-icon-2 = code;4: ( )
-icon-3 = term;5: 
-icon-4 = photo;6: 
+icon-1 = school;2: 
+icon-2 = code;3: ( )
+icon-3 = term;4: 
+icon-4 = photo;5: 
 ;icon-6 = movie;7: 
-icon-5 = steam;8: 
+icon-5 = steam;6: 
 ;icon-8 = read;9: 
 ;icon-9 = music;10: 
 icon-default = 

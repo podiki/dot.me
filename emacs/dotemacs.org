@@ -898,6 +898,10 @@ Hydra
     (require 'org-tempo)
     ;; reset checklists for recurring tasks
     (require 'org-checklist)
+    ;; allow ignoring headlines but not their contents
+    ;; see https://emacs.stackexchange.com/a/17677
+    (require 'ox-extra)
+    (ox-extras-activate '(ignore-headlines))
     ;; export backends
     (setq org-export-backends (append org-export-backends '(md)))
     ;; html5 for html export

@@ -975,10 +975,7 @@ Hydra
     (setq org-lowest-priority ?C)
     (setq org-default-priority ?A)
     ;; todo file(s)
-    (setq org-agenda-files (list (concat org-directory "/2021a-spring-notes.org")
-                                 (concat org-directory "/todoes.org")
-                                 (concat org-directory "/gcal-main.org")
-                                 (concat org-directory "/gcal-cw.org")))
+    (setq org-agenda-files (concat org-directory "/todoes"))
     ;; todo capture template with default priority and scheduled for today
     (setq org-capture-templates
           '(("t" "todo" entry (file+headline "todoes.org" "Tasks")

@@ -37,6 +37,14 @@ export TERMINAL="termite"
 export QT_QPA_PLATFORMTHEME="qt5ct"
 # Resources and environment:2 ends here
 
+
+
+# Set a GTK theme name (even though this isn't the one actually used) to make sure Firefox has readable lines with some themes (can become dark on dark in the address bar, for instance)
+
+# [[file:README.org::*Resources and environment][Resources and environment:3]]
+export GTK_THEME="Adwaita:light"
+# Resources and environment:3 ends here
+
 # DPI
 # Set DPI based on hostname of the machine
 

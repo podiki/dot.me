@@ -1,5 +1,6 @@
 #+TITLE: X Configuration
 #+PROPERTY: header-args :tangle-mode (identity #o444)
+#+AUTO_TANGLE: t
 
 My [[https://wiki.archlinux.org/index.php/Xorg][Xorg]] configuration. This was first meant to be used directly through [[https://wiki.archlinux.org/index.php/Xinit][~startx~]], but now through a display manager by executing ~.xinitrc~. I prefer this for using window managers (as opposed to desktop environments) and to be sure about certain environment variables, dpi, etc. being set.
 
@@ -113,6 +114,11 @@ Environment variables (specific for X, as opposed to ones for all shells)
 #+begin_src sh
   export TERMINAL="termite"
   export QT_QPA_PLATFORMTHEME="qt5ct"
+#+end_src
+
+Set a GTK theme name (even though this isn't the one actually used) to make sure Firefox has readable lines with some themes (can become dark on dark in the address bar, for instance)
+#+begin_src sh
+  export GTK_THEME="Adwaita:light"
 #+end_src
 
 ** DPI

@@ -119,6 +119,7 @@ myManageHook = composeAll
   [ namedScratchpadManageHook scratchpads
   , className =? "qv4l2" --> doCenterFloat
   , className =? "zoom" --> doFloat
+  , title =? "Picture-in-Picture" --> doFloat
   , isDialog --> doCenterFloat
   -- move transient windows like dialogs/alerts on top of their parents
   , transience' ]

@@ -1531,9 +1531,9 @@ Set up to behave like paredit in lisp modes
   (load (expand-file-name "~/quicklisp/slime-helper.el"))
   (use-package slime
     :ensure nil
-    :init
+    :config
     (setq inferior-lisp-program "sbcl")
-    (setq slime-contribs '(slime-banner))
+    (setq slime-contribs '(slime-banner slime-company))
     ;; Use Common Lisp indenting
     (setq lisp-indent-function 'common-lisp-indent-function)
     (add-hook 'lisp-mode-hook (lambda () (slime-mode t)))
@@ -1547,8 +1547,10 @@ Set up to behave like paredit in lisp modes
   ;;   '(add-to-list 'ac-modes 'slime-repl-mode))
 
   (use-package slime-company
+    :after (slime company)
     :config
-    (add-to-list 'slime-contribs 'slime-company))
+    (setq slime-company-completion 'fuzzy
+          slime-company-after-completion 'slime-company-just-one-space))
 #+END_SRC
 *** Highlight current sexp
 Set highlight background color to be slightly darker than the background color (based on a [[https://emacs.stackexchange.com/questions/9740/how-to-define-a-good-highlight-face][StackExchange answer]]) only for light themes

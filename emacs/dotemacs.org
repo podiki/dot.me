@@ -1528,23 +1528,19 @@ Set up to behave like paredit in lisp modes
 *** Slime and other lisp stuff
 #+BEGIN_SRC emacs-lisp
   ;;; From quicklisp, instead of current slime in melpa
-  (load (expand-file-name "~/quicklisp/slime-helper.el"))
+  ;(load (expand-file-name "~/quicklisp/slime-helper.el"))
   (use-package slime
-    :ensure nil
+    ;:ensure nil ; needed to make sure using quicklisp version
     :config
-    (setq inferior-lisp-program "sbcl")
-    (setq slime-contribs '(slime-banner slime-company))
+    (setq inferior-lisp-program "/usr/bin/sbcl")
+    (add-to-list 'slime-contribs 'slime-banner)
+    (add-to-list 'slime-contribs 'slime-company)
+    (add-to-list 'slime-contribs 'inferior-slime)
     ;; Use Common Lisp indenting
     (setq lisp-indent-function 'common-lisp-indent-function)
-    (add-hook 'lisp-mode-hook (lambda () (slime-mode t)))
-    (add-hook 'inferior-lisp-mode-hook (lambda () (inferior-slime-mode t))))
-
-  ;; ac-slime
-  ;; now using company-mode instead
-  ;; (add-hook 'slime-mode-hook 'set-up-slime-ac)
-  ;; (add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
-  ;; (eval-after-load "auto-complete"
-  ;;   '(add-to-list 'ac-modes 'slime-repl-mode))
+    :hook
+    (lisp-mode . slime-mode)
+    (inferior-lisp-mode . (lambda () (inferior-slime-mode 1))))
 
   (use-package slime-company
     :after (slime company)

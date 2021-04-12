@@ -116,9 +116,9 @@ Environment variables (specific for X, as opposed to ones for all shells)
   export QT_QPA_PLATFORMTHEME="qt5ct"
 #+end_src
 
-Set a GTK theme name (even though this isn't the one actually used) to make sure Firefox has readable lines with some themes (can become dark on dark in the address bar, for instance)
+Set a GTK theme name (even though this isn't the one actually used) to make sure Firefox has readable lines with some themes (can become dark on dark in the address bar, for instance). Currently using a light/dark mode setup to set themes instead.
 #+begin_src sh
-  export GTK_THEME="Adwaita:light"
+  # export GTK_THEME="Adwaita:light"
 #+end_src
 
 ** DPI
@@ -148,6 +148,11 @@ Start any system default programs from ~xinit~
    done
    unset f
   fi
+#+end_src
+
+An xsettings daemon
+#+begin_src sh
+  xsettingsd&
 #+end_src
 
 Colors from [[https://github.com/deviantfero/wpgtk][wpgtk]]
@@ -187,4 +192,17 @@ Need this for (at least) LightDM to get some environment variables, even though 
 
 #+begin_src sh
   [[ -f ~/.zshenv ]] && source ~/.zshenv
+#+end_src
+
+* xsettingsd
+:PROPERTIES:
+:header-args: :tangle ".xsettingsd" :tangle-mode (identity #o664)
+:END:
+Since I'm not using a full Desktop Environment (and so things like any session daemons for settings), I need to use a something with the [[https://www.freedesktop.org/wiki/Specifications/xsettings-spec/][xsettings-spec]]. I use [[https://wiki.archlinux.org/index.php/Xsettingsd][xsettingsd]] and need read/write access more broadly since [[https://gitlab.com/WhyNotHugo/darkman][darkman]] will write to this file with my gtk scripts (which means the file may not be in sync with this block, but should just be the light/dark theme variant).
+#+begin_src sh
+  Xft/Hinting 1
+  Xft/RGBA "rgb"
+  Xft/HintStyle "hintslight"
+  Xft/Antialias 1
+  Net/ThemeName "Adwaita-light"
 #+end_src

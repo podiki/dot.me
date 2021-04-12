@@ -39,10 +39,10 @@ export QT_QPA_PLATFORMTHEME="qt5ct"
 
 
 
-# Set a GTK theme name (even though this isn't the one actually used) to make sure Firefox has readable lines with some themes (can become dark on dark in the address bar, for instance)
+# Set a GTK theme name (even though this isn't the one actually used) to make sure Firefox has readable lines with some themes (can become dark on dark in the address bar, for instance). Currently using a light/dark mode setup to set themes instead.
 
 # [[file:README.org::*Resources and environment][Resources and environment:3]]
-export GTK_THEME="Adwaita:light"
+# export GTK_THEME="Adwaita:light"
 # Resources and environment:3 ends here
 
 # DPI
@@ -69,19 +69,27 @@ fi
 
 
 
-# Colors from [[https://github.com/deviantfero/wpgtk][wpgtk]]
+# An xsettings daemon
 
 # [[file:README.org::*Startup programs][Startup programs:2]]
-$HOME/.config/wpg/wp_init.sh
+xsettingsd&
 # Startup programs:2 ends here
+
+
+
+# Colors from [[https://github.com/deviantfero/wpgtk][wpgtk]]
+
+# [[file:README.org::*Startup programs][Startup programs:3]]
+$HOME/.config/wpg/wp_init.sh
+# Startup programs:3 ends here
 
 
 
 # MPD daemon start (if no other user instance exists)
 
-# [[file:README.org::*Startup programs][Startup programs:3]]
+# [[file:README.org::*Startup programs][Startup programs:4]]
 [ ! -s ~/.config/mpd/pid ] && mpd
-# Startup programs:3 ends here
+# Startup programs:4 ends here
 
 
 

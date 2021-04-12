@@ -1,0 +1,46 @@
+#+TITLE: Darkman Configuration
+#+PROPERTY: header-args :tangle-mode (identity #o555) :shebang "#!/bin/sh" :mkdirp yes :comments both
+#+AUTO_TANGLE: t
+
+This is my setup to implement a global (of sorts) dark mode without something like Gnome and related settings daemons. I use [[https://gitlab.com/WhyNotHugo/darkman][darkman]]. For easing off that harsh blue light at night, I use [[https://github.com/maandree/blueshift/][blueshift]].
+
+* Dark Mode
+** GTK
+:PROPERTIES:
+:header-args+: :tangle "./.local/share/dark-mode.d/gtk.sh"
+:END:
+For GTK need to send ~HUP~ to the ~xsettings~ daemon to reload settings. This does give live changes of settings in things like Firefox. All this does is change the theme name to "-dark" from "-light" and reload.
+
+Firefox has the extension [[https://github.com/skhzhang/time-based-themes/][automaticDark]] set to change themes based on the system theme (from "Light" to "Dark"); wouldn't be needed for Firefox themes where "Default" looks good for light and dark system themes. Also, [[https://darkreader.org/][Dark Reader]] is set to activate based on system theme as well (it can do its own browser dark theme, but doesn't quite match well for me).
+
+#+begin_src sh
+  sed --in-place --follow-symlinks 's/-light/-dark/' ~/.xsettingsd
+  killall -HUP xsettingsd
+#+end_src
+** emacs
+:PROPERTIES:
+:header-args+: :tangle "./.local/share/dark-mode.d/emacs.sh"
+:END:
+For emacs, call a custom function that toggles between day and night themes. This should be rewritten to explicitly pick the right theme instead of assuming it is currently set to the light theme already.
+
+#+begin_src sh
+  emacsclient -e '(toggle-day-night-theme)'
+#+end_src
+
+* Light Mode
+Does the same as the dark mode settings, just reversed.
+** GTK
+:PROPERTIES:
+:header-args+: :tangle "./.local/share/light-mode.d/gtk.sh"
+:END:
+#+begin_src sh
+  sed --in-place --follow-symlinks 's/-dark/-light/' ~/.xsettingsd
+  killall -HUP xsettingsd
+#+end_src
+** emacs
+:PROPERTIES:
+:header-args+: :tangle "./.local/share/light-mode.d/emacs.sh"
+:END:
+#+begin_src sh
+  emacsclient -e '(toggle-day-night-theme)'
+#+end_src

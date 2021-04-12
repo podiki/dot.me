@@ -16,6 +16,7 @@ import XMonad.Actions.WindowGo
 import XMonad.Util.Paste (sendKey)
 import XMonad.Actions.PerWindowKeys
 import XMonad.Actions.CycleWS (toggleOrDoSkip)
+import XMonad.Actions.SpawnOn(manageSpawn)
 import XMonad.Util.SpawnOnce (spawnOnce, spawnOnOnce)
 import XMonad.Hooks.ManageHelpers (isDialog, doCenterFloat, transience')
 import System.Exit
@@ -44,7 +45,7 @@ main = do
         , workspaces = myWorkspaces
         , logHook = myLogHook
         , layoutHook = desktopLayoutModifiers $ mySpacing $ myLayout
-        , manageHook = manageHook baseConfig <+> myManageHook
+        , manageHook = manageHook baseConfig <+> manageSpawn <+> myManageHook
         }
         `additionalKeysP` myKeys
 
@@ -111,9 +112,9 @@ myStartupHook = composeAll
     -- but doesn't seem to work (need to wait for xiccd first?), and end up
     -- running it again after startup
   , spawnOnce "dispwin -L"
-  , spawnOnOnce "term" "termite -e \"zsh -c journalctl -fb\""
-  , spawnOnOnce "term" "termite -e \"zsh -c htop\""
-  , spawnOnOnce "term" "termite" ]
+  , spawnOnOnce "term" "termite"
+  , spawnOnOnce "term" "termite -e 'zsh -c \"journalctl -fb\"'"
+  , spawnOnOnce "term" "termite -e \"zsh -c htop\"" ]
 
 myManageHook = composeAll
   [ namedScratchpadManageHook scratchpads

@@ -21,10 +21,10 @@ Firefox has the extension [[https://github.com/skhzhang/time-based-themes/][auto
 :PROPERTIES:
 :header-args+: :tangle "./.local/share/dark-mode.d/emacs.sh"
 :END:
-For emacs, call a custom function that toggles between day and night themes. This should be rewritten to explicitly pick the right theme instead of assuming it is currently set to the light theme already.
+For emacs, call a custom function that toggles between day and night themes. Provide the optional argument to make sure it switches to the correct theme if needed (if already the correct theme, does nothing).
 
 #+begin_src sh
-  emacsclient -e '(toggle-day-night-theme)'
+  emacsclient -e '(toggle-day-night-theme :dark)'
 #+end_src
 
 * Light Mode
@@ -42,5 +42,5 @@ Does the same as the dark mode settings, just reversed.
 :header-args+: :tangle "./.local/share/light-mode.d/emacs.sh"
 :END:
 #+begin_src sh
-  emacsclient -e '(toggle-day-night-theme)'
+  emacsclient -e '(toggle-day-night-theme :light)'
 #+end_src

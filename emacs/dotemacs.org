@@ -290,17 +290,10 @@ Disable previous custom-theme before loading a new one (via [[https://emacs.stac
 
 And a function for switching between two (day/night) themes, modified from this [[https://github.com/sellout/emacs-color-theme-solarized/issues/167][GitHub discussion]]
 #+BEGIN_SRC emacs-lisp
-  (defun toggle-day-night-theme ()
-    "Switch between two (day/night) themes."
-    (interactive)
-    (if (eq frame-background-mode 'light)
-        (progn (setq frame-background-mode 'dark)
-               (load-theme 'doom-one t))
-        (progn (setq frame-background-mode 'light)
-               (load-theme 'doom-one-light t)))
-    ;; reload highlight-sexp-mode to update highlight color
-    ;; (not checking with if bound-and-true-p highlight-sexp-mode)
-    ;; and re-fontify all buffers (e.g. reset org-mode * color)
+  (defun re-fontify-buffers ()
+    "Reload highlight-sexp-mode to update highlight color (not checking with
+     if bound-and-true-p highlight-sexp-mode) and re-fontify all buffers
+     (e.g. reset org-mode * color)"
     (save-current-buffer
       (mapcar (lambda (buffer)
                 (set-buffer buffer)
@@ -313,6 +306,24 @@ And a function for switching between two (day/night) themes, modified from this 
                     (highlight-sexp-mode))
                   (font-lock-fontify-buffer)))
               (buffer-list))))
+
+  (defun toggle-day-night-theme (&optional light-or-dark)
+    "Switch between two (day/night) themes, optional argument LIGHT-OR-DARK determines
+     which setting to switch to, otherwise just toggles between."
+    (interactive)
+    ;;; switch to dark/light based on LIGHT-OR-DARK and based on current background
+    ;;; otherwise toggle theme only (do nothing if mismatch)
+    (cond ((or (and (eq light-or-dark :dark) (eq frame-background-mode 'light))
+               (and (not light-or-dark) (eq frame-background-mode 'light)))
+           (setq frame-background-mode 'dark)
+           (load-theme 'doom-one t)
+           (re-fontify-buffers))
+          ((or (and (eq light-or-dark :light) (eq frame-background-mode 'dark))
+               (and (not light-or-dark) (eq frame-background-mode 'dark)))
+           (setq frame-background-mode 'light)
+           (load-theme 'doom-one-light t)
+           (re-fontify-buffers))
+          (t (message "Didn't toggle theme, mismatch in arguments."))))
 #+END_SRC
 *** Fonts
 #+BEGIN_SRC emacs-lisp

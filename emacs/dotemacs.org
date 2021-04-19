@@ -1061,7 +1061,7 @@ For [[https://boilingsteam.com][Boiling Steam posts]]
     (setq org2blog/wp-blog-alist
           `(("boilingsteam"
              :url "https://boilingsteam.com/xmlrpc.php"
-             :username ,(getf (car (auth-source-search :host "boilingsteam"))
+             :username ,(cl-getf (car (auth-source-search :host "boilingsteam"))
                               :user)))
           org2blog/wp-image-upload t
           org2blog/wp-image-thumbnails t)

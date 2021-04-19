@@ -2,4 +2,6 @@ Xft/Hinting 1
 Xft/RGBA "rgb"
 Xft/HintStyle "hintslight"
 Xft/Antialias 1
-Net/ThemeName "Adwaita-light"
+Net/ThemeName "Qogir-manjaro-light"
+Net/IconThemeName "Qogir-manjaro-light"
+Gtk/CursorThemeName "Qogir-manjaro-light"

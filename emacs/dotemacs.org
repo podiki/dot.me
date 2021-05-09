@@ -1082,7 +1082,8 @@ Sync with Google Calendar using org-gcal
     (let* ((auth (car (auth-source-search :host "gcal")))
            (id (plist-get auth :user))
            (secret (funcall (plist-get auth :secret))))
-      (setq org-gcal-client-id id
+      (setq org-gcal-local-timezone "America/New_York"
+            org-gcal-client-id id
             org-gcal-client-secret secret
             org-gcal-file-alist
             '(("sweet.cheesus@gmail.com" .  "~/Dropbox/org/gcal-main.org")

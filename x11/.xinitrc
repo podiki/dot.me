@@ -33,7 +33,7 @@ fi
 # Environment variables (specific for X, as opposed to ones for all shells)
 
 # [[file:README.org::*Resources and environment][Resources and environment:2]]
-export TERMINAL="termite"
+export TERMINAL="kitty"
 export QT_QPA_PLATFORMTHEME="qt5ct"
 # Resources and environment:2 ends here
 

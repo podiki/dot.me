@@ -58,7 +58,7 @@ Set a cursor theme
   Xcursor.size: 48
 #+end_src
 
-URxvt settings, no longer used as now use termite instead
+URxvt settings, no longer used as now use kitty instead
 #+begin_src fortran :tangle no
   URxvt.depth: 32
   URxvt.cursorBlink: true
@@ -112,7 +112,7 @@ Load in the default and user resources and keys
 
 Environment variables (specific for X, as opposed to ones for all shells)
 #+begin_src sh
-  export TERMINAL="termite"
+  export TERMINAL="kitty"
   export QT_QPA_PLATFORMTHEME="qt5ct"
 #+end_src
 

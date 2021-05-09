@@ -36,7 +36,7 @@ baseConfig = desktopConfig
 
 main = do
     xmonad $ ewmhFullscreen $ baseConfig -- ewmh from desktopConfig
-        { terminal = "termite"
+        { terminal = "kitty"
         , modMask  = mod4Mask
         , focusFollowsMouse = False
         --, clickJustFocuses = True
@@ -112,9 +112,9 @@ myStartupHook = composeAll
     -- but doesn't seem to work (need to wait for xiccd first?), and end up
     -- running it again after startup
   , spawnOnce "dispwin -L"
-  , spawnOnOnce "term" "termite"
-  , spawnOnOnce "term" "termite -e 'zsh -c \"journalctl -fb\"'"
-  , spawnOnOnce "term" "termite -e \"zsh -c htop\"" ]
+  , spawnOnOnce "term" "kitty"
+  , spawnOnOnce "term" "kitty -e 'zsh -c \"journalctl -fb\"'"
+  , spawnOnOnce "term" "kitty -e \"zsh -c htop\"" ]
 
 myManageHook = composeAll
   [ namedScratchpadManageHook scratchpads
@@ -168,11 +168,11 @@ mySpacing = spacingRaw True             -- Only for >1 window
 -- scratchPads
 scratchpads :: [NamedScratchpad]
 scratchpads = [
-    NS "term" "termite --title=termscratch" (title =? "termscratch")
-        (customFloating $ W.RationalRect (3/5) (4/6) (1/5) (1/6)),
+    NS "term" "kitty --title=termscratch" (title =? "termscratch")
+        (customFloating $ W.RationalRect (1/3) (1/4) (1/3) (1/2)),
 
     NS "element" "element-desktop" (className =? "Element")
-        (customFloating $ W.RationalRect (1/8) (1/8) (1/4) (1/4)),
+        (customFloating $ W.RationalRect (1/3) (1/4) (1/3) (1/2)),
 
     NS "signal" "signal-desktop --use-tray-icon" (className =? "Signal")
         (customFloating $ W.RationalRect (3/5) (4/6) (1/5) (1/6)),

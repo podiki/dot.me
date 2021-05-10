@@ -53,6 +53,9 @@ Get colors from [[https://github.com/deviantfero/wpgtk/][wpgtk]] so commands in 
   compinit
   # End of lines added by compinstall
 
+  # Completion for kitty
+  kitty + complete setup zsh | source /dev/stdin
+
   setopt sharehistory
   setopt extendedhistory
 

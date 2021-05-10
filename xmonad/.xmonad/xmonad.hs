@@ -112,9 +112,9 @@ myStartupHook = composeAll
     -- but doesn't seem to work (need to wait for xiccd first?), and end up
     -- running it again after startup
   , spawnOnce "dispwin -L"
-  , spawnOnOnce "term" "kitty"
-  , spawnOnOnce "term" "kitty -e 'zsh -c \"journalctl -fb\"'"
-  , spawnOnOnce "term" "kitty -e \"zsh -c htop\"" ]
+  , spawnOnOnce "term" "kitty zsh -c \"journalctl -fb\""
+  , spawnOnOnce "term" "sleep 0.5; kitty zsh -c htop"
+  , spawnOnOnce "term" "sleep 1; kitty" ]
 
 myManageHook = composeAll
   [ namedScratchpadManageHook scratchpads

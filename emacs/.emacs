@@ -20,10 +20,7 @@
     (package-refresh-contents)
     (package-install 'use-package))
 
-  ;; requiring use-package was with eval-when-compile but that gave some
-  ;; eager macro expansion warning of not finding the file
-  ;; (and maybe slightly faster without too)
-  (require 'use-package)
+  (eval-when-compile (require 'use-package))
   (require 'bind-key)
   (setq use-package-verbose 1
         use-package-always-ensure t)

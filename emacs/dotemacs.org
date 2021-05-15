@@ -1,5 +1,4 @@
 #+TITLE: Emacs Configuration
-#+AUTO_TANGLE: t
 
 * Basics and General Config
 ** Custom-set-variables
@@ -1843,3 +1842,9 @@ Make sure mp3info is installed (and found by emacs)
    :config
    (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 #+END_SRC
+* Local Variables
+Rather than using ~org-auto-tangle-mode~, use a custom function on save to tangle and compile.
+
+# Local Variables:
+# eval: (add-hook 'after-save-hook (lambda () (org-babel-tangle-file (expand-file-name "dotemacs.org")) (byte-compile-file (expand-file-name "dotemacs.el"))) nil t)
+# End:

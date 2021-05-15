@@ -1,5 +1,5 @@
 #+TITLE: Emacs Configuration
-#+PROPERTIES: header-args :tangle "dotemacs.el"
+#+PROPERTY: header-args :tangle yes
 
 * Basics and General Config
 ** Custom-set-variables
@@ -90,6 +90,18 @@ Also, prevent wide lines by wrapping at fill column
     (setq-default split-window-preferred-function 'visual-fill-column-split-window-sensibly)
     :hook
     (visual-line-mode . visual-fill-column-mode))
+#+end_src
+** Lines
+#+begin_src emacs-lisp
+  ;; Show line-number and column-number in the mode line
+  (line-number-mode 1)
+  (column-number-mode 1)
+
+  ;; line numbers for prog-mode
+  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+
+  ;; highlight current line
+  (global-hl-line-mode 1)
 #+end_src
 ** Movement customization
 *** transient-mark-mode related (commands from [[https://masteringemacs.org/article/fixing-mark-commands-transient-mark-mode][MasteringEmacs]])
@@ -620,93 +632,91 @@ Hydra
 #+END_SRC
 ** Line numbers with linum
 #+BEGIN_SRC emacs-lisp
-  ;; Show line-number and column-number in the mode line
-  (line-number-mode 1)
-  (column-number-mode 1)
+  (use-package linum
+    :disabled t
+    :config
+  
+    ;; 
+    ;; Line number in left margin using linum
+    ;;
 
-  ;; 
-  ;; Line number in left margin using linum
-  ;;
+    ;; (global-linum-mode 1)
+    ;; linum mode for text and prog-mode derived buffers
+    ;; (can't have it for pdf-tools)
+    ;; (add-hook 'text-mode-hook 'linum-mode)
+    (add-hook 'prog-mode-hook 'linum-mode)
+    ;; (set-face-attribute 'linum nil :height 100)
 
-  ;; (global-linum-mode 1)
-  ;; linum mode for text and prog-mode derived buffers
-  ;; (can't have it for pdf-tools)
-  ;; (add-hook 'text-mode-hook 'linum-mode)
-  (add-hook 'prog-mode-hook 'linum-mode)
-  ;; (set-face-attribute 'linum nil :height 100)
+    ;; Fix from EmacsWiki to have space before the line contents with right-
+    ;; aligned numbers padded only to the max number of digits in the buffer
+    (unless window-system
+      (add-hook 'linum-before-numbering-hook
+                (lambda ()
+                  (setq-local linum-format-fmt
+                              (let ((w (length (number-to-string
+                                                (count-lines (point-min) (point-max))))))
+                                (concat "%" (number-to-string w) "d"))))))
 
-  ;; Fix from EmacsWiki to have space before the line contents with right-
-  ;; aligned numbers padded only to the max number of digits in the buffer
-  (unless window-system
-    (add-hook 'linum-before-numbering-hook
-                  (lambda ()
-                          (setq-local linum-format-fmt
-                                        (let ((w (length (number-to-string
-                                                              (count-lines (point-min) (point-max))))))
-                                              (concat "%" (number-to-string w) "d"))))))
+    (defun linum-format-func (line)
+      (concat
+       (propertize (format linum-format-fmt line) 'face 'linum)
+       (propertize " " 'face 'mode-line)))
 
-  (defun linum-format-func (line)
-    (concat
-     (propertize (format linum-format-fmt line) 'face 'linum)
-     (propertize " " 'face 'mode-line)))
+    (unless window-system
+      (setq linum-format 'linum-format-func))
 
-  (unless window-system
-    (setq linum-format 'linum-format-func))
+    ;; Select lines by click-dragging on the margin (where the line numbers are)
+    ;; from EmacsWiki
+    ;; DOESN'T WORK, but at least clicking on a number goes to that line
+    ;; (e.g. can select by clicking a second time while pressing shift)
+    ;; ACTUALLY: works in windowed mode it seems, but not so in terminal
+    (defvar *linum-mdown-line* nil)
 
-  ;; Select lines by click-dragging on the margin (where the line numbers are)
-  ;; from EmacsWiki
-  ;; DOESN'T WORK, but at least clicking on a number goes to that line
-  ;; (e.g. can select by clicking a second time while pressing shift)
-  ;; ACTUALLY: works in windowed mode it seems, but not so in terminal
-  (defvar *linum-mdown-line* nil)
+    (defun line-at-click ()
+      (save-excursion
+        (let ((click-y (cdr (cdr (mouse-position))))
+              (line-move-visual-store line-move-visual))
+          (setq line-move-visual t)
+          (goto-char (window-start))
+          (next-line (1- click-y))
+          (setq line-move-visual line-move-visual-store)
+          ;; If you are not using tabbar substitute the next line with
+          ;; (1+ (line-number-at-pos)))))
+          (line-number-at-pos))))
 
-  (defun line-at-click ()
-    (save-excursion
-      (let ((click-y (cdr (cdr (mouse-position))))
-            (line-move-visual-store line-move-visual))
-        (setq line-move-visual t)
-        (goto-char (window-start))
-        (next-line (1- click-y))
-        (setq line-move-visual line-move-visual-store)
-        ;; If you are not using tabbar substitute the next line with
-        ;; (1+ (line-number-at-pos)))))
-        (line-number-at-pos))))
+    (defun md-select-linum ()
+      (interactive)
+      (goto-line (line-at-click))
+      (set-mark (point))
+      (setq *linum-mdown-line* (line-number-at-pos)))
 
-  (defun md-select-linum ()
-    (interactive)
-    (goto-line (line-at-click))
-    (set-mark (point))
-    (setq *linum-mdown-line* (line-number-at-pos)))
-
-  (defun mu-select-linum ()
-    (interactive)
-    (when *linum-mdown-line*
-      (let (mu-line)
-        (setq mu-line (line-at-click))
-        (if (> mu-line *linum-mdown-line*)
-            (progn
-              (goto-line *linum-mdown-line*)
-              (set-mark (point))
-              (goto-line mu-line)
-              (end-of-line))
+    (defun mu-select-linum ()
+      (interactive)
+      (when *linum-mdown-line*
+        (let (mu-line)
+          (setq mu-line (line-at-click))
+          (if (> mu-line *linum-mdown-line*)
+              (progn
+                (goto-line *linum-mdown-line*)
+                (set-mark (point))
+                (goto-line mu-line)
+                (end-of-line))
             (progn
               (goto-line *linum-mdown-line*)
               (set-mark (line-end-position))
               (goto-line mu-line)
               (beginning-of-line)))
-        (setq *linum-mdown* nil))))
+          (setq *linum-mdown* nil))))
 
-  (global-set-key (kbd "<left-margin> <down-mouse-1>") 'md-select-linum)
-  (global-set-key (kbd "<left-margin> <mouse-1>") 'mu-select-linum)
-  (global-set-key (kbd "<left-margin> <drag-mouse-1>") 'mu-select-linum)
+    (global-set-key (kbd "<left-margin> <down-mouse-1>") 'md-select-linum)
+    (global-set-key (kbd "<left-margin> <mouse-1>") 'mu-select-linum)
+    (global-set-key (kbd "<left-margin> <drag-mouse-1>") 'mu-select-linum)
 
-  ;; highlight current line
-  (global-hl-line-mode 1)
-
-  ;; highlight current line number
-  (use-package hlinum
-               :config
-               (hlinum-activate))
+    ;; highlight current line number
+    (use-package hlinum
+      :disabled t
+      :config
+      (hlinum-activate)))
 #+END_SRC
 
 ** Color-identifiers and highlight symbols

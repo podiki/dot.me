@@ -102,7 +102,7 @@ myLogHook = ewmhDesktopsLogHookCustom namedScratchpadFilterOutWorkspace
 
 myStartupHook :: X ()
 myStartupHook = composeAll
-  [ spawnOnce "dex -ae stump" -- use dex for autostart .desktop entries
+  [ spawnOnce "dex -ae xmonad" -- use dex for autostart .desktop entries
   , spawnOnce "udiskie --tray"
   , spawnOnce "xscreensaver -no-splash"
   , spawnOnce "blueshift-tray -c ~/blueshift.conf"
@@ -111,7 +111,7 @@ myStartupHook = composeAll
     -- xiccd seems to not fully load(?) X atom ICC profile, so do this also
     -- but doesn't seem to work (need to wait for xiccd first?), and end up
     -- running it again after startup
-  , spawnOnce "dispwin -L"
+  , spawnOnce "sleep 3; dispwin -L"
   , spawnOnOnce "term" "kitty zsh -c \"journalctl -fb\""
   , spawnOnOnce "term" "sleep 0.5; kitty zsh -c htop"
   , spawnOnOnce "term" "sleep 1; kitty" ]

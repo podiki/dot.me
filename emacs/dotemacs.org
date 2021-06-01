@@ -222,6 +222,13 @@ Also tried adding some other [[https://stackoverflow.com/questions/3631220/fix-t
     (unless (server-running-p)
     (server-start)))
 #+END_SRC
+** Frames only
+Favor spawning new frames rather than more windows (i.e. rely on the WM rather than Emacs), with the package [[https://github.com/davidshepherd7/frames-only-mode][frames-only-mode]] (see also [[http://techtrickery.com/tearing-out-the-emacs-window-manager.html][this blog post]])
+#+begin_src emacs-lisp
+  (use-package frames-only-mode
+    :config
+    (frames-only-mode 1))
+#+end_src
 ** Paradox
 for package listing and browsing
 #+BEGIN_SRC emacs-lisp
@@ -285,7 +292,6 @@ for package listing and browsing
   ;; solaire-mode for grossly incandescent buffers
   (use-package solaire-mode
                :hook ((change-major-mode after-revert ediff-prepare-buffer) . turn-on-solaire-mode)
-               (minibuffer-setup . solaire-mode-in-minibuffer)
                :config
                (solaire-global-mode +1))
 #+END_SRC
@@ -898,11 +904,10 @@ Hydra
 * Org-mode
 ** Basic setup
 - Use org-plus-contrib for extras in org-mode. Note that other packages that depend on org will install plain org (though this shouldn't cause any problems, it is annoying when installing something new). Fix this by [[https://lists.gnu.org/archive/html/emacs-orgmode/2014-12/msg00287.html][creating a dummy package]], as there is no way to tell the package manager that org is accounted for. Also add a file org-autoloads.el to prevent startup errors (though of no real consequence I think).
+- org-contrib has been separated out, and don't use it anyway, no longer need above
 - Some todo/agenda customization from the [[http://pragmaticemacs.com/emacs/org-mode-basics-vii-a-todo-list-with-schedules-and-deadlines/][Pragmatic Emacs blog]]
 #+BEGIN_SRC emacs-lisp
   (use-package org
-    :ensure org-plus-contrib
-    :pin org
     :defer t
     :config
     (setq org-directory (concat dropbox "org"))
@@ -1100,9 +1105,10 @@ Sync with Google Calendar using org-gcal
             org-gcal-notify-p nil)))
 #+end_src
 
-Pretty view with calfw
+Pretty view with calfw (currently disabled as haven't used it)
 #+begin_src emacs-lisp
   (use-package calfw
+    :disabled t
     :defer t
     :config
     (require 'calfw-org))

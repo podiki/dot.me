@@ -364,9 +364,9 @@ And a function for switching between two (day/night) themes, modified from this 
 
   (when (memq window-system '(x pgtk))
     (cond ((string= "raven" (system-name))
-           (set-face-attribute 'default nil :family "Hack Nerd Font" :weight 'light :height 150)
+           (set-face-attribute 'default nil :family "Hack Nerd Font" :weight 'light :height 110)
            (set-fontset-font "fontset-default" nil (font-spec :name "Symbola"))
-           (set-face-attribute 'variable-pitch nil :family "Open Sans" :weight 'light :height 160))
+           (set-face-attribute 'variable-pitch nil :family "Open Sans" :weight 'light :height 110))
           ((string= "azazel" (system-name))
            (set-face-attribute 'default nil :family "Hack Nerd Font" :weight 'light :height 110)
            (set-fontset-font "fontset-default" nil (font-spec :name "Symbola"))
@@ -1078,7 +1078,7 @@ For [[https://boilingsteam.com][Boiling Steam posts]]
              :username ,(cl-getf (car (auth-source-search :host "boilingsteam"))
                               :user)))
           org2blog/wp-image-upload t
-          org2blog/wp-image-thumbnails t)
+          org2blog/wp-image-thumbnails nil) ; gave me trouble with wrong img src
     ;; define a filter function to add a class for WP figures and remove "Figure #: "
     ;; https://emacs.stackexchange.com/questions/27694/constructing-an-advice-around-org-html-wrap-image
     (defun org-wp-export-figure-class (s backend info)

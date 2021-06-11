@@ -96,5 +96,5 @@ $HOME/.config/wpg/wp_init.sh
 # Currently on xmonad
 
 # [[file:README.org::*Window Manager][Window Manager:3]]
-exec xmonad
+exec ~/.xmonad/xmonad-x86_64-linux
 # Window Manager:3 ends here

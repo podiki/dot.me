@@ -181,7 +181,7 @@ I love anything Lisp related, so used [[https://wiki.archlinux.org/index.php/Stu
 
 Currently on xmonad
 #+begin_src sh
-  exec xmonad
+  exec ~/.xmonad/xmonad-x86_64-linux
 #+end_src
 
 * xprofile

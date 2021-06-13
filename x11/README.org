@@ -110,10 +110,11 @@ Load in the default and user resources and keys
   [[ -f ~/.zshenv ]] && source ~/.zshenv
 #+end_src
 
-Environment variables (specific for X, as opposed to ones for all shells)
+Environment variables (specific for X, as opposed to ones for all shells), including setting XDG desktop (see [[https://old.reddit.com/r/i3wm/comments/6in8m1/did_you_know_xdg_current_desktop/][this on Reddit]] for potential changes by some programs)
 #+begin_src sh
   export TERMINAL="kitty"
   export QT_QPA_PLATFORMTHEME="qt5ct"
+  export XDG_CURRENT_DESKTOP="xfce"
 #+end_src
 
 Set a GTK theme name (even though this isn't the one actually used) to make sure Firefox has readable lines with some themes (can become dark on dark in the address bar, for instance). Currently using a light/dark mode setup to set themes instead.

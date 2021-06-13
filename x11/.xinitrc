@@ -30,11 +30,12 @@ fi
 
 
 
-# Environment variables (specific for X, as opposed to ones for all shells)
+# Environment variables (specific for X, as opposed to ones for all shells), including setting XDG desktop (see [[https://old.reddit.com/r/i3wm/comments/6in8m1/did_you_know_xdg_current_desktop/][this on Reddit]] for potential changes by some programs)
 
 # [[file:README.org::*Resources and environment][Resources and environment:2]]
 export TERMINAL="kitty"
 export QT_QPA_PLATFORMTHEME="qt5ct"
+export XDG_CURRENT_DESKTOP="xfce"
 # Resources and environment:2 ends here
 
 

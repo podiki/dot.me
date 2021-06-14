@@ -35,7 +35,6 @@ fi
 # [[file:README.org::*Resources and environment][Resources and environment:2]]
 export TERMINAL="kitty"
 export QT_QPA_PLATFORMTHEME="qt5ct"
-export XDG_CURRENT_DESKTOP="xfce"
 # Resources and environment:2 ends here
 
 

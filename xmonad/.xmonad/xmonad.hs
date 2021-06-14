@@ -1,4 +1,4 @@
-import XMonad hiding ( (|||) )
+import XMonad
 import XMonad.Config.Desktop
 import XMonad.Layout.Gaps
 import XMonad.Layout.Spacing
@@ -24,7 +24,6 @@ import XMonad.Prompt
 import XMonad.Prompt.ConfirmPrompt (confirmPrompt)
 import XMonad.Actions.CopyWindow
 import XMonad.Operations
-import XMonad.Layout.LayoutCombinators
 import XMonad.Layout.LayoutHints
 import XMonad.Layout.ThreeColumns (ThreeCol(ThreeColMid))
 import XMonad.Layout.CenteredMaster

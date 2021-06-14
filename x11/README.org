@@ -114,7 +114,6 @@ Environment variables (specific for X, as opposed to ones for all shells), inclu
 #+begin_src sh
   export TERMINAL="kitty"
   export QT_QPA_PLATFORMTHEME="qt5ct"
-  export XDG_CURRENT_DESKTOP="xfce"
 #+end_src
 
 Set a GTK theme name (even though this isn't the one actually used) to make sure Firefox has readable lines with some themes (can become dark on dark in the address bar, for instance). Currently using a light/dark mode setup to set themes instead.

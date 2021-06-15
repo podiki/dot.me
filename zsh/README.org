@@ -1,5 +1,6 @@
 #+TITLE: Zsh Configuration
 #+PROPERTY: header-args :tangle-mode (identity #o444) :comments both
+#+AUTO_TANGLE: t
 
 This is my Zsh configuration, which supplanted Bash for me several years ago now.
 
@@ -28,6 +29,13 @@ Add a user local bin to ~PATH~ (right now just for XMonad with Stack, default in
   #PATH=("$HOME/.local/bin" "$path[@]")
   PATH=$HOME/.local/bin:$PATH
   export PATH
+#+end_src
+
+And for guix
+#+begin_src sh
+  export GUIX_PROFILE="$HOME/.guix-profile"
+       . "$GUIX_PROFILE/etc/profile"
+  export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
 #+end_src
 
 Get colors from [[https://github.com/deviantfero/wpgtk/][wpgtk]] so commands in non-interactive shells also have them

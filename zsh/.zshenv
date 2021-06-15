@@ -34,8 +34,18 @@ export PATH
 
 
 
-# Get colors from [[https://github.com/deviantfero/wpgtk/][wpgtk]] so commands in non-interactive shells also have them
+# And for guix
 
 # [[file:README.org::*.zshenv][.zshenv:4]]
-(cat ~/.config/wpg/sequences &)
+export GUIX_PROFILE="$HOME/.guix-profile"
+     . "$GUIX_PROFILE/etc/profile"
+export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
 # .zshenv:4 ends here
+
+
+
+# Get colors from [[https://github.com/deviantfero/wpgtk/][wpgtk]] so commands in non-interactive shells also have them
+
+# [[file:README.org::*.zshenv][.zshenv:5]]
+(cat ~/.config/wpg/sequences &)
+# .zshenv:5 ends here

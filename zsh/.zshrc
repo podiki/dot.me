@@ -13,6 +13,9 @@ autoload -Uz compinit
 compinit
 # End of lines added by compinstall
 
+# Completion for kitty
+kitty + complete setup zsh | source /dev/stdin
+
 setopt sharehistory
 setopt extendedhistory
 
@@ -132,7 +135,7 @@ function xterm_title_preexec () {
         [[ "$TERM" == 'screen'* ]] && { print -Pn '\e_\005{g}%n\005{-}@\005{m}%m\005{-} \005{B}%~\005{-} %# ' && print -n "${(q)1}\e\\"; }
 }
 
-if [[ "$TERM" == (screen*|xterm*|rxvt*|termite*) ]]; then
+if [[ "$TERM" == (screen*|xterm*|rxvt*|termite*|kitty*) ]]; then
         add-zsh-hook -Uz precmd xterm_title_precmd
         add-zsh-hook -Uz preexec xterm_title_preexec
 fi

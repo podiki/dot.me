@@ -27,6 +27,22 @@ zinit light-mode for \
     zinit-zsh/z-a-bin-gem-node
 # From the installer:2 ends here
 
+# Prompt
+# Load powerlevel10k theme:
+
+# [[file:README.org::*Prompt][Prompt:1]]
+zinit ice depth"1" # git clone depth
+zinit light romkatv/powerlevel10k
+# Prompt:1 ends here
+
+# Misc
+# Color for man pages:
+
+# [[file:README.org::*Misc][Misc:1]]
+zinit ice use:"*.zsh"
+zinit load zuxfoucault/colored-man-pages_mod
+# Misc:1 ends here
+
 # History and completion
 
 # [[file:README.org::*History and completion][History and completion:1]]

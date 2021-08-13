@@ -33,9 +33,9 @@ Add a user local bin to ~PATH~ (right now just for XMonad with Stack, default in
 
 And for guix
 #+begin_src sh
-  export GUIX_PROFILE="$HOME/.guix-profile"
-       . "$GUIX_PROFILE/etc/profile"
-  export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
+  export GUIX_PROFILE="$HOME/.config/guix/current"
+  . "$GUIX_PROFILE/etc/profile"
+  #  export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
 #+end_src
 
 Get colors from [[https://github.com/deviantfero/wpgtk/][wpgtk]] so commands in non-interactive shells also have them

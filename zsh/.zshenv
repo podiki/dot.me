@@ -37,9 +37,9 @@ export PATH
 # And for guix
 
 # [[file:README.org::*.zshenv][.zshenv:4]]
-export GUIX_PROFILE="$HOME/.guix-profile"
-     . "$GUIX_PROFILE/etc/profile"
-export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
+export GUIX_PROFILE="$HOME/.config/guix/current"
+. "$GUIX_PROFILE/etc/profile"
+#  export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
 # .zshenv:4 ends here
 
 

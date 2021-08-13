@@ -33,9 +33,9 @@ Add a user local bin to ~PATH~ (right now just for XMonad with Stack, default in
 
 And for guix
 #+begin_src sh
-  export GUIX_PROFILE="$HOME/.guix-profile"
-       . "$GUIX_PROFILE/etc/profile"
-  export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
+  export GUIX_PROFILE="$HOME/.config/guix/current"
+  . "$GUIX_PROFILE/etc/profile"
+  #  export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
 #+end_src
 
 Get colors from [[https://github.com/deviantfero/wpgtk/][wpgtk]] so commands in non-interactive shells also have them
@@ -47,6 +47,43 @@ Get colors from [[https://github.com/deviantfero/wpgtk/][wpgtk]] so commands in 
 :PROPERTIES:
 :header-args+: :tangle ".zshrc"
 :END:
+** Plugins with [[https://zdharma.github.io/zinit/wiki/][Zinit]]
+*** From the installer
+Basic loading and initialization
+#+begin_src sh
+  if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
+      print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
+      command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
+      command git clone https://github.com/zdharma/zinit "$HOME/.zinit/bin" && \
+          print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
+          print -P "%F{160}▓▒░ The clone has failed.%f%b"
+  fi
+
+  source "$HOME/.zinit/bin/zinit.zsh"
+  autoload -Uz _zinit
+  (( ${+_comps} )) && _comps[zinit]=_zinit
+#+end_src
+
+Load a few important annexes, without Turbo (this is currently required for annexes)
+#+begin_src sh
+  zinit light-mode for \
+      zinit-zsh/z-a-rust \
+      zinit-zsh/z-a-as-monitor \
+      zinit-zsh/z-a-patch-dl \
+      zinit-zsh/z-a-bin-gem-node
+#+end_src
+*** Prompt
+Load powerlevel10k theme:
+#+begin_src sh
+  zinit ice depth"1" # git clone depth
+  zinit light romkatv/powerlevel10k
+#+end_src
+*** Misc
+Color for man pages:
+#+begin_src sh
+  zinit ice use:"*.zsh"
+  zinit load zuxfoucault/colored-man-pages_mod
+#+end_src
 ** History and completion
 #+begin_src sh
   HISTFILE=~/.histfile
@@ -181,25 +218,4 @@ Set up general keybindings, mostly just didn't have delete key registering corre
           add-zsh-hook -Uz precmd xterm_title_precmd
           add-zsh-hook -Uz preexec xterm_title_preexec
   fi
-#+end_src
-
-** Other
-Plugins with [[https://github.com/zplug/zplug][zplug]]
-#+begin_src sh
-  source /usr/share/zsh/scripts/zplug/init.zsh
-
-  zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
-  zplug "zuxfoucault/colored-man-pages_mod", use:"*.zsh"
-  #zplug "marzocchi/zsh-notify"
-
-  # Install plugins if there are plugins that have not been installed
-  if ! zplug check --verbose; then
-      printf "Install? [y/N]: "
-      if read -q; then
-          echo; zplug install
-      fi
-  fi
-
-  # Then, source plugins and add commands to $PATH
-  zplug load --verbose
 #+end_src

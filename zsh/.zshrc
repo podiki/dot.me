@@ -1,3 +1,48 @@
+# From the installer
+# Basic loading and initialization
+
+# [[file:README.org::*From the installer][From the installer:1]]
+if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
+    print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
+    command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
+    command git clone https://github.com/zdharma/zinit "$HOME/.zinit/bin" && \
+        print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
+        print -P "%F{160}▓▒░ The clone has failed.%f%b"
+fi
+
+source "$HOME/.zinit/bin/zinit.zsh"
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
+# From the installer:1 ends here
+
+
+
+# Load a few important annexes, without Turbo (this is currently required for annexes)
+
+# [[file:README.org::*From the installer][From the installer:2]]
+zinit light-mode for \
+    zinit-zsh/z-a-rust \
+    zinit-zsh/z-a-as-monitor \
+    zinit-zsh/z-a-patch-dl \
+    zinit-zsh/z-a-bin-gem-node
+# From the installer:2 ends here
+
+# Prompt
+# Load powerlevel10k theme:
+
+# [[file:README.org::*Prompt][Prompt:1]]
+zinit ice depth"1" # git clone depth
+zinit light romkatv/powerlevel10k
+# Prompt:1 ends here
+
+# Misc
+# Color for man pages:
+
+# [[file:README.org::*Misc][Misc:1]]
+zinit ice use:"*.zsh"
+zinit load zuxfoucault/colored-man-pages_mod
+# Misc:1 ends here
+
 # History and completion
 
 # [[file:README.org::*History and completion][History and completion:1]]
@@ -140,25 +185,3 @@ if [[ "$TERM" == (screen*|xterm*|rxvt*|termite*|kitty*) ]]; then
         add-zsh-hook -Uz preexec xterm_title_preexec
 fi
 # Looks:1 ends here
-
-# Other
-# Plugins with [[https://github.com/zplug/zplug][zplug]]
-
-# [[file:README.org::*Other][Other:1]]
-source /usr/share/zsh/scripts/zplug/init.zsh
-
-zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
-zplug "zuxfoucault/colored-man-pages_mod", use:"*.zsh"
-#zplug "marzocchi/zsh-notify"
-
-# Install plugins if there are plugins that have not been installed
-if ! zplug check --verbose; then
-    printf "Install? [y/N]: "
-    if read -q; then
-        echo; zplug install
-    fi
-fi
-
-# Then, source plugins and add commands to $PATH
-zplug load --verbose
-# Other:1 ends here

@@ -47,6 +47,31 @@ Get colors from [[https://github.com/deviantfero/wpgtk/][wpgtk]] so commands in 
 :PROPERTIES:
 :header-args+: :tangle ".zshrc"
 :END:
+** Plugins with [[https://zdharma.github.io/zinit/wiki/][Zinit]]
+*** From the installer
+Basic loading and initialization
+#+begin_src sh
+  if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
+      print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
+      command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
+      command git clone https://github.com/zdharma/zinit "$HOME/.zinit/bin" && \
+          print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
+          print -P "%F{160}▓▒░ The clone has failed.%f%b"
+  fi
+
+  source "$HOME/.zinit/bin/zinit.zsh"
+  autoload -Uz _zinit
+  (( ${+_comps} )) && _comps[zinit]=_zinit
+#+end_src
+
+Load a few important annexes, without Turbo (this is currently required for annexes)
+#+begin_src sh
+  zinit light-mode for \
+      zinit-zsh/z-a-rust \
+      zinit-zsh/z-a-as-monitor \
+      zinit-zsh/z-a-patch-dl \
+      zinit-zsh/z-a-bin-gem-node
+#+end_src
 ** History and completion
 #+begin_src sh
   HISTFILE=~/.histfile

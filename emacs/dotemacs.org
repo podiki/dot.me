@@ -370,7 +370,7 @@ And a function for switching between two (day/night) themes, modified from this 
           ((string= "azazel" (system-name))
            (set-face-attribute 'default nil :family "Hack Nerd Font" :weight 'light :height 110)
            (set-fontset-font "fontset-default" nil (font-spec :name "Symbola"))
-           (set-face-attribute 'variable-pitch nil :family "M+ 2p Light" :height 120))))
+           (set-face-attribute 'variable-pitch nil :family "Noto Sans" :height 120))))
 #+END_SRC
 
 Mixed pitches
@@ -1400,6 +1400,11 @@ Compose nice HTML messages using the power of org-mode
     (setq org-msg-greeting-fmt "\nDear %s,\n\n")
     ;; to have greeting be a mailto link
     (setq org-msg-greeting-fmt-mailto nil)
+    (setq org-msg-default-alternatives '((new		. (text html))
+                                         (reply-to-html	. (html text))
+                                         (reply-to-text	. (text))))
+    ;; (setq org-msg-posting-style nil) ; don't top post
+    (setq org-msg-convert-citation t)
     (org-msg-mode))
 #+end_src
 *** Notifications
@@ -1851,8 +1856,12 @@ Make sure mp3info is installed (and found by emacs)
                 "~/Music/iTunes/iTunes Media/Music/")))
 #+END_SRC
 ** Icons. All of them.
+Prepend a font to fix icon issues in mu4e with mu4e-marker-icons (see [[https://github.com/stardiviner/mu4e-marker-icons/issues/1][this issue]])
+
 #+BEGIN_SRC emacs-lisp
-  (use-package all-the-icons)
+  (use-package all-the-icons
+    :config
+    (set-fontset-font t 'unicode (font-spec :family "Material Icons") nil 'prepend))
 
   (use-package all-the-icons-dired
    :config

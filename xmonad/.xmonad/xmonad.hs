@@ -101,7 +101,8 @@ myLogHook = ewmhDesktopsLogHookCustom namedScratchpadFilterOutWorkspace
 
 myStartupHook :: X ()
 myStartupHook = composeAll
-  [ spawnOnce "dex -ae xmonad" -- use dex for autostart .desktop entries
+  [ spawnOnce "snixembed --fork" -- to get SNI support (dropbox icon)
+  , spawnOnce "dex -ae xmonad" -- use dex for autostart .desktop entries
   , spawnOnce "udiskie --tray"
   , spawnOnce "xscreensaver -no-splash"
   , spawnOnce "blueshift-tray -c ~/blueshift.conf"

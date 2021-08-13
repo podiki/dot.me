@@ -182,24 +182,3 @@ Set up general keybindings, mostly just didn't have delete key registering corre
           add-zsh-hook -Uz preexec xterm_title_preexec
   fi
 #+end_src
-
-** Other
-Plugins with [[https://github.com/zplug/zplug][zplug]]
-#+begin_src sh
-  source /usr/share/zsh/scripts/zplug/init.zsh
-
-  zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
-  zplug "zuxfoucault/colored-man-pages_mod", use:"*.zsh"
-  #zplug "marzocchi/zsh-notify"
-
-  # Install plugins if there are plugins that have not been installed
-  if ! zplug check --verbose; then
-      printf "Install? [y/N]: "
-      if read -q; then
-          echo; zplug install
-      fi
-  fi
-
-  # Then, source plugins and add commands to $PATH
-  zplug load --verbose
-#+end_src

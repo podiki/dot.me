@@ -140,25 +140,3 @@ if [[ "$TERM" == (screen*|xterm*|rxvt*|termite*|kitty*) ]]; then
         add-zsh-hook -Uz preexec xterm_title_preexec
 fi
 # Looks:1 ends here
-
-# Other
-# Plugins with [[https://github.com/zplug/zplug][zplug]]
-
-# [[file:README.org::*Other][Other:1]]
-source /usr/share/zsh/scripts/zplug/init.zsh
-
-zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
-zplug "zuxfoucault/colored-man-pages_mod", use:"*.zsh"
-#zplug "marzocchi/zsh-notify"
-
-# Install plugins if there are plugins that have not been installed
-if ! zplug check --verbose; then
-    printf "Install? [y/N]: "
-    if read -q; then
-        echo; zplug install
-    fi
-fi
-
-# Then, source plugins and add commands to $PATH
-zplug load --verbose
-# Other:1 ends here

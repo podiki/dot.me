@@ -16,17 +16,6 @@
 #+END_SRC
 
 ** Some variables
-*** location of Dropbox
-#+BEGIN_SRC emacs-lisp
-  (when (memq window-system '(w32))
-    (defvar dropbox "c:/Users/John/Desktop/Dropbox/"))
-
-  (when (memq window-system '(mac ns))
-    (defvar dropbox "/Users/john/Desktop/Dropbox/"))
-
-  (when (or (memq window-system '(x)) (memq window-system '(pgtk)))
-    (defvar dropbox "/home/john/Dropbox/"))
-#+END_SRC
 ** Initial size, appearance, etc.
 #+BEGIN_SRC emacs-lisp
   ;; initial size
@@ -910,7 +899,7 @@ Hydra
   (use-package org
     :defer t
     :config
-    (setq org-directory (concat dropbox "org"))
+    (setq org-directory "~/Files/Notes")
       ;; use indented view by default
     (setq org-startup-indented t)
     ;; syntax highlight code blocks
@@ -1100,8 +1089,8 @@ Sync with Google Calendar using org-gcal
             org-gcal-client-id id
             org-gcal-client-secret secret
             org-gcal-file-alist
-            '(("sweet.cheesus@gmail.com" .  "~/Dropbox/org/gcal-main.org")
-              ("u8vo3jc5fiva545r6icssgap369nti8b@import.calendar.google.com" . "~/Dropbox/org/gcal-cw.org"))
+            '(("sweet.cheesus@gmail.com" .  "~/Files/Notes/gcal-main.org")
+              ("u8vo3jc5fiva545r6icssgap369nti8b@import.calendar.google.com" . "~/Files/Notes/gcal-cw.org"))
             org-gcal-notify-p nil)))
 #+end_src
 

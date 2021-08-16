@@ -35,7 +35,7 @@ Set the DPI based on the machine name
   #ifndef DPI
       #ifdef SRVR_azazel
           #define DPI 192
-      #elif SRVR_raven
+      #elif SRVR_narya
           #define DPI 144
       #endif
   #endif
@@ -126,7 +126,7 @@ Set DPI based on hostname of the machine
 #+begin_src sh
   case $HOSTNAME in
       (azazel) xrandr --dpi 192;;
-      (raven)  xrandr --dpi 144;;
+      (narya)  xrandr --dpi 144;;
   esac
 #+end_src
 
@@ -179,9 +179,10 @@ I love anything Lisp related, so used [[https://wiki.archlinux.org/index.php/Stu
   $HOME/quicklisp/local-projects/stumpwm/stumpwm
 #+end_src
 
-Currently on xmonad
+Currently on xmonad. Running into some issues with dbus on GuixSD, and probably should explicitly use ~dbus-launch~ anyway. Should make a proper xsession for GDM on Guix still.
 #+begin_src sh
-  exec ~/.xmonad/xmonad-x86_64-linux
+  # exec ~/.xmonad/my-xmonad
+  dbus-launch --exit-with-session ~/.xmonad/my-xmonad
 #+end_src
 
 * xprofile

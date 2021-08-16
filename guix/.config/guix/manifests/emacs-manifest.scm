@@ -8,4 +8,5 @@
  '("emacs-pgtk-native-comp"
    "emacs-guix"
    "emacs-pdf-tools"
-   "emacs-use-package"))
+   "emacs-use-package"
+   "mu"))

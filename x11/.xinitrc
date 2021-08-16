@@ -51,7 +51,7 @@ export QT_QPA_PLATFORMTHEME="qt5ct"
 # [[file:README.org::*DPI][DPI:1]]
 case $HOSTNAME in
     (azazel) xrandr --dpi 192;;
-    (raven)  xrandr --dpi 144;;
+    (narya)  xrandr --dpi 144;;
 esac
 # DPI:1 ends here
 
@@ -93,8 +93,9 @@ $HOME/.config/wpg/wp_init.sh
 
 
 
-# Currently on xmonad
+# Currently on xmonad. Running into some issues with dbus on GuixSD, and probably should explicitly use ~dbus-launch~ anyway. Should make a proper xsession for GDM on Guix still.
 
 # [[file:README.org::*Window Manager][Window Manager:3]]
-exec ~/.xmonad/xmonad-x86_64-linux
+# exec ~/.xmonad/my-xmonad
+dbus-launch --exit-with-session ~/.xmonad/my-xmonad
 # Window Manager:3 ends here

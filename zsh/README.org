@@ -2,7 +2,7 @@
 #+PROPERTY: header-args :tangle-mode (identity #o444) :comments both
 #+AUTO_TANGLE: t
 
-This is my Zsh configuration, which supplanted Bash for me several years ago now.
+This is my Zsh configuration, which supplanted Bash for me several years ago now. For what goes where for Zsh, see [[https://zsh.sourceforge.io/Guide/zshguide02.html][this guide page]] and [[https://zsh.sourceforge.io/Doc/Release/Files.html][this doc page]].
 
 * .zshenv
 :PROPERTIES:
@@ -31,16 +31,38 @@ Add a user local bin to ~PATH~ (right now just for XMonad with Stack, default in
   export PATH
 #+end_src
 
-And for guix
-#+begin_src sh
-  export GUIX_PROFILE="$HOME/.config/guix/current"
-  . "$GUIX_PROFILE/etc/profile"
-  #  export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
-#+end_src
-
 Get colors from [[https://github.com/deviantfero/wpgtk/][wpgtk]] so commands in non-interactive shells also have them
 #+begin_src sh
   (cat ~/.config/wpg/sequences &)
+#+end_src
+
+* .zprofile
+:PROPERTIES:
+:header-args+: :tangle ".zprofile"
+:END:
+** System-wide
+Honor system-wide environment variables
+#+begin_src sh
+  source /etc/profile
+#+end_src
+** Guix profile loading
+Test if on a Guix System to set the extra profiles variable and source them. Otherwise, set and source the default one on a foreign distribution.
+#+begin_src sh
+  if [[ -s /run/current-system/profile ]]; then
+      export GUIX_EXTRA_PROFILES="$HOME/.config/guix/profiles"
+      for i in $GUIX_EXTRA_PROFILES/*; do
+          profile=$i/$(basename "$i")
+          if [ -f "$profile"/etc/profile ]; then
+              GUIX_PROFILE="$profile"
+              . "$GUIX_PROFILE"/etc/profile
+          fi
+          unset profile
+      done
+  else
+      export GUIX_PROFILE="$HOME/.config/guix/current"
+      . "$GUIX_PROFILE/etc/profile"
+      #  export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
+  fi
 #+end_src
 
 * .zshrc

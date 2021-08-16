@@ -1,0 +1,16 @@
+(specifications->manifest
+ '("python-tldr"
+   "python-yubikey-manager"
+   "curl"
+   "mu"
+   "lm-sensors"
+   "unzip"
+   "zsh"
+   "htop"
+   "stow"
+   "git"
+   "password-store"
+   "openssh"
+   "pinentry"
+   "ccid"
+   "gnupg"))

@@ -46,7 +46,7 @@ Honor system-wide environment variables
   source /etc/profile
 #+end_src
 ** Guix profile loading
-Test if on a Guix System to set the extra profiles variable and source them. Otherwise, set and source the default one on a foreign distribution.
+Test if on a Guix System to set the extra profiles variable and source them. Otherwise, set and source the default one on a foreign distribution. For Guix, also source anything in a profiles ~/etc/profile.d~ directory (while this an expected place, have only seen Flatpak put something in there on Guix).
 #+begin_src sh
   if [[ -s /run/current-system/profile ]]; then
       export GUIX_EXTRA_PROFILES="$HOME/.config/guix/profiles"
@@ -56,6 +56,15 @@ Test if on a Guix System to set the extra profiles variable and source them. Oth
               GUIX_PROFILE="$profile"
               . "$GUIX_PROFILE"/etc/profile
           fi
+
+          if [ -d "$profile"/etc/profile.d/ ]; then
+              for j in "$profile"/etc/profile.d/*.sh ; do
+                  if [ -r "$j" ]; then
+                      . $j
+                  fi
+              done
+          fi
+
           unset profile
       done
   else
@@ -63,6 +72,11 @@ Test if on a Guix System to set the extra profiles variable and source them. Oth
       . "$GUIX_PROFILE/etc/profile"
       #  export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
   fi
+#+end_src
+** xdg-desktop-portal fix
+Seems like a bug that the portals do not like multiple directories for ~XDG_DESKTOP_PORTAL_DIR~. So override it manually for now
+#+begin_src sh
+  export XDG_DESKTOP_PORTAL_DIR=$GUIX_EXTRA_PROFILES/desktop/desktop/share/xdg-desktop-portal/portals
 #+end_src
 
 * .zshrc

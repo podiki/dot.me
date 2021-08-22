@@ -6,7 +6,6 @@
              (guix packages) ;for origin (udev rule)
              (nongnu packages linux) ; this and next for nongnu linux
              (nongnu system linux-initrd)
-             ;(gnu packages freedesktop) ; for xdg-desktop-portal
              (gnu services syncthing)
              (gnu services mcron)
              (gnu packages shells) ; for zsh
@@ -113,10 +112,11 @@
   (packages
     (append
       (list (specification->package "awesome")
+            (specification->package "xinitrc-xsession")
             (specification->package "emacs")
-            (specification->package "emacs-exwm")
-            (specification->package
-              "emacs-desktop-environment")
+            ;(specification->package "emacs-exwm")
+            ;(specification->package
+            ;  "emacs-desktop-environment")
             (specification->package "nss-certs"))
       %base-packages))
   (services (cons*

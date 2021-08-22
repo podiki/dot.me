@@ -93,9 +93,9 @@ $HOME/.config/wpg/wp_init.sh
 
 
 
-# Currently on xmonad. Running into some issues with dbus on GuixSD, and probably should explicitly use ~dbus-launch~ anyway. Should make a proper xsession for GDM on Guix still.
+# Currently on xmonad. Running into some issues with dbus on GuixSD, and probably should explicitly use ~dbus-launch~ anyway.
 
 # [[file:README.org::*Window Manager][Window Manager:3]]
 # exec ~/.xmonad/my-xmonad
-dbus-launch --exit-with-session ~/.xmonad/my-xmonad
+dbus-launch --exit-with-session ~/.xmonad/xmonad-x86_64-linux
 # Window Manager:3 ends here

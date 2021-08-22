@@ -6,6 +6,7 @@
 
 # [[file:../../../README.org::*GTK][GTK:1]]
 sed --in-place --follow-symlinks 's/-dark/-light/' ~/.xsettingsd
+sed --in-place --follow-symlinks 's/-Dark/-Light/' ~/.xsettingsd
 killall -HUP xsettingsd
 lxappearance&
 sleep 0.2

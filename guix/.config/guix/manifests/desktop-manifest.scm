@@ -72,14 +72,10 @@
      "xset"
      "xrandr"
      "pavucontrol"
-;     "python-yubikey-manager"
-;     "password-store"
-;     "pinentry"
-;     "ccid"
-;     "gnupg"
      "glib" ; to pick up XDG_DATA_DIRS
      "rofi-pass"
      "rofi"
+     "python-yubikey-oath-dmenu"
      "font-dejavu"
      "arandr"
      "icecat"))

@@ -9,4 +9,7 @@
    "emacs-guix"
    "emacs-pdf-tools"
    "emacs-use-package"
-   "mu"))
+   ;; mail
+   "mu"
+   "isync"
+   "go-gitlab.com-shackra-goimapnotify"))

@@ -9,7 +9,7 @@ while pgrep -x polybar >/dev/null; do sleep 1; done
 # Launch bar based on hostname
 case $HOSTNAME in
     (azazel) polybar azazel &;;
-    (narya)  polybar raven &;;
+    (narya)  polybar narya &;;
 esac
 
 echo "Bars launched..."

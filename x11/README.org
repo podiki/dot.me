@@ -205,7 +205,7 @@ Since I'm not using a full Desktop Environment (and so things like any session d
   Xft/RGBA "rgb"
   Xft/HintStyle "hintslight"
   Xft/Antialias 1
-  Net/ThemeName "Qogir-manjaro-light"
-  Net/IconThemeName "Qogir-manjaro-light"
-  Gtk/CursorThemeName "Qogir-manjaro-light"
+  Net/ThemeName "Orchis-light"
+  Net/IconThemeName "Papirus-Light"
+  Gtk/CursorThemeName "capitaine-cursors"
 #+end_src

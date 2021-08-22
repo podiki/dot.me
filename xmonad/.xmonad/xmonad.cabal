@@ -1,0 +1,23 @@
+------------------------------------------------------------------------------
+name:          my-xmonad
+version:       0.1
+synopsis:      XMonad Configuration
+homepage:      http://xmonad.org
+license:       BSD2
+license-file:  LICENSE
+author:        podiki
+maintainer:    podiki
+copyright:     Copyright (c) 2021
+category:      Graphics
+build-type:    Simple
+cabal-version: >=1.8
+
+------------------------------------------------------------------------------
+executable my-xmonad
+  main-is: xmonad.hs
+  ghc-options: -Wall -Werror -fno-warn-missing-signatures
+  build-depends: base, xmonad, xmonad-contrib, lens, mtl, X11
+  other-modules: MiddleColumn, FocusWindow, MyDebug, Operations, Types, WindowColumn, WindowFinder, WindowCoordinates
+  extra-lib-dirs: /home/john/.guix-profile/lib
+  --  ghc-options: -Wall -Werror -fno-warn-missing-signatures
+  ghc-options: -w

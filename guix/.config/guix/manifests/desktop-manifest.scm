@@ -65,7 +65,7 @@
      "font-awesome"
      "polybar"
      "kitty"
-     "redshift"
+     "redshift:gtk"
      "syncthing"
      "syncthing-gtk"
      "pulseaudio"

@@ -114,18 +114,12 @@
       (list (specification->package "awesome")
             (specification->package "xinitrc-xsession")
             (specification->package "emacs")
-            ;(specification->package "emacs-exwm")
-            ;(specification->package
-            ;  "emacs-desktop-environment")
             (specification->package "nss-certs"))
       %base-packages))
   (services (cons*
              (service pcscd-service-type)
              (udev-rules-service 'steam-input %steam-input-udev-rules)
              (udev-rules-service 'steam-vr %steam-vr-udev-rules)
-             ;(simple-service 'xdg-portal dbus-root-service-type (list xdg-desktop-portal))
-             ;(simple-service 'profile-portal profile-service-type
-             ;                (list xdg-desktop-portal))
              ;(geoclue-service)
              ;; to have geoclue in the system profile, so the agent autostart file is visible
              ;; (simple-service 'profile-geoclue profile-service-type
@@ -136,18 +130,18 @@
                                    fstrim-job))
              (service syncthing-service-type
                       (syncthing-configuration (user "john")))
-             (service fhs-binaries-compatibility-service-type
-                      (fhs-configuration
-                       (lib-packages fhs-packages)
-                       (additional-special-files
-                        `(;; QT apps fail to recieve keyboard input unless they find this hardcoded path.
-                          ("/usr/share/X11/xkb"
-                           ,(file-append
-                             (canonical-package
-                              (@ (gnu packages xorg) xkeyboard-config))
-                             "/share/X11/xkb"))
-                          ;; Chromium component of electron apps break without fontconfig configuration here.
-                          ("/etc/fonts" ,"/run/current-system/profile/etc/fonts")))))
+             ;; (service fhs-binaries-compatibility-service-type
+             ;;          (fhs-configuration
+             ;;           (lib-packages fhs-packages)
+             ;;           (additional-special-files
+             ;;            `(;; QT apps fail to recieve keyboard input unless they find this hardcoded path.
+             ;;              ("/usr/share/X11/xkb"
+             ;;               ,(file-append
+             ;;                 (canonical-package
+             ;;                  (@ (gnu packages xorg) xkeyboard-config))
+             ;;                 "/share/X11/xkb"))
+             ;;              ;; Chromium component of electron apps break without fontconfig configuration here.
+             ;;              ("/etc/fonts" ,"/run/current-system/profile/etc/fonts")))))
              (modify-services %desktop-services
                               (guix-service-type config =>
                                                  (guix-configuration
@@ -160,8 +154,6 @@
                                                    (append (list (local-file "substitutes.guix.sama.re.pub")
                                                                  (local-file "mirror.brielmaier.net.pub"))
                                                            %default-authorized-guix-keys))))
-                              ;; (dbus-service config =>
-                              ;;               #:services (list xdg-desktop-portal))
                               (udev-service-type config =>
                                                  (udev-configuration
                                                   (inherit config)
@@ -171,20 +163,66 @@
   (initrd microcode-initrd)
   (firmware (cons* amdgpu-firmware
                    %base-firmware))
-  (bootloader
-    (bootloader-configuration
-      (bootloader grub-efi-bootloader)
-      (target "/boot/efi")
-      (keyboard-layout keyboard-layout)))
-  (file-systems
-    (cons* (file-system
-             (mount-point "/")
-             (device
-               (uuid "ca687bdb-7aca-4620-ba18-9d4d5d376361"
-                     'ext4))
-             (type "ext4"))
-           (file-system
-             (mount-point "/boot/efi")
-             (device (uuid "387C-B2AB" 'fat32))
-             (type "vfat"))
-           %base-file-systems)))
+  ;; Use the UEFI variant of GRUB with the EFI System
+  ;; Partition mounted on /boot/efi.
+  (bootloader (bootloader-configuration
+                (bootloader grub-efi-bootloader)
+                (target "/boot/efi")
+                (keyboard-layout keyboard-layout)))
+
+  ;; Specify a mapped device for the encrypted root partition.
+  ;; The UUID is that returned by 'cryptsetup luksUUID'.
+;;  (mapped-devices
+;;   (list (mapped-device
+;;          (source (uuid "12345678-1234-1234-1234-123456789abc"))
+;;          (target "my-root")
+;;          (type luks-device-mapping))))
+
+  (file-systems (append
+                 (list (file-system
+                         (device (file-system-label "system"))
+                         (mount-point "/")
+                         (type "btrfs")
+                         (flags '(no-atime))
+                         (options "subvol=root,compress=lzo,ssd"))
+                       (file-system
+                         (device (file-system-label "system"))
+                         (mount-point "/gnu/store")
+                         (type "btrfs")
+                         (flags '(no-atime))
+                         (options "subvol=gnu-store,compress=lzo,ssd"))
+                       (file-system
+                         (device (file-system-label "system"))
+                         (mount-point "/var/log")
+                         (type "btrfs")
+                         (flags '(no-atime))
+                         (options "subvol=var-log,compress=lzo,ssd"))
+                       (file-system
+                         (device (file-system-label "system"))
+                         (mount-point "/home")
+                         (type "btrfs")
+                         (flags '(no-atime))
+                         (options "subvol=home,compress=lzo,ssd"))
+                       (file-system
+                         (device (uuid "5989-F926" 'fat))
+                         (mount-point "/boot/efi")
+                         (type "vfat")))
+                 %base-file-systems)))
+
+;;  (bootloader
+;;    (bootloader-configuration
+;;      (bootloader grub-efi-bootloader)
+;;      (target "/boot")
+;;      (keyboard-layout keyboard-layout)))
+;;  (file-systems
+;;    (cons* (file-system
+;;             (mount-point "/")
+;;             (device
+;;               (uuid "ca687bdb-7aca-4620-ba18-9d4d5d376361"
+;;                     'ext4))
+;;             (type "ext4"))
+;;           (file-system
+;;             (mount-point "/boot")
+;;             (device (uuid "387C-B2AB" 'fat32))
+;;             (type "vfat"))
+;;           %base-file-systems)))

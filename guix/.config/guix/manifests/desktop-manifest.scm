@@ -10,7 +10,7 @@
   (options->transformation
     '((with-source
         .
-        "https://github.com/flatpak/flatpak/releases/download/1.11.2/flatpak-1.11.2.tar.xz"))))
+        "https://github.com/flatpak/flatpak/releases/download/1.11.3/flatpak-1.11.3.tar.xz"))))
 
 (define transform4
   (options->transformation
@@ -34,6 +34,8 @@
   (specifications->manifest
    '("rofi-calc"
      "xdg-desktop-portal"
+     "gnome-themes-extra" ; for some defaults
+     "adwaita-icon-theme" ; ditto
      "arc-icon-theme"
      "arc-theme"
      "orchis-theme"

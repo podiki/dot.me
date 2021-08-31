@@ -893,12 +893,13 @@ Hydra
 * Org-mode
 ** Basic setup
 - Use org-plus-contrib for extras in org-mode. Note that other packages that depend on org will install plain org (though this shouldn't cause any problems, it is annoying when installing something new). Fix this by [[https://lists.gnu.org/archive/html/emacs-orgmode/2014-12/msg00287.html][creating a dummy package]], as there is no way to tell the package manager that org is accounted for. Also add a file org-autoloads.el to prevent startup errors (though of no real consequence I think).
-- org-contrib has been separated out, and don't use it anyway, no longer need above
+- org-contrib has been separated out; no longer need above
 - Some todo/agenda customization from the [[http://pragmaticemacs.com/emacs/org-mode-basics-vii-a-todo-list-with-schedules-and-deadlines/][Pragmatic Emacs blog]]
 #+BEGIN_SRC emacs-lisp
   (use-package org
     :defer t
     :config
+    (use-package org-contrib)
     (setq org-directory "~/Files/Notes")
       ;; use indented view by default
     (setq org-startup-indented t)
@@ -1389,9 +1390,9 @@ Compose nice HTML messages using the power of org-mode
     (setq org-msg-greeting-fmt "\nDear %s,\n\n")
     ;; to have greeting be a mailto link
     (setq org-msg-greeting-fmt-mailto nil)
-    (setq org-msg-default-alternatives '((new		. (text html))
-                                         (reply-to-html	. (html text))
-                                         (reply-to-text	. (text))))
+    (setq org-msg-default-alternatives '((new           . (text))
+                                         (reply-to-html . (html))
+                                         (reply-to-text . (text))))
     ;; (setq org-msg-posting-style nil) ; don't top post
     (setq org-msg-convert-citation t)
     (org-msg-mode))

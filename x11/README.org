@@ -139,6 +139,13 @@ After moving from Infinality to freetype 2.7/fontconfig 2.12 suddenly fonts got 
   export GDK_DPI_SCALE=0.5
 #+end_src
 
+Now, for the desktop Guix system need some scaling settings
+#+begin_src sh
+  if [ "$HOSTNAME" = "narya" ]; then
+      QT_SCALE_FACTOR=0.75
+  fi
+#+end_src
+
 ** Startup programs
 Start any system default programs from ~xinit~
 #+begin_src sh

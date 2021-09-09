@@ -42,11 +42,13 @@ Get colors from [[https://github.com/deviantfero/wpgtk/][wpgtk]] so commands in 
 :END:
 ** System-wide
 Honor system-wide environment variables
+
 #+begin_src sh
   source /etc/profile
 #+end_src
 ** Guix profile loading
 Test if on a Guix System to set the extra profiles variable and source them. Otherwise, set and source the default one on a foreign distribution. For Guix, also source anything in a profiles ~/etc/profile.d~ directory (while this an expected place, have only seen Flatpak put something in there on Guix).
+
 #+begin_src sh
   if [[ -s /run/current-system/profile ]]; then
       export GUIX_EXTRA_PROFILES="$HOME/.config/guix/profiles"
@@ -73,10 +75,22 @@ Test if on a Guix System to set the extra profiles variable and source them. Oth
       #  export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
   fi
 #+end_src
+** ~XDG_CONFIG_DIRs~ fix
+To work around some search paths not being exported consistently in Guix, e.g. [[https://issues.guix.gnu.org/50103][issue #50103]], add the desktop profile to ~XDG_CONFIG_DIRS~
+
+#+begin_src sh
+  if [[ -s /run/current-system/profile ]]; then
+      export XDG_CONFIG_DIRS=$GUIX_EXTRA_PROFILES/desktop/desktop/etc/xdg:$XDG_CONFIG_DIRS
+  fi
+#+end_src
+
 ** xdg-desktop-portal fix
 Seems like a bug that the portals do not like multiple directories for ~XDG_DESKTOP_PORTAL_DIR~. So override it manually for now
+
 #+begin_src sh
-  export XDG_DESKTOP_PORTAL_DIR=$GUIX_EXTRA_PROFILES/desktop/desktop/share/xdg-desktop-portal/portals
+  if [[ -s /run/current-system/profile ]]; then
+      export XDG_DESKTOP_PORTAL_DIR=$GUIX_EXTRA_PROFILES/desktop/desktop/share/xdg-desktop-portal/portals
+  fi
 #+end_src
 
 * .zshrc

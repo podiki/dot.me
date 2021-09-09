@@ -1,12 +1,14 @@
 # System-wide
 # Honor system-wide environment variables
 
+
 # [[file:README.org::*System-wide][System-wide:1]]
 source /etc/profile
 # System-wide:1 ends here
 
 # Guix profile loading
 # Test if on a Guix System to set the extra profiles variable and source them. Otherwise, set and source the default one on a foreign distribution. For Guix, also source anything in a profiles ~/etc/profile.d~ directory (while this an expected place, have only seen Flatpak put something in there on Guix).
+
 
 # [[file:README.org::*Guix profile loading][Guix profile loading:1]]
 if [[ -s /run/current-system/profile ]]; then
@@ -35,9 +37,22 @@ else
 fi
 # Guix profile loading:1 ends here
 
+# ~XDG_CONFIG_DIRs~ fix
+# To work around some search paths not being exported consistently in Guix, e.g. [[https://issues.guix.gnu.org/50103][issue #50103]], add the desktop profile to ~XDG_CONFIG_DIRS~
+
+
+# [[file:README.org::*~XDG_CONFIG_DIRs~ fix][~XDG_CONFIG_DIRs~ fix:1]]
+if [[ -s /run/current-system/profile ]]; then
+    export XDG_CONFIG_DIRS=$GUIX_EXTRA_PROFILES/desktop/desktop/etc/xdg:$XDG_CONFIG_DIRS
+fi
+# ~XDG_CONFIG_DIRs~ fix:1 ends here
+
 # xdg-desktop-portal fix
 # Seems like a bug that the portals do not like multiple directories for ~XDG_DESKTOP_PORTAL_DIR~. So override it manually for now
 
+
 # [[file:README.org::*xdg-desktop-portal fix][xdg-desktop-portal fix:1]]
-export XDG_DESKTOP_PORTAL_DIR=$GUIX_EXTRA_PROFILES/desktop/desktop/share/xdg-desktop-portal/portals
+if [[ -s /run/current-system/profile ]]; then
+    export XDG_DESKTOP_PORTAL_DIR=$GUIX_EXTRA_PROFILES/desktop/desktop/share/xdg-desktop-portal/portals
+fi
 # xdg-desktop-portal fix:1 ends here

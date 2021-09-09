@@ -55,6 +55,16 @@ case $HOSTNAME in
 esac
 # DPI:1 ends here
 
+
+
+# Now, for the desktop Guix system need some scaling settings
+
+# [[file:README.org::*DPI][DPI:3]]
+if [ "$HOSTNAME" = "narya" ]; then
+    QT_SCALE_FACTOR=0.75
+fi
+# DPI:3 ends here
+
 # Startup programs
 # Start any system default programs from ~xinit~
 

@@ -36,6 +36,7 @@
      "xdg-desktop-portal"
      "gnome-themes-extra" ; for some defaults
      "adwaita-icon-theme" ; ditto
+     "breeze-icons"       ; and for KDE too
      "arc-icon-theme"
      "arc-theme"
      "orchis-theme"
@@ -54,9 +55,15 @@
      "dunst"
      "xdg-utils"
      "openrgb"
+     "corectrl"
      "lm-sensors"
+     "udiskie"
      "xrdb"
      "dex"
+     "v4l-utils:gui"
+     "geeqie"
+     "libreoffice"
+     "headsetcontrol"
      "feh"
      "mpv"
      "audacity"
@@ -74,7 +81,7 @@
      "xset"
      "xrandr"
      "pavucontrol"
-     "glib" ; to pick up XDG_DATA_DIRS
+     ;"glib" ; to pick up XDG_DATA_DIRS
      "rofi-pass"
      "rofi"
      "python-yubikey-oath-dmenu"

@@ -9,6 +9,7 @@
              (gnu services syncthing)
              (gnu services mcron)
              (gnu packages shells) ; for zsh
+             (gnu packages linux) ; for fstrim
              (guix profiles) ;; For manifest-entries
              (srfi srfi-1) ;; For filter-map
              (openrgb) ;; openrgb
@@ -26,9 +27,10 @@
 
 (define fstrim-job
   ;; Run fstrim on all applicable mounted drives once a week
-  ;; on Sunday at 11:15am.
-  #~(job "15 11 * * Sun"
-         "fstrim --all --verbose"))
+  ;; on Sunday at 11:35am.
+  #~(job "35 11 * * Sun"
+         (string-append #$util-linux+udev
+                        "/sbin/fstrim --all --verbose")))
 
 (define garbage-collector-job
   ;; Collect garbage 5 minutes after midnight every day.
@@ -111,8 +113,7 @@
                 %base-user-accounts))
   (packages
     (append
-      (list (specification->package "awesome")
-            (specification->package "xinitrc-xsession")
+      (list (specification->package "xinitrc-xsession")
             (specification->package "emacs")
             (specification->package "nss-certs"))
       %base-packages))
@@ -120,6 +121,12 @@
              (service pcscd-service-type)
              (udev-rules-service 'steam-input %steam-input-udev-rules)
              (udev-rules-service 'steam-vr %steam-vr-udev-rules)
+             (simple-service 'corectrl-polkit polkit-service-type
+                             (list corectrl))
+             ;; dbus files from corectrl are system-service files,
+             ;; so need to add to dbus-root-service
+             (simple-service 'corectrl-dbus dbus-root-service-type
+                             (list corectrl))
              ;(geoclue-service)
              ;; to have geoclue in the system profile, so the agent autostart file is visible
              ;; (simple-service 'profile-geoclue profile-service-type
@@ -130,19 +137,24 @@
                                    fstrim-job))
              (service syncthing-service-type
                       (syncthing-configuration (user "john")))
-             ;; (service fhs-binaries-compatibility-service-type
-             ;;          (fhs-configuration
-             ;;           (lib-packages fhs-packages)
-             ;;           (additional-special-files
-             ;;            `(;; QT apps fail to recieve keyboard input unless they find this hardcoded path.
-             ;;              ("/usr/share/X11/xkb"
-             ;;               ,(file-append
-             ;;                 (canonical-package
-             ;;                  (@ (gnu packages xorg) xkeyboard-config))
-             ;;                 "/share/X11/xkb"))
-             ;;              ;; Chromium component of electron apps break without fontconfig configuration here.
-             ;;              ("/etc/fonts" ,"/run/current-system/profile/etc/fonts")))))
+             (service fhs-binaries-compatibility-service-type
+                      (fhs-configuration
+                       (lib-packages fhs-packages)
+                       (additional-special-files
+                        `(;; QT apps fail to recieve keyboard input unless they find this hardcoded path.
+                          ("/usr/share/X11/xkb"
+                           ,(file-append
+                             (canonical-package
+                              (@ (gnu packages xorg) xkeyboard-config))
+                             "/share/X11/xkb"))
+                          ;; Chromium component of electron apps break without fontconfig configuration here.
+                          ("/etc/fonts" ,"/run/current-system/profile/etc/fonts")))))
              (modify-services %desktop-services
+                              ;; don't use USB modems, scanners, or network-manager-applet
+                              (delete modem-manager-service-type)
+                              (delete usb-modeswitch-service-type)
+                              (delete sane-service-type)
+                              (delete (specification->package "network-manager-applet"))
                               (guix-service-type config =>
                                                  (guix-configuration
                                                   (inherit config)
@@ -167,16 +179,8 @@
   ;; Partition mounted on /boot/efi.
   (bootloader (bootloader-configuration
                 (bootloader grub-efi-bootloader)
-                (target "/boot/efi")
+                (targets '("/boot/efi"))
                 (keyboard-layout keyboard-layout)))
-
-  ;; Specify a mapped device for the encrypted root partition.
-  ;; The UUID is that returned by 'cryptsetup luksUUID'.
-;;  (mapped-devices
-;;   (list (mapped-device
-;;          (source (uuid "12345678-1234-1234-1234-123456789abc"))
-;;          (target "my-root")
-;;          (type luks-device-mapping))))
 
   (file-systems (append
                  (list (file-system
@@ -208,21 +212,3 @@
                          (mount-point "/boot/efi")
                          (type "vfat")))
                  %base-file-systems)))
-
-;;  (bootloader
-;;    (bootloader-configuration
-;;      (bootloader grub-efi-bootloader)
-;;      (target "/boot")
-;;      (keyboard-layout keyboard-layout)))
-;;  (file-systems
-;;    (cons* (file-system
-;;             (mount-point "/")
-;;             (device
-;;               (uuid "ca687bdb-7aca-4620-ba18-9d4d5d376361"
-;;                     'ext4))
-;;             (type "ext4"))
-;;           (file-system
-;;             (mount-point "/boot")
-;;             (device (uuid "387C-B2AB" 'fat32))
-;;             (type "vfat"))
-;;           %base-file-systems)))

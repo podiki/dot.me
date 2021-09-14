@@ -8,6 +8,7 @@
              (nongnu system linux-initrd)
              (gnu services syncthing)
              (gnu services mcron)
+             (gnu services sysctl) ; for sysctl service
              (gnu packages shells) ; for zsh
              (gnu packages linux) ; for fstrim
              (guix profiles) ;; For manifest-entries
@@ -118,6 +119,13 @@
             (specification->package "nss-certs"))
       %base-packages))
   (services (cons*
+             (pam-limits-service
+              (list
+               ;; higher open file limit, helpful for Wine and esync
+               (pam-limits-entry "*" 'both 'nofile 128000)
+               ;; lower nice limit for users, but root can go further to rescue system
+               (pam-limits-entry "*" 'both 'nice -19)
+               (pam-limits-entry "root" 'both 'nice -20)))
              (service pcscd-service-type)
              (udev-rules-service 'steam-input %steam-input-udev-rules)
              (udev-rules-service 'steam-vr %steam-vr-udev-rules)
@@ -154,7 +162,8 @@
                               (delete modem-manager-service-type)
                               (delete usb-modeswitch-service-type)
                               (delete sane-service-type)
-                              (delete (specification->package "network-manager-applet"))
+                              ;; not sure how to
+                              ;(delete (specification->package "network-manager-applet"))
                               (guix-service-type config =>
                                                  (guix-configuration
                                                   (inherit config)
@@ -170,7 +179,11 @@
                                                  (udev-configuration
                                                   (inherit config)
                                                   (rules (cons openrgb
-                                                               (udev-configuration-rules config))))))))
+                                                               (udev-configuration-rules config)))))
+                              (sysctl-service-type config =>
+                                                   (sysctl-configuration
+                                                    (settings (append '(("vm.swappiness" . "10"))
+                                                                      %default-sysctl-settings)))))))
   (kernel linux)
   (initrd microcode-initrd)
   (firmware (cons* amdgpu-firmware
@@ -189,6 +202,12 @@
                          (type "btrfs")
                          (flags '(no-atime))
                          (options "subvol=root,compress=lzo,ssd"))
+                       (file-system
+                         (device (file-system-label "system"))
+                         (mount-point "/swap")
+                         (type "btrfs")
+                         (flags '(no-atime))
+                         (options "subvol=swap,ssd"))
                        (file-system
                          (device (file-system-label "system"))
                          (mount-point "/gnu/store")
@@ -211,4 +230,5 @@
                          (device (uuid "5989-F926" 'fat))
                          (mount-point "/boot/efi")
                          (type "vfat")))
-                 %base-file-systems)))
+                 %base-file-systems))
+  (swap-devices (list "/swap/swapfile")))

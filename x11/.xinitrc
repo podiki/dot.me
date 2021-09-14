@@ -65,6 +65,15 @@ if [ "$HOSTNAME" = "narya" ]; then
 fi
 # DPI:3 ends here
 
+# Screen setup
+# This should probably just be written to the Xorg configuration, but I'm lazy. Also, it doesn't seem to be a problem at the login manger (gdm), but only after logging in.
+
+# [[file:README.org::*Screen setup][Screen setup:1]]
+if [ "$HOSTNAME" = "narya" ]; then
+    xrandr --output DisplayPort-0 --primary --mode 3840x2160 --pos 0x0 --rotate normal --output DisplayPort-1 --off --output DisplayPort-2 --off --output HDMI-A-0 --off
+fi
+# Screen setup:1 ends here
+
 # Startup programs
 # Start any system default programs from ~xinit~
 

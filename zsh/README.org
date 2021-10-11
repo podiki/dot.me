@@ -16,6 +16,12 @@ Set up a few environment variables we need everywhere, especially the One True E
   export EDITOR='emacsclient -a nano'
 #+end_src
 
+workaround core-updates-frozen bug with TZ and HOSTNAME not universal
+#+begin_src sh
+  export TZ=America/New_York
+  export HOSTNAME=$(hostname)
+#+end_src
+
 ssh with pgp
 #+begin_src sh
   export GPG_TTY="$(tty)"
@@ -87,7 +93,7 @@ To work around some search paths not being exported consistently in Guix, e.g. [
 ** xdg-desktop-portal fix
 Seems like a bug that the portals do not like multiple directories for ~XDG_DESKTOP_PORTAL_DIR~. So override it manually for now
 
-#+begin_src sh
+#+begin_src sh :tangle no
   if [[ -s /run/current-system/profile ]]; then
       export XDG_DESKTOP_PORTAL_DIR=$GUIX_EXTRA_PROFILES/desktop/desktop/share/xdg-desktop-portal/portals
   fi

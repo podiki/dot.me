@@ -6,12 +6,6 @@
 
 (use-modules (guix transformations))
 
-(define transform5
-  (options->transformation
-    '((with-source
-        .
-        "https://github.com/flatpak/flatpak/releases/download/1.11.3/flatpak-1.11.3.tar.xz"))))
-
 (define transform4
   (options->transformation
     '((with-git-url
@@ -23,17 +17,24 @@
   (options->transformation
     '((with-input . "go@1.14=go@1.16"))))
 
-(define transform1
-  (options->transformation
-    '((with-source
-        .
-        "xdg-desktop-portal-gtk=https://github.com/flatpak/xdg-desktop-portal-gtk/releases/download/1.8.0/xdg-desktop-portal-gtk-1.8.0.tar.xz"))))
+;; (define transform1
+;;   (options->transformation
+;;     '((with-source
+;;         .
+;;         "xdg-desktop-portal-gtk=https://github.com/flatpak/xdg-desktop-portal-gtk/releases/download/1.10.0/xdg-desktop-portal-gtk-1.10.0.tar.xz")
+;;       (with-input . "flatpak=flatpak-next"))))
+
+;; (define transform5
+;;   (options->transformation
+;;     '((with-source
+;;         .
+;;         "xdg-desktop-portal=https://github.com/flatpak/xdg-desktop-portal/releases/download/1.10.1/xdg-desktop-portal-1.10.1.tar.xz")
+;;       (with-input . "flatpak=flatpak-next"))))
 
 (concatenate-manifests
  (list
   (specifications->manifest
    '("rofi-calc"
-     "xdg-desktop-portal"
      "gnome-themes-extra" ; for some defaults
      "adwaita-icon-theme" ; ditto
      "breeze-icons"       ; and for KDE too
@@ -42,6 +43,8 @@
      "orchis-theme"
      "papirus-icon-theme"
      "firefox"
+     "flatpak"
+     "xdg-desktop-portal-gtk"
      "font-abattis-cantarell"
      "font-adobe-source-code-pro"
      "font-adobe-source-sans-pro"
@@ -55,7 +58,7 @@
      "dunst"
      "xdg-utils"
      "openrgb"
-     "corectrl"
+     ;; "corectrl"
      "lm-sensors"
      "udiskie"
      "xrdb"
@@ -76,7 +79,7 @@
      "kitty"
      "redshift:gtk"
      "syncthing"
-     "syncthing-gtk"
+     ;; "syncthing-gtk"
      "pulseaudio"
      "xset"
      "xrandr"
@@ -90,15 +93,15 @@
      "icecat"))
   (packages->manifest
    (list
-    (transform1
-     (specification->package
-      "xdg-desktop-portal-gtk"))
+    ;; (transform1
+    ;;  (specification->package
+    ;;   "xdg-desktop-portal-gtk"))
+    ;; (transform5
+    ;;  (specification->package
+    ;;   "xdg-desktop-portal"))
     (transform2
      (specification->package
       "go-gitlab-com-whynothugo-darkman"))
     (transform4
      (specification->package
-      "picom"))
-    (transform5
-     (specification->package
-      "flatpak"))))))
+      "picom"))))))

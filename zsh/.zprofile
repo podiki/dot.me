@@ -46,13 +46,3 @@ if [[ -s /run/current-system/profile ]]; then
     export XDG_CONFIG_DIRS=$GUIX_EXTRA_PROFILES/desktop/desktop/etc/xdg:$XDG_CONFIG_DIRS
 fi
 # ~XDG_CONFIG_DIRs~ fix:1 ends here
-
-# xdg-desktop-portal fix
-# Seems like a bug that the portals do not like multiple directories for ~XDG_DESKTOP_PORTAL_DIR~. So override it manually for now
-
-
-# [[file:README.org::*xdg-desktop-portal fix][xdg-desktop-portal fix:1]]
-if [[ -s /run/current-system/profile ]]; then
-    export XDG_DESKTOP_PORTAL_DIR=$GUIX_EXTRA_PROFILES/desktop/desktop/share/xdg-desktop-portal/portals
-fi
-# xdg-desktop-portal fix:1 ends here

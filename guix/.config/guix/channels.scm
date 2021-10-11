@@ -1,6 +1,7 @@
 (cons* (channel
         (name 'nonguix)
         (url "https://gitlab.com/nonguix/nonguix")
+        (branch "core-updates")
         ;; Enable signature verification:
         (introduction
          (make-channel-introduction
@@ -10,7 +11,7 @@
        (channel
         (name 'guix-pod)
         (url "file:///home/john/codemonkey/guix-pod")
-        (branch "main"))
+        (branch "core-updates-frozen"))
        (channel
         (name 'flat)
         (url "https://github.com/flatwhatson/guix-channel.git")
@@ -19,7 +20,10 @@
           "33f86a4b48205c0dc19d7c036c85393f0766f806"
           (openpgp-fingerprint
            "736A C00E 1254 378B A982  7AF6 9DBE 8265 81B6 4490"))))
+       ;; (channel
+       ;;    (name 'pkill9-free)
+       ;;    (url "https://gitlab.com/pkill-9/guix-packages-free"))
        (channel
-          (name 'pkill9-free)
-          (url "https://gitlab.com/pkill-9/guix-packages-free"))
+        (name 'pkill9-free-local)
+        (url "file:///home/john/codemonkey/pkill9-free-local"))
        %default-channels)

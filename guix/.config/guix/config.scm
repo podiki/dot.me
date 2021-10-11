@@ -129,12 +129,12 @@
              (service pcscd-service-type)
              (udev-rules-service 'steam-input %steam-input-udev-rules)
              (udev-rules-service 'steam-vr %steam-vr-udev-rules)
-             (simple-service 'corectrl-polkit polkit-service-type
-                             (list corectrl))
+             ;; (simple-service 'corectrl-polkit polkit-service-type
+             ;;                 (list corectrl))
              ;; dbus files from corectrl are system-service files,
              ;; so need to add to dbus-root-service
-             (simple-service 'corectrl-dbus dbus-root-service-type
-                             (list corectrl))
+             ;; (simple-service 'corectrl-dbus dbus-root-service-type
+             ;;                 (list corectrl))
              ;(geoclue-service)
              ;; to have geoclue in the system profile, so the agent autostart file is visible
              ;; (simple-service 'profile-geoclue profile-service-type
@@ -206,6 +206,9 @@
                          (device (file-system-label "system"))
                          (mount-point "/swap")
                          (type "btrfs")
+                         ;; to have swap start on boot with btrfs
+                         ;; see https://issues.guix.gnu.org/50788#2
+                         (needed-for-boot? #t)
                          (flags '(no-atime))
                          (options "subvol=swap,ssd"))
                        (file-system

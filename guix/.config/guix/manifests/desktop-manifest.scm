@@ -17,20 +17,6 @@
   (options->transformation
     '((with-input . "go@1.14=go@1.16"))))
 
-;; (define transform1
-;;   (options->transformation
-;;     '((with-source
-;;         .
-;;         "xdg-desktop-portal-gtk=https://github.com/flatpak/xdg-desktop-portal-gtk/releases/download/1.10.0/xdg-desktop-portal-gtk-1.10.0.tar.xz")
-;;       (with-input . "flatpak=flatpak-next"))))
-
-;; (define transform5
-;;   (options->transformation
-;;     '((with-source
-;;         .
-;;         "xdg-desktop-portal=https://github.com/flatpak/xdg-desktop-portal/releases/download/1.10.1/xdg-desktop-portal-1.10.1.tar.xz")
-;;       (with-input . "flatpak=flatpak-next"))))
-
 (concatenate-manifests
  (list
   (specifications->manifest
@@ -57,6 +43,7 @@
      "aspell"
      "dunst"
      "xdg-utils"
+     "piper"
      "openrgb"
      ;; "corectrl"
      "lm-sensors"
@@ -65,6 +52,7 @@
      "dex"
      "v4l-utils:gui"
      "geeqie"
+     "evince"
      "libreoffice"
      "headsetcontrol"
      "feh"
@@ -78,27 +66,24 @@
      "polybar"
      "kitty"
      "redshift:gtk"
+     "python" ; for GUIX_PYTHONPATH needed for redshift
      "syncthing"
      ;; "syncthing-gtk"
      "pulseaudio"
      "xset"
      "xrandr"
      "pavucontrol"
-     ;"glib" ; to pick up XDG_DATA_DIRS
+     "pasystray"
+     ;"glib" ; to pick up XDG_DATA_DIRS, picked up somewhere else now
      "rofi-pass"
      "rofi"
      "python-yubikey-oath-dmenu"
      "font-dejavu"
      "arandr"
+     "xprop"
      "icecat"))
   (packages->manifest
    (list
-    ;; (transform1
-    ;;  (specification->package
-    ;;   "xdg-desktop-portal-gtk"))
-    ;; (transform5
-    ;;  (specification->package
-    ;;   "xdg-desktop-portal"))
     (transform2
      (specification->package
       "go-gitlab-com-whynothugo-darkman"))

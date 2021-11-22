@@ -1,4 +1,4 @@
-(cons* (channel
+(list (channel
         (name 'nonguix)
         (url "https://gitlab.com/nonguix/nonguix")
         (branch "core-updates")
@@ -20,10 +20,19 @@
           "33f86a4b48205c0dc19d7c036c85393f0766f806"
           (openpgp-fingerprint
            "736A C00E 1254 378B A982  7AF6 9DBE 8265 81B6 4490"))))
+       (channel
+        (name 'guix)
+        (url "https://git.savannah.gnu.org/git/guix.git")
+        (branch "core-updates-frozen")
+        (introduction
+          (make-channel-introduction
+            "9edb3f66fd807b096b48283debdcddccfea34bad"
+            (openpgp-fingerprint
+              "BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA")))))
        ;; (channel
        ;;    (name 'pkill9-free)
        ;;    (url "https://gitlab.com/pkill-9/guix-packages-free"))
-       (channel
-        (name 'pkill9-free-local)
-        (url "file:///home/john/codemonkey/pkill9-free-local"))
-       %default-channels)
+       ;; (channel
+       ;;  (name 'pkill9-free-local)
+       ;;  (url "file:///home/john/codemonkey/pkill9-free-local"))
+       ;; %default-channels)

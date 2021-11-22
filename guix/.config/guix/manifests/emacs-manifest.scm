@@ -10,6 +10,7 @@
     "emacs-use-package"
     "emacs-guix"
     "emacs-highlight-sexp"
+    "emacs-ledger-mode"
     ;; mail
     "mu"
     "isync"

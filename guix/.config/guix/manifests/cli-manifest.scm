@@ -12,6 +12,7 @@
    "htop"
    "stow"
    "git"
+   "pwgen"
    "password-store"
    "openssh"
    "pinentry"

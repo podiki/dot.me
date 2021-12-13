@@ -1385,9 +1385,9 @@ Compose nice HTML messages using the power of org-mode
   (use-package org-msg
     :after mu4e
     :config
-    (setq org-msg-options "html-postamble:nil H:5 num:nil ^:{} toc:nil")
+    (setq org-msg-options "html-postamble:nil H:5 num:nil ^:{} toc:nil author:nil email:nil \\n:t")
     (setq org-msg-startup "hidestars indent inlineimages")
-    (setq org-msg-greeting-fmt "\nDear %s,\n\n")
+    (setq org-msg-greeting-fmt "\nDear%s,\n\n")
     ;; to have greeting be a mailto link
     (setq org-msg-greeting-fmt-mailto nil)
     (setq org-msg-default-alternatives '((new           . (text))
@@ -1657,6 +1657,16 @@ Commented out for now as I haven't used python in a while, will need to be updat
   ;; (add-to-list 'auto-mode-alist '("\\.pxi\\'" . cython-mode))
 #+END_SRC
 
+* Guix
+#+begin_src emacs-lisp
+  ;; (use-package geiser)
+  ;; (use-package geiser-guile
+  ;;   :config
+  ;;   (add-to-list 'geiser-guile-load-path "~/codemonkey/guix-src"))
+  ;; (use-package yasnippet
+  ;;   :config
+  ;;   (add-to-list 'yas-snippet-dirs "~/codemonkey/guix-src/etc/snippets"))
+#+end_src
 * Other text modes
 ** Fountain for screenplay writing
 #+BEGIN_SRC emacs-lisp

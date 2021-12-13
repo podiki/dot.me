@@ -68,7 +68,7 @@
      "redshift:gtk"
      "python" ; for GUIX_PYTHONPATH needed for redshift
      "syncthing"
-     ;; "syncthing-gtk"
+     "syncthing-gtk"
      "pulseaudio"
      "xset"
      "xrandr"

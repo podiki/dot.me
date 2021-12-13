@@ -243,4 +243,5 @@
                          (mount-point "/boot/efi")
                          (type "vfat")))
                  %base-file-systems))
-  (swap-devices (list "/swap/swapfile")))
+  ;; use dependencies here instead of the needed-for-boot? flag above?
+  (swap-devices (list (swap-space (target "/swap/swapfile")))))

@@ -100,6 +100,15 @@
        (sha256
         (base32 "0f05w4jp2pfp948vwwqa17ym2ps7sgh3i6sdc69ha76jlm49rp0z"))))))
 
+(define xorg-vr-config
+  "Section \"Monitor\"
+   Identifier \"DisplayPort-1\"
+   Modeline \"2880x1600_120.00\"  827.00  2880 3128 3448 4016  1600 1603 1613 1717 -hsync +vsync
+   Modeline \"2880x1600_100.00\"  678.50  2880 3128 3440 4000  1600 1603 1613 1697 -hsync +vsync
+   Modeline \"2880x1600_90.00\"  607.00  2880 3128 3440 4000  1600 1603 1613 1687 -hsync +vsync
+  Option \"PreferredMode\" \"2880x1600_90.00\"
+EndSection")
+
 (operating-system
   (locale "en_US.utf8")
   (timezone "America/New_York")
@@ -162,7 +171,10 @@
              ;;                 "/share/X11/xkb"))
              ;;              ;; Chromium component of electron apps break without fontconfig configuration here.
              ;;              ("/etc/fonts" ,"/run/current-system/profile/etc/fonts")))))
-             (service sddm-service-type (sddm-configuration))
+             (service sddm-service-type (sddm-configuration
+                                         (xorg-configuration
+                                          (xorg-configuration
+                                           (extra-config `(,xorg-vr-config))))))
              (modify-services %desktop-services
                               (delete gdm-service-type) ; replaced by sddm
                               ;; don't use USB modems, scanners, or network-manager-applet

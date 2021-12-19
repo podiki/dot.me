@@ -1,0 +1,5 @@
+To be a drop-in replacement for dmenu, there is the Arch package [[https://aur.archlinux.org/packages/rofi-dmenu/][rofi-dmenu]] which just makes a link to rofi under the dmenu name. This doesn't quite work through a script (in a quick test), so instead just use a simple link
+
+#+begin_src sh
+  ln -s $(which rofi) $HOME/.local/bin/dmenu
+#+end_src

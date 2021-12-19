@@ -66,7 +66,7 @@ myKeys = [ ("M-t", namedScratchpadAction scratchpads "term"),
            ("M-S-c", kill1), -- remove window from current, kill if only one
            ("M-a", withFocused centerWindow),
            ("M-S-f", sendMessage $ JumpToLayout "Full"),
-           ("M-d", spawn "exec rofi -show run"),
+           ("M-d", spawn "exec rofi -modi combi,window -show combi -combi-modi run,drun"),
            ("M-p", spawn "exec rofi-pass"),
            ("M-c", spawn "exec rofi -show calc -modi calc -no-show-match -no-sort > /dev/null") ] ++
          --("C-v", viewTest) ]
@@ -103,6 +103,7 @@ myStartupHook :: X ()
 myStartupHook = composeAll
   [ spawnOnce "snixembed --fork" -- to get SNI support (dropbox icon)
   , spawnOnce "dex -ae xmonad" -- use dex for autostart .desktop entries
+  , spawnOnce "feh --bg-center \"$HOME/wallpaper.jpg\""
   , spawnOnce "udiskie --tray"
   , spawnOnce "xscreensaver -no-splash"
   , spawnOnce "blueshift-tray -c ~/blueshift.conf"

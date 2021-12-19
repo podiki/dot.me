@@ -67,7 +67,8 @@
  '(rustic-ansi-faces
    ["#282c34" "#ff6c6b" "#98be65" "#ECBE7B" "#51afef" "#c678dd" "#46D9FF" "#bbc2cf"])
  '(safe-local-variable-values
-   '((eval add-hook 'after-save-hook
+   '((org-export-allow-bind-keywords . t)
+     (eval add-hook 'after-save-hook
            (lambda nil
              (org-babel-tangle-file
               (expand-file-name "dotemacs.org"))

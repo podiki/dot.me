@@ -75,8 +75,7 @@ Also, prevent wide lines by wrapping at fill column
   (use-package visual-fill-column
     :config
     (setq-default fill-column 90)
-    (global-visual-fill-column-mode)
-    (setq-default split-window-preferred-function 'visual-fill-column-split-window-sensibly)
+    (setq visual-fill-column-split-window-sensibly t)
     :hook
     (visual-line-mode . visual-fill-column-mode))
 #+end_src
@@ -1539,6 +1538,7 @@ Set up to behave like paredit in lisp modes
     ;(setq sp-highlight-pair-overlay nil)
     ;; paredit-like setup for lisp
     (add-hook 'lisp-mode-hook 'turn-on-smartparens-strict-mode)
+    (add-hook 'scheme-mode-hook 'turn-on-smartparens-strict-mode)
     (add-hook 'emacs-lisp-mode-hook 'turn-on-smartparens-strict-mode)
     (setq sp-base-key-bindings 'paredit)
     (sp-use-paredit-bindings)
@@ -1591,6 +1591,7 @@ Set highlight background color to be slightly darker than the background color (
                                                      (face-background 'default) 10))
                                               (setq hl-sexp-background-color "#4b3b4b"))))
     (add-hook 'lisp-mode-hook 'highlight-sexp-mode)
+    (add-hook 'scheme-mode-hook 'highlight-sexp-mode)
     (add-hook 'emacs-lisp-mode-hook 'highlight-sexp-mode))
   ;; for leuven theme, default purple is unreadable
   ;;(setq hl-sexp-background-color "#EAF2F5")

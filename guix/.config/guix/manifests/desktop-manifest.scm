@@ -58,7 +58,7 @@
      "feh"
      "mpv"
      "audacity"
-     "python-autokey"
+     "autokey"
      "darktable"
      "xmodmap"
      "xsettingsd"
@@ -77,7 +77,7 @@
      ;"glib" ; to pick up XDG_DATA_DIRS, picked up somewhere else now
      "rofi-pass"
      "rofi"
-     "python-yubikey-oath-dmenu"
+     "yubikey-oath-dmenu"
      "font-dejavu"
      "arandr"
      "xprop"

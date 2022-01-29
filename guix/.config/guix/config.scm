@@ -14,11 +14,9 @@
              (gnu packages display-managers) ; for sddm
              (guix profiles) ;; For manifest-entries
              (srfi srfi-1) ;; For filter-map
-             (openrgb) ;; openrgb
-             (gnu packages gnome) ;; for libratbag (piper)
-             ;; (pkill9 services fhs) ;; For fhs-binaries-compatibility-service
-             ;; (pkill9 utils) ;; For package-output->package
-             )
+             (gnu packages hardware) ;; openrgb
+             (gnu packages gnome)) ;; for libratbag (piper)
+
 (use-service-modules
  cups
  dbus
@@ -42,41 +40,6 @@
   #~(job "5 0 * * *"            ;Vixie cron syntax
          "guix gc -F 1G"))
 
-;; from pkill-9
-;; (define (manifest->packages manifest)
-;;   "Return the list of packages in MANIFEST."
-;;   (filter-map (lambda (entry)
-;;                 (let ((item (manifest-entry-item entry)))
-;;                   (if (package? item) item #f)))
-;;               (manifest-entries manifest)))
-
-;; (define fhs-packages
-;;   (append (list (package-output->package (@ (gnu packages gcc) gcc-7) "lib"))
-;;           (manifest->packages
-;;            (specifications->manifest
-;;             (list
-;;              "libxcomposite" "libxtst" "libxaw" "libxt" "libxrandr" "libxext" "libx11"
-;;              "libxfixes" "glib" "gtk+" "gtk+@2" "bzip2" "zlib" "gdk-pixbuf" "libxinerama"
-;;              "libxdamage" "libxcursor" "libxrender" "libxscrnsaver" "libxxf86vm"
-;;              "libxi" "libsm" "libice" "gconf" "freetype" "curl" "nspr" "nss" "fontconfig"
-;;              "cairo" "pango" "expat" "dbus" "cups" "libcap" "sdl2" "libusb" "dbus-glib"
-;;              "atk" "eudev" "network-manager" "pulseaudio" "openal" "alsa-lib" "mesa"
-
-;;              "libxmu" "libxcb" "glu" "util-linux" "libogg" "libvorbis" "sdl" "sdl2-image"
-;;              "glew" "openssl" "libidn" "tbb" "flac" "freeglut" "libjpeg" "libpng" "libpng@1.2"
-;;              "libsamplerate" "libmikmod" "libtheora" "libtiff" "pixman" "speex" "sdl-image"
-;;              "sdl-ttf" "sdl-mixer" "sdl2-ttf" "sdl2-mixer" "gstreamer" "gst-plugins-base"
-;;              "glu" "libcaca" "libcanberra" "libgcrypt" "libvpx"
-;;              ;;"librsvg" ;; currently requires compiling, but shouldn't, it's being weird
-;;              "libxft"
-;;              "libvdpau" "gst-plugins-ugly" "libdrm" "xkeyboard-config" "libpciaccess"
-;;              ;; "ffmpeg@3.4" ;; failing for some reason (2021-08-07)
-;;              "mit-krb5" ;; needed for beataroni
-;;              "libpng" "libgpg-error" "sqlite" "libnotify"
-
-;;              "fuse" "e2fsprogs" "p11-kit" "xz" "keyutils" "xcb-util-keysyms" "libselinux"
-;;              "ncurses" "jack" "jack2" "vulkan-loader")))))
-
 ;; TODO make these git version
 (define %steam-input-udev-rules
   (file->udev-rule
@@ -99,15 +62,6 @@
                            "steam-devices/" version "/60-steam-vr.rules"))
        (sha256
         (base32 "0f05w4jp2pfp948vwwqa17ym2ps7sgh3i6sdc69ha76jlm49rp0z"))))))
-
-(define xorg-vr-config
-  "Section \"Monitor\"
-   Identifier \"DisplayPort-1\"
-   Modeline \"2880x1600_120.00\"  827.00  2880 3128 3448 4016  1600 1603 1613 1717 -hsync +vsync
-   Modeline \"2880x1600_100.00\"  678.50  2880 3128 3440 4000  1600 1603 1613 1697 -hsync +vsync
-   Modeline \"2880x1600_90.00\"  607.00  2880 3128 3440 4000  1600 1603 1613 1687 -hsync +vsync
-  Option \"PreferredMode\" \"2880x1600_90.00\"
-EndSection")
 
 (operating-system
   (locale "en_US.utf8")
@@ -159,22 +113,7 @@ EndSection")
                                    fstrim-job))
              (service syncthing-service-type
                       (syncthing-configuration (user "john")))
-             ;; (service fhs-binaries-compatibility-service-type
-             ;;          (fhs-configuration
-             ;;           (lib-packages fhs-packages)
-             ;;           (additional-special-files
-             ;;            `(;; QT apps fail to recieve keyboard input unless they find this hardcoded path.
-             ;;              ("/usr/share/X11/xkb"
-             ;;               ,(file-append
-             ;;                 (canonical-package
-             ;;                  (@ (gnu packages xorg) xkeyboard-config))
-             ;;                 "/share/X11/xkb"))
-             ;;              ;; Chromium component of electron apps break without fontconfig configuration here.
-             ;;              ("/etc/fonts" ,"/run/current-system/profile/etc/fonts")))))
-             (service sddm-service-type (sddm-configuration
-                                         (xorg-configuration
-                                          (xorg-configuration
-                                           (extra-config `(,xorg-vr-config))))))
+             (service sddm-service-type (sddm-configuration))
              (modify-services %desktop-services
                               (delete gdm-service-type) ; replaced by sddm
                               ;; don't use USB modems, scanners, or network-manager-applet
@@ -188,13 +127,11 @@ EndSection")
                                                   (inherit config)
                                                   (substitute-urls
                                                    (append (list "https://substitutes.nonguix.org"
-                                                                 "http://substitutes.guix.sama.re"
-                                                                 "https://mirror.brielmaier.net")
+                                                                 "http://substitutes.guix.sama.re")
                                                            %default-substitute-urls))
                                                   (authorized-keys
                                                    (append (list (local-file "substitutes.nonguix.org.pub")
-                                                                 (local-file "substitutes.guix.sama.re.pub")
-                                                                 (local-file "mirror.brielmaier.net.pub"))
+                                                                 (local-file "substitutes.guix.sama.re.pub"))
                                                            %default-authorized-guix-keys))))
                               (udev-service-type config =>
                                                  (udev-configuration

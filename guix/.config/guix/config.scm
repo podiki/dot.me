@@ -6,25 +6,27 @@
              (guix packages) ;for origin (udev rule)
              (nongnu packages linux) ; this and next for nongnu linux
              (nongnu system linux-initrd)
-             (gnu services syncthing)
-             (gnu services mcron)
-             (gnu services sysctl) ; for sysctl service
              (gnu packages shells) ; for zsh
              (gnu packages linux) ; for fstrim
              (gnu packages display-managers) ; for sddm
              (guix profiles) ;; For manifest-entries
              (srfi srfi-1) ;; For filter-map
              (gnu packages hardware) ;; openrgb
+             (openrgb) ;; for corectrl
              (gnu packages gnome)) ;; for libratbag (piper)
 
 (use-service-modules
  cups
  dbus
  desktop
+ mcron
  networking
  security-token ; for pcscd
  sddm
+ sound
  ssh
+ syncthing
+ sysctl
  xorg)
 
 (define fstrim-job
@@ -81,7 +83,7 @@
   (packages
     (append
       (list (specification->package "xinitrc-xsession")
-            (specification->package "emacs")
+            ;(specification->package "emacs")
             (specification->package "nss-certs")
             (specification->package "ntfs-3g"))
       %base-packages))
@@ -97,12 +99,12 @@
              (udev-rules-service 'steam-input %steam-input-udev-rules)
              (udev-rules-service 'steam-vr %steam-vr-udev-rules)
              (simple-service 'ratbagd dbus-root-service-type (list libratbag))
-             ;; (simple-service 'corectrl-polkit polkit-service-type
-             ;;                 (list corectrl))
+             (simple-service 'corectrl-polkit polkit-service-type
+                             (list corectrl))
              ;; dbus files from corectrl are system-service files,
              ;; so need to add to dbus-root-service
-             ;; (simple-service 'corectrl-dbus dbus-root-service-type
-             ;;                 (list corectrl))
+             (simple-service 'corectrl-dbus dbus-root-service-type
+                             (list corectrl))
              ;(geoclue-service)
              ;; to have geoclue in the system profile, so the agent autostart file is visible
              ;; (simple-service 'profile-geoclue profile-service-type
@@ -122,6 +124,12 @@
                               (delete sane-service-type)
                               ;; not sure how to
                               ;(delete (specification->package "network-manager-applet"))
+                              ;; Set the default sample rate for the pulseaudio daemon to be
+                              ;; 48000; needed for the Valve Index mic, see
+                              ;; https://github.com/ValveSoftware/SteamVR-for-Linux/issues/215#issuecomment-526791835
+                              (pulseaudio-service-type config =>
+                                                       (pulseaudio-configuration
+                                                        (daemon-conf '((default-sample-rate . 48000)))))
                               (guix-service-type config =>
                                                  (guix-configuration
                                                   (inherit config)
@@ -143,6 +151,11 @@
                                                     (settings (append '(("vm.swappiness" . "10"))
                                                                       %default-sysctl-settings)))))))
   (kernel linux)
+  (kernel-arguments
+   '("quiet"
+     "splash"
+     ;; Disable the PC speaker (do they still exist?)
+     "modprobe.blacklist=pcspkr,snd_pcsp"))
   (initrd microcode-initrd)
   (firmware (cons* amdgpu-firmware
                    %base-firmware))
@@ -164,9 +177,6 @@
                          (device (file-system-label "system"))
                          (mount-point "/swap")
                          (type "btrfs")
-                         ;; to have swap start on boot with btrfs
-                         ;; see https://issues.guix.gnu.org/50788#2
-                         (needed-for-boot? #t)
                          (flags '(no-atime))
                          (options "subvol=swap,ssd"))
                        (file-system
@@ -192,5 +202,10 @@
                          (mount-point "/boot/efi")
                          (type "vfat")))
                  %base-file-systems))
-  ;; use dependencies here instead of the needed-for-boot? flag above?
-  (swap-devices (list (swap-space (target "/swap/swapfile")))))
+
+  (swap-devices (list (swap-space (target "/swap/swapfile")
+                                  (dependencies
+                                   (filter (lambda (x)
+                                             (equal? (file-system-mount-point x)
+                                                     "/swap"))
+                                           file-systems))))))

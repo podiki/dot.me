@@ -6,16 +6,12 @@
 
 (use-modules (guix transformations))
 
-(define transform4
+(define transform1
   (options->transformation
     '((with-git-url
         .
         "picom=https://github.com/yshui/picom")
       (with-branch . "picom=next"))))
-
-(define transform2
-  (options->transformation
-    '((with-input . "go@1.14=go@1.16"))))
 
 (concatenate-manifests
  (list
@@ -41,6 +37,7 @@
      "lxappearance"
      "aspell-dict-en"
      "aspell"
+     "darkman"
      "dunst"
      "xdg-utils"
      "piper"
@@ -84,9 +81,6 @@
      "icecat"))
   (packages->manifest
    (list
-    (transform2
-     (specification->package
-      "go-gitlab-com-whynothugo-darkman"))
-    (transform4
+    (transform1
      (specification->package
       "picom"))))))

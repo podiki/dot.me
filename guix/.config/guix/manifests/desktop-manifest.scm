@@ -6,13 +6,6 @@
 
 (use-modules (guix transformations))
 
-(define transform1
-  (options->transformation
-    '((with-git-url
-        .
-        "picom=https://github.com/yshui/picom")
-      (with-branch . "picom=next"))))
-
 (concatenate-manifests
  (list
   (specifications->manifest
@@ -63,6 +56,7 @@
      "polybar"
      "kitty"
      "redshift:gtk"
+     "picom"
      "python" ; for GUIX_PYTHONPATH needed for redshift
      "syncthing"
      "syncthing-gtk"
@@ -78,9 +72,4 @@
      "font-dejavu"
      "arandr"
      "xprop"
-     "icecat"))
-  (packages->manifest
-   (list
-    (transform1
-     (specification->package
-      "picom"))))))
+     "icecat"))))

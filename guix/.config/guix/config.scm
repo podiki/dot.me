@@ -155,7 +155,9 @@
    '("quiet"
      "splash"
      ;; Disable the PC speaker (do they still exist?)
-     "modprobe.blacklist=pcspkr,snd_pcsp"))
+     "modprobe.blacklist=pcspkr,snd_pcsp"
+     ;; Enable more amdgpu features, e.g. controling power/performance with corectrl
+     "amdgpu.ppfeaturemask=0xffffffff"))
   (initrd microcode-initrd)
   (firmware (cons* amdgpu-firmware
                    %base-firmware))
@@ -205,6 +207,8 @@
 
   (swap-devices (list (swap-space (target "/swap/swapfile")
                                   (dependencies
+                                   ;; This won't be necessary once
+                                   ;; https://issues.guix.gnu.org/53826 is merged
                                    (filter (lambda (x)
                                              (equal? (file-system-mount-point x)
                                                      "/swap"))

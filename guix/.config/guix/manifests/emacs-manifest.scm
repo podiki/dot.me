@@ -11,6 +11,13 @@
     "emacs-guix"
     "emacs-highlight-sexp"
     "emacs-ledger-mode"
+    "emacs-ivy"
+    "emacs-counsel"
+    "emacs-swiper"
+    "emacs-ivy-posframe"
+    "emacs-ivy-rich"
+    "emacs-hydra"
+    "emacs-ivy-hydra"
     ;; mail
     "mu"
     "isync"

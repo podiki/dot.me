@@ -19,6 +19,7 @@
  cups
  dbus
  desktop
+ docker
  mcron
  networking
  security-token ; for pcscd
@@ -28,6 +29,15 @@
  syncthing
  sysctl
  xorg)
+
+(use-modules (guix transformations))
+
+(define transform1
+  (options->transformation
+    '((with-git-url
+        .
+        "openrgb=https://gitlab.com/Celmerine/OpenRGB")
+      (with-branch . "openrgb=lian_li_al120"))))
 
 (define fstrim-job
   ;; Run fstrim on all applicable mounted drives once a week
@@ -65,6 +75,16 @@
        (sha256
         (base32 "0f05w4jp2pfp948vwwqa17ym2ps7sgh3i6sdc69ha76jlm49rp0z"))))))
 
+(define (config-linux package-linux config-path)
+  (package
+    (inherit package-linux)
+    (native-inputs
+     `(("kconfig" ,(local-file config-path))
+       ,@(alist-delete "kconfig"
+                       (package-native-inputs package-linux))))))
+
+(define linux-custom (config-linux linux ".config/guix/5.17-x86_64.conf"))
+
 (operating-system
   (locale "en_US.utf8")
   (timezone "America/New_York")
@@ -85,7 +105,9 @@
       (list (specification->package "xinitrc-xsession")
             ;(specification->package "emacs")
             (specification->package "nss-certs")
-            (specification->package "ntfs-3g"))
+            (specification->package "ntfs-3g")
+            ;(specification->package "mesa-opencl-icd")
+            ) ;for opencl
       %base-packages))
   (services (cons*
              (pam-limits-service
@@ -116,6 +138,7 @@
              (service syncthing-service-type
                       (syncthing-configuration (user "john")))
              (service sddm-service-type (sddm-configuration))
+             (service docker-service-type)
              (modify-services %desktop-services
                               (delete gdm-service-type) ; replaced by sddm
                               ;; don't use USB modems, scanners, or network-manager-applet
@@ -144,13 +167,17 @@
                               (udev-service-type config =>
                                                  (udev-configuration
                                                   (inherit config)
-                                                  (rules (cons openrgb
+                                                  (rules (cons (transform1 openrgb) ;openrgb
                                                                (udev-configuration-rules config)))))
                               (sysctl-service-type config =>
                                                    (sysctl-configuration
                                                     (settings (append '(("vm.swappiness" . "10"))
                                                                       %default-sysctl-settings)))))))
-  (kernel linux)
+
+  (kernel linux-custom)
+  (kernel-loadable-modules (list v4l2loopback-linux-module))
+
+  ;; (kernel linux)
   (kernel-arguments
    '("quiet"
      "splash"
@@ -205,11 +232,9 @@
                          (type "vfat")))
                  %base-file-systems))
 
-  (swap-devices (list (swap-space (target "/swap/swapfile")
-                                  (dependencies
-                                   ;; This won't be necessary once
-                                   ;; https://issues.guix.gnu.org/53826 is merged
-                                   (filter (lambda (x)
-                                             (equal? (file-system-mount-point x)
-                                                     "/swap"))
-                                           file-systems))))))
+  (swap-devices
+   (list
+    (swap-space
+     (target "/swap/swapfile")
+     (dependencies (filter (file-system-mount-point-predicate "/swap")
+                           file-systems))))))

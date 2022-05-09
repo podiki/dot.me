@@ -27,6 +27,7 @@
      "font-google-noto"
      "font-google-roboto"
      "font-liberation"
+     "font-microsoft-web-core-fonts"
      "lxappearance"
      "aspell-dict-en"
      "aspell"

@@ -12,6 +12,7 @@
              (guix profiles) ;; For manifest-entries
              (srfi srfi-1) ;; For filter-map
              (gnu packages hardware) ;; openrgb
+             (gnu packages security-token) ;; for libu2f-host (udev rule)
              (openrgb) ;; for corectrl
              (gnu packages gnome)) ;; for libratbag (piper)
 
@@ -83,6 +84,8 @@
        ,@(alist-delete "kconfig"
                        (package-native-inputs package-linux))))))
 
+;; sets CONFIG_HSA_AMD for ROCm OpenCL support, see
+;; https://issues.guix.gnu.org/55111
 (define linux-custom (config-linux linux ".config/guix/5.17-x86_64.conf"))
 
 (operating-system
@@ -118,6 +121,10 @@
                (pam-limits-entry "*" 'both 'nice -19)
                (pam-limits-entry "root" 'both 'nice -20)))
              (service pcscd-service-type)
+             ;; suddenly needed (after staging merge in June 2022?)
+             ;; should be switched to libfido2 but waiting for this patch:
+             ;; https://issues.guix.gnu.org/52900
+             (udev-rules-service 'u2f libu2f-host #:groups '("plugdev"))
              (udev-rules-service 'steam-input %steam-input-udev-rules)
              (udev-rules-service 'steam-vr %steam-vr-udev-rules)
              (simple-service 'ratbagd dbus-root-service-type (list libratbag))

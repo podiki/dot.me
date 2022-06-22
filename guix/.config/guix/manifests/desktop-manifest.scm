@@ -50,6 +50,8 @@
      "mpv"
      "audacity"
      "autokey"
+     "opencl-icd-loader"
+     "rocm-opencl-runtime"
      "darktable"
      "xmodmap"
      "xsettingsd"

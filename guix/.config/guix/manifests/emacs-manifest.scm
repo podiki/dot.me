@@ -18,6 +18,7 @@
     "emacs-ivy-rich"
     "emacs-hydra"
     "emacs-ivy-hydra"
+    "python-lsp-server"
     ;; mail
     "mu"
     "isync"

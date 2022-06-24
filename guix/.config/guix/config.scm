@@ -88,6 +88,30 @@
 ;; https://issues.guix.gnu.org/55111
 (define linux-custom (config-linux linux ".config/guix/5.17-x86_64.conf"))
 
+;; From https://guix.gnu.org/cookbook/en/html_node/Customizing-the-Kernel.html
+;; and https://gitlab.com/nonguix/nonguix/-/issues/42#note_931635766
+(define-public my-linux-libre
+  ;; XXX: Access the internal 'make-linux-libre*' procedure, which is
+  ;; private and unexported, and is liable to change in the future.
+  ((@@ (gnu packages linux) make-linux-libre*)
+   (@@ (gnu packages linux) linux-libre-version)
+   (@@ (gnu packages linux) linux-libre-gnu-revision)
+   (@@ (gnu packages linux) linux-libre-source)
+   '("x86_64-linux")
+   #:configuration-file (@@ (gnu packages linux) kernel-config)
+   #:extra-options
+   ;; Appending works even when the option wasn't in the
+   ;; file.  The last one prevails if duplicated.
+   (append
+    `(("CONFIG_HSA_AMD" . #true))
+    (@@ (gnu packages linux) %default-extra-linux-options))))
+
+(define-public my-corrupt-linux
+  ;; can get version of latest linux-libre as linux-libre-version
+  ;; but not sure how to get the hash from nonguix's linux
+  (corrupt-linux my-linux-libre "5.17.15"
+                 "0a5n1lb43nhnhwjwclkk3dqp2nxsx5ny7zfl8idvzshf94m9472a"))
+
 (operating-system
   (locale "en_US.utf8")
   (timezone "America/New_York")
@@ -101,16 +125,13 @@
                   (home-directory "/home/john")
                   (shell (file-append zsh "/bin/zsh"))
                   (supplementary-groups
-                    '("wheel" "netdev" "audio" "video")))
+                    '("wheel" "netdev" "audio" "video" "docker")))
                 %base-user-accounts))
   (packages
     (append
       (list (specification->package "xinitrc-xsession")
-            ;(specification->package "emacs")
             (specification->package "nss-certs")
-            (specification->package "ntfs-3g")
-            ;(specification->package "mesa-opencl-icd")
-            ) ;for opencl
+            (specification->package "ntfs-3g"))
       %base-packages))
   (services (cons*
              (pam-limits-service
@@ -181,7 +202,8 @@
                                                     (settings (append '(("vm.swappiness" . "10"))
                                                                       %default-sysctl-settings)))))))
 
-  (kernel linux-custom)
+  ;; (kernel linux-custom)
+  (kernel my-corrupt-linux)
   (kernel-loadable-modules (list v4l2loopback-linux-module))
 
   ;; (kernel linux)

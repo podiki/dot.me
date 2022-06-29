@@ -76,18 +76,6 @@
        (sha256
         (base32 "0f05w4jp2pfp948vwwqa17ym2ps7sgh3i6sdc69ha76jlm49rp0z"))))))
 
-(define (config-linux package-linux config-path)
-  (package
-    (inherit package-linux)
-    (native-inputs
-     `(("kconfig" ,(local-file config-path))
-       ,@(alist-delete "kconfig"
-                       (package-native-inputs package-linux))))))
-
-;; sets CONFIG_HSA_AMD for ROCm OpenCL support, see
-;; https://issues.guix.gnu.org/55111
-(define linux-custom (config-linux linux ".config/guix/5.17-x86_64.conf"))
-
 ;; From https://guix.gnu.org/cookbook/en/html_node/Customizing-the-Kernel.html
 ;; and https://gitlab.com/nonguix/nonguix/-/issues/42#note_931635766
 (define-public my-linux-libre
@@ -103,6 +91,8 @@
    ;; Appending works even when the option wasn't in the
    ;; file.  The last one prevails if duplicated.
    (append
+    ;; sets CONFIG_HSA_AMD for ROCm OpenCL support, see
+    ;; https://issues.guix.gnu.org/55111
     `(("CONFIG_HSA_AMD" . #true))
     (@@ (gnu packages linux) %default-extra-linux-options))))
 
@@ -159,10 +149,12 @@
              ;; to have geoclue in the system profile, so the agent autostart file is visible
              ;; (simple-service 'profile-geoclue profile-service-type
              ;;                 (list (specification->package "geoclue")))
-             (simple-service 'my-mcron-jobs
-                             mcron-service-type
-                             (list ; garbage-collector-job
-                                   fstrim-job))
+             ;; fstrim seemed to be running at unexpected times and causing sleep problems
+             ;; disable for now (June 2022)
+             ;; (simple-service 'my-mcron-jobs
+             ;;                 mcron-service-type
+             ;;                 (list ; garbage-collector-job
+             ;;                       fstrim-job))
              (service syncthing-service-type
                       (syncthing-configuration (user "john")))
              (service sddm-service-type (sddm-configuration))
@@ -202,7 +194,6 @@
                                                     (settings (append '(("vm.swappiness" . "10"))
                                                                       %default-sysctl-settings)))))))
 
-  ;; (kernel linux-custom)
   (kernel my-corrupt-linux)
   (kernel-loadable-modules (list v4l2loopback-linux-module))
 

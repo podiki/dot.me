@@ -1,46 +1,43 @@
-# From the installer
-# Basic loading and initialization
+# p10k instant prompt
 
-# [[file:README.org::*From the installer][From the installer:1]]
-if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
-    print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
-    command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
-    command git clone https://github.com/zdharma/zinit "$HOME/.zinit/bin" && \
-        print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
-        print -P "%F{160}▓▒░ The clone has failed.%f%b"
+# [[file:README.org::*p10k instant prompt][p10k instant prompt:1]]
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
+# p10k instant prompt:1 ends here
 
-source "$HOME/.zinit/bin/zinit.zsh"
-autoload -Uz _zinit
-(( ${+_comps} )) && _comps[zinit]=_zinit
-# From the installer:1 ends here
+# Basic loading from installer
 
-
-
-# Load a few important annexes, without Turbo (this is currently required for annexes)
-
-# [[file:README.org::*From the installer][From the installer:2]]
-zinit light-mode for \
-    zinit-zsh/z-a-rust \
-    zinit-zsh/z-a-as-monitor \
-    zinit-zsh/z-a-patch-dl \
-    zinit-zsh/z-a-bin-gem-node
-# From the installer:2 ends here
+# [[file:README.org::*Basic loading from installer][Basic loading from installer:1]]
+if [[ -r "/home/john/.config/zi/init.zsh" ]]; then
+  source "/home/john/.config/zi/init.zsh" && zzinit
+fi
+zi light-mode for \
+  z-shell/z-a-meta-plugins \
+  @annexes # <- https://z.digitalclouds.dev/ecosystem/annexes
+# examples here -> https://z.digitalclouds.dev/docs/gallery/collection
+zicompinit # <- https://z.digitalclouds.dev/docs/guides/commands
+# Basic loading from installer:1 ends here
 
 # Prompt
 # Load powerlevel10k theme:
 
 # [[file:README.org::*Prompt][Prompt:1]]
-zinit ice depth"1" # git clone depth
 zinit light romkatv/powerlevel10k
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 # Prompt:1 ends here
 
 # Misc
 # Color for man pages:
 
 # [[file:README.org::*Misc][Misc:1]]
-zinit ice use:"*.zsh"
-zinit load zuxfoucault/colored-man-pages_mod
+zi ice use:"*.zsh"
+zi light zuxfoucault/colored-man-pages_mod
 # Misc:1 ends here
 
 # History and completion
@@ -148,7 +145,7 @@ setopt COMPLETE_ALIASES
 
 # [[file:README.org::*Looks][Looks:1]]
 # Colors from wpgtk
-(cat ~/.config/wpg/sequences &)
+#(cat ~/.config/wpg/sequences &)
 
 #
 # Prompt stuff
@@ -158,12 +155,12 @@ setopt interactivecomments # pound sign in interactive prompt
 REPORTTIME=10
 
 # powerlevel9k prompt
-POWERLEVEL9K_MODE='awesome-fontconfig'
-POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(root_indicator context dir vcs)
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status)
-POWERLEVEL9K_COLOR_SCHEME='dark'
-POWERLEVEL9K_PROMPT_ON_NEWLINE=true
-POWERLEVEL9K_OK_ICON='✓'
+#POWERLEVEL9K_MODE='awesome-fontconfig'
+#POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(root_indicator context dir vcs)
+#POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status)
+#POWERLEVEL9K_COLOR_SCHEME='dark'
+#POWERLEVEL9K_PROMPT_ON_NEWLINE=true
+#POWERLEVEL9K_OK_ICON='✓'
 
 #
 # Window title

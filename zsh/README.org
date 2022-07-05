@@ -38,7 +38,7 @@ Add a user local bin to ~PATH~ (right now just for XMonad with Stack, default in
 #+end_src
 
 Get colors from [[https://github.com/deviantfero/wpgtk/][wpgtk]] so commands in non-interactive shells also have them
-#+begin_src sh
+#+begin_src sh :tangle no
   (cat ~/.config/wpg/sequences &)
 #+end_src
 
@@ -106,7 +106,7 @@ Seems like a bug that the portals do not like multiple directories for ~XDG_DESK
 ** Plugins with [[https://zdharma.github.io/zinit/wiki/][Zinit]]
 *** From the installer
 Basic loading and initialization
-#+begin_src sh
+#+begin_src sh :tangle no
   if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
       print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
       command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
@@ -121,24 +121,48 @@ Basic loading and initialization
 #+end_src
 
 Load a few important annexes, without Turbo (this is currently required for annexes)
-#+begin_src sh
+#+begin_src sh :tangle no
   zinit light-mode for \
       zinit-zsh/z-a-rust \
       zinit-zsh/z-a-as-monitor \
       zinit-zsh/z-a-patch-dl \
       zinit-zsh/z-a-bin-gem-node
 #+end_src
+
+** Plugins with [[https://z.digitalclouds.dev/][ZI]]
+*** p10k instant prompt
+#+begin_src sh
+  # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+  # Initialization code that may require console input (password prompts, [y/n]
+  # confirmations, etc.) must go above this block; everything else may go below.
+  if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+    source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+  fi
+#+end_src
+*** Basic loading from installer
+#+begin_src sh
+  if [[ -r "/home/john/.config/zi/init.zsh" ]]; then
+    source "/home/john/.config/zi/init.zsh" && zzinit
+  fi
+  zi light-mode for \
+    z-shell/z-a-meta-plugins \
+    @annexes # <- https://z.digitalclouds.dev/ecosystem/annexes
+  # examples here -> https://z.digitalclouds.dev/docs/gallery/collection
+  zicompinit # <- https://z.digitalclouds.dev/docs/guides/commands
+#+end_src
 *** Prompt
 Load powerlevel10k theme:
 #+begin_src sh
-  zinit ice depth"1" # git clone depth
   zinit light romkatv/powerlevel10k
+
+  # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+  [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 #+end_src
 *** Misc
 Color for man pages:
 #+begin_src sh
-  zinit ice use:"*.zsh"
-  zinit load zuxfoucault/colored-man-pages_mod
+  zi ice use:"*.zsh"
+  zi light zuxfoucault/colored-man-pages_mod
 #+end_src
 ** History and completion
 #+begin_src sh
@@ -238,7 +262,7 @@ Set up general keybindings, mostly just didn't have delete key registering corre
 ** Looks
 #+begin_src sh
   # Colors from wpgtk
-  (cat ~/.config/wpg/sequences &)
+  #(cat ~/.config/wpg/sequences &)
 
   #
   # Prompt stuff
@@ -248,12 +272,12 @@ Set up general keybindings, mostly just didn't have delete key registering corre
   REPORTTIME=10
 
   # powerlevel9k prompt
-  POWERLEVEL9K_MODE='awesome-fontconfig'
-  POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(root_indicator context dir vcs)
-  POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status)
-  POWERLEVEL9K_COLOR_SCHEME='dark'
-  POWERLEVEL9K_PROMPT_ON_NEWLINE=true
-  POWERLEVEL9K_OK_ICON='✓'
+  #POWERLEVEL9K_MODE='awesome-fontconfig'
+  #POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(root_indicator context dir vcs)
+  #POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status)
+  #POWERLEVEL9K_COLOR_SCHEME='dark'
+  #POWERLEVEL9K_PROMPT_ON_NEWLINE=true
+  #POWERLEVEL9K_OK_ICON='✓'
 
   #
   # Window title

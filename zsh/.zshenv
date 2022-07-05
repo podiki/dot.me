@@ -40,11 +40,3 @@ gpgconf --launch gpg-agent
 PATH=$HOME/.local/bin:$PATH
 export PATH
 # .zshenv:4 ends here
-
-
-
-# Get colors from [[https://github.com/deviantfero/wpgtk/][wpgtk]] so commands in non-interactive shells also have them
-
-# [[file:README.org::*.zshenv][.zshenv:5]]
-(cat ~/.config/wpg/sequences &)
-# .zshenv:5 ends here

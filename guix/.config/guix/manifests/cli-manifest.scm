@@ -1,6 +1,8 @@
 (specifications->manifest
  '("python-tldr"
    "python-yubikey-manager"
+   "colordiff"
+   "thefuck"
    "curl"
    "tree"
    "btrfs-progs"

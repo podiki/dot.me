@@ -96,11 +96,11 @@
     `(("CONFIG_HSA_AMD" . #true))
     (@@ (gnu packages linux) %default-extra-linux-options))))
 
-(define-public my-corrupt-linux
-  ;; can get version of latest linux-libre as linux-libre-version
-  ;; but not sure how to get the hash from nonguix's linux
-  (corrupt-linux my-linux-libre "5.17.15"
-                 "0a5n1lb43nhnhwjwclkk3dqp2nxsx5ny7zfl8idvzshf94m9472a"))
+;; (define-public my-corrupt-linux
+;;   ;; can get version of latest linux-libre as linux-libre-version
+;;   ;; but not sure how to get the hash from nonguix's linux
+;;   (corrupt-linux my-linux-libre "5.17.15"
+;;                  "0a5n1lb43nhnhwjwclkk3dqp2nxsx5ny7zfl8idvzshf94m9472a"))
 
 (operating-system
   (locale "en_US.utf8")
@@ -136,6 +136,7 @@
              ;; should be switched to libfido2 but waiting for this patch:
              ;; https://issues.guix.gnu.org/52900
              (udev-rules-service 'u2f libu2f-host #:groups '("plugdev"))
+             (udev-rules-service 'headsetcontrol headsetcontrol)
              (udev-rules-service 'steam-input %steam-input-udev-rules)
              (udev-rules-service 'steam-vr %steam-vr-udev-rules)
              (simple-service 'ratbagd dbus-root-service-type (list libratbag))
@@ -177,9 +178,10 @@
                                                  (guix-configuration
                                                   (inherit config)
                                                   (substitute-urls
-                                                   (append (list "https://substitutes.nonguix.org"
-                                                                 "http://substitutes.guix.sama.re")
-                                                           %default-substitute-urls))
+                                                   ;; Reverse the order to put Bordeaux first
+                                                   (reverse (append (list "http://substitutes.guix.sama.re"
+                                                                          "https://substitutes.nonguix.org")
+                                                                    %default-substitute-urls)))
                                                   (authorized-keys
                                                    (append (list (local-file "substitutes.nonguix.org.pub")
                                                                  (local-file "substitutes.guix.sama.re.pub"))
@@ -194,10 +196,9 @@
                                                     (settings (append '(("vm.swappiness" . "10"))
                                                                       %default-sysctl-settings)))))))
 
-  (kernel my-corrupt-linux)
+  ;; (kernel my-corrupt-linux)
+  (kernel linux)
   (kernel-loadable-modules (list v4l2loopback-linux-module))
-
-  ;; (kernel linux)
   (kernel-arguments
    '("quiet"
      "splash"
@@ -249,7 +250,12 @@
                        (file-system
                          (device (uuid "5989-F926" 'fat))
                          (mount-point "/boot/efi")
-                         (type "vfat")))
+                         (type "vfat"))
+                       (file-system
+                         (device (file-system-label "extra"))
+                         (mount-point "/mnt/extra")
+                         (type "ext4")
+                         (flags '(no-atime))))
                  %base-file-systems))
 
   (swap-devices

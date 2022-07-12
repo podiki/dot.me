@@ -79,7 +79,7 @@ fixed-center = true
 enable-ipc = true
 
 wlan-interface = enp6s0
-hwmon-path = /sys/devices/pci0000:00/0000:00:18.3/hwmon/hwmon1/temp3_input
+hwmon-path = /sys/devices/pci0000:00/0000:00:18.3/hwmon/hwmon2/temp3_input
 
 background = ${colors.background}
 foreground = ${colors.foreground}

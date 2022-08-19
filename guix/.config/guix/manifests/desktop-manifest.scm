@@ -6,8 +6,17 @@
 
 (use-modules (guix transformations))
 
+(define transform1
+  (options->transformation
+    '((with-git-url
+        .
+        "openrgb=https://gitlab.com/Celmerine/OpenRGB")
+      (with-branch . "openrgb=lian_li_al120"))))
+
 (concatenate-manifests
  (list
+  (packages->manifest
+   (list (transform1 (specification->package "openrgb"))))
   (specifications->manifest
    '("rofi-calc"
      "gnome-themes-extra" ; for some defaults
@@ -28,6 +37,8 @@
      "font-google-roboto"
      "font-liberation"
      "font-microsoft-web-core-fonts"
+     "thunar"
+     "lxsession" ; just for lxpolkit
      "lxappearance"
      "aspell-dict-en"
      "aspell"
@@ -35,8 +46,8 @@
      "dunst"
      "xdg-utils"
      "piper"
-     "openrgb"
-     ;; "corectrl"
+     ;"openrgb"
+     "corectrl"
      "lm-sensors"
      "udiskie"
      "xrdb"

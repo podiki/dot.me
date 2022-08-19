@@ -21,5 +21,6 @@
     "python-lsp-server"
     ;; mail
     "mu"
+    "oauth2ms"
     "isync"
     "go-gitlab.com-shackra-goimapnotify"))

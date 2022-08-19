@@ -410,7 +410,7 @@ Mixed pitches
   ;; doom-modeline
   (use-package doom-modeline
                :ensure t
-               :hook (after-init . doom-modeline-init)
+               :init (doom-modeline-mode 1)
                :config
                (setq doom-modeline-icon t)
                (setq doom-modeline-major-mode-icon t)
@@ -1332,9 +1332,9 @@ Auto tangling of config files
                             ;; Here's the main difference to the regular trash mark,
                             ;; no +T before -N so the message is not marked as
                             ;; IMAP-deleted:
-                            (mu4e~proc-move docid
-                                            (mu4e~mark-check-target target)
-                                            "-N"))))
+                            (mu4e--server-move docid
+                                            (mu4e--mark-check-target target)
+                                            "+S-u-N"))))
 
       ;; rename draft autosaves so they don't get synced by mbsync
       ;; from https://emacs.stackexchange.com/a/24430
@@ -1420,8 +1420,27 @@ Pretty icons
     :init (mu4e-marker-icons-mode 1))
 #+end_src
 ** Sending mail
-Sending mail with built-in message mode and smtpmail
+Sending mail with built-in message mode and smtpmail, using the instructions from [[https://github.com/harishkrupo/oauth2ms/blob/main/steps.org][oauth2ms]] to handle authentication (needed with two-step verification):
 #+begin_src emacs-lisp
+  ;;; Call the oauth2ms program to fetch the authentication token
+  (defun fetch-access-token ()
+    (with-temp-buffer
+      (call-process "oauth2ms" nil t nil "--encode-xoauth2")
+      (buffer-string)))
+
+  ;;; Add new authentication method for xoauth2
+  (cl-defmethod smtpmail-try-auth-method
+      (process (_mech (eql xoauth2)) user password)
+    (let* ((access-token (fetch-access-token)))
+      (smtpmail-command-or-throw
+       process
+       (concat "AUTH XOAUTH2 " access-token)
+       235)))
+
+  ;;; Register the method
+  (with-eval-after-load 'smtpmail
+    (add-to-list 'smtpmail-auth-supported 'xoauth2))
+
   (setq message-send-mail-function 'smtpmail-send-it
         ;; don't keep message buffers
         message-kill-buffer-on-exit t
@@ -1612,11 +1631,19 @@ Set highlight background color to be slightly darker than the background color (
   (use-package cython-mode
     :defer t)
 #+END_SRC
+
+#+begin_src emacs-lisp
+  (use-package python-mode
+    :config
+    (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
+    (add-hook 'python-mode-hook #'eglot-ensure))
+#+end_src
 *** Jedi
 Using company for completions. Be sure to do `M-x jedi:install-server` whenever jedi is updated (and on initial install). Requires virtualenv (python-virtualenv on Arch).
 #+BEGIN_SRC emacs-lisp
   (use-package company-jedi
     :defer t
+    :disabled t
     :config
     (add-hook 'python-mode-hook 'jedi:setup)
     (setq jedi:complete-on-dot t)
@@ -1627,6 +1654,7 @@ Using company for completions. Be sure to do `M-x jedi:install-server` whenever 
 #+BEGIN_SRC emacs-lisp
   (use-package ein
     :defer t
+    :disabled t
     :config
     (require 'ein-dev)
     (setq ein:jupyter-default-server-command "/usr/bin/jupyter"
@@ -1657,6 +1685,44 @@ Commented out for now as I haven't used python in a while, will need to be updat
   ;; (add-to-list 'auto-mode-alist '("\\.pxd\\'" . cython-mode))
   ;; (add-to-list 'auto-mode-alist '("\\.pxi\\'" . cython-mode))
 #+END_SRC
+** Haxe
+#+begin_src emacs-lisp
+  (use-package haxe-mode)
+#+end_src
+** Eglot
+#+begin_src emacs-lisp
+  (use-package eglot
+    :config
+    (global-set-key (kbd "M-n") 'flymake-goto-next-error)
+    (global-set-key (kbd "M-p") 'flymake-goto-prev-error)
+
+    ;; Handle projects not in the root folder of a repo
+    (cl-defmethod project-root ((project (head eglot-project)))
+      (cdr project))
+
+    ;; (defun my-project-try-tsconfig-json (dir)
+    ;;   (when-let* ((found (locate-dominating-file dir "tsconfig.json")))
+    ;;     (cons 'eglot-project found)))
+
+    ;; (add-hook 'project-find-functions 'my-project-try-tsconfig-json nil nil)
+
+    ;; (add-to-list 'eglot-server-programs
+    ;;              '((typescript-mode) "typescript-language-server" "--stdio"))
+
+    (add-to-list 'eglot-server-programs
+                 '((haxe-mode) "node"q " ~/transfer/server.js"))
+
+    (setq-default eglot-workspace-configuration
+                  '((:pyls . ((:plugins .
+                                        ((:pycodestyle . ((:enabled . :json-false)))
+                                         (:pyls_black . ((:enabled . t)))))))))
+
+    (defun my-project-try-pyproject-toml (dir)
+      (when-let* ((found (locate-dominating-file dir "pyproject.toml")))
+        (cons 'eglot-project found)))
+
+    (add-hook 'project-find-functions 'my-project-try-pyproject-toml nil nil))
+#+end_src
 
 * Guix
 #+begin_src emacs-lisp

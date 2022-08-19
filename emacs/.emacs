@@ -61,20 +61,61 @@
  '(objed-cursor-color "#ff6c6b")
  '(org-msg-mode t)
  '(package-selected-packages
-   '(org-contrib info-look frames-only-mode pacfiles-mode org-auto-tangle mu4e-marker-icons transient-posframe org-special-block-extras mixed-pitch vterm org-table org-superstar org-superstar-mode counsel-org-clock ivy-hydra org-variable-pitch dashboard ivy-rich ivy-posframe advice-patch org-cliplink visual-fill-column dired-git-info diredfl dired cdlatex org-noter org-ref mu4e-conversation counsel ivy let-alist org-msg org-mime mu4e-alert notmuch calfw calfw-org org-gcal flycheck-ledger ledger-mode org-analyzer org-re-reveal pdf-tools solaire-mode hlinum doom-themes doom-modeline which-key use-package timesheet spacemacs-theme spaceline-all-the-icons smex smartparens slime-company rainbow-delimiters paradox ox-reveal org2blog org-plus-contrib org-bullets olivetti neotree multiple-cursors monokai-theme molokai-theme markdown-mode magit latex-pretty-symbols langtool imenu-list ido-vertical-mode ido-ubiquitous highlight-symbol highlight-sexp goto-chg fountain-mode flycheck-color-mode-line flx-ido exec-path-from-shell emms ein diminish define-word cython-mode company-quickhelp company-math company-jedi company-auctex color-theme-solarized color-identifiers-mode all-the-icons-dired))
+   '(org2blog nov nov\.el nov-el haxe-mode debbugs python-mode eglot org-contrib info-look frames-only-mode pacfiles-mode org-auto-tangle mu4e-marker-icons transient-posframe org-special-block-extras mixed-pitch vterm org-table org-superstar org-superstar-mode counsel-org-clock ivy-hydra org-variable-pitch dashboard ivy-rich ivy-posframe advice-patch org-cliplink visual-fill-column dired-git-info diredfl dired cdlatex org-noter org-ref mu4e-conversation counsel ivy let-alist org-msg org-mime mu4e-alert notmuch calfw calfw-org org-gcal flycheck-ledger org-analyzer org-re-reveal pdf-tools solaire-mode hlinum doom-themes doom-modeline which-key use-package timesheet spacemacs-theme spaceline-all-the-icons smex smartparens slime-company rainbow-delimiters paradox ox-reveal org-plus-contrib org-bullets olivetti neotree multiple-cursors monokai-theme molokai-theme markdown-mode magit latex-pretty-symbols langtool imenu-list ido-vertical-mode ido-ubiquitous highlight-symbol highlight-sexp goto-chg fountain-mode flycheck-color-mode-line flx-ido exec-path-from-shell emms ein diminish define-word cython-mode company-quickhelp company-math company-jedi company-auctex color-theme-solarized color-identifiers-mode all-the-icons-dired))
  '(paradox-github-token t)
  '(pdf-view-midnight-colors '("#655370" . "#fbf8ef"))
  '(rustic-ansi-faces
    ["#282c34" "#ff6c6b" "#98be65" "#ECBE7B" "#51afef" "#c678dd" "#46D9FF" "#bbc2cf"])
  '(safe-local-variable-values
-   '((org-export-allow-bind-keywords . t)
+   '((eval progn
+      (require 'lisp-mode)
+      (defun emacs27-lisp-fill-paragraph
+          (&optional justify)
+        (interactive "P")
+        (or
+         (fill-comment-paragraph justify)
+         (let
+             ((paragraph-start
+                (concat paragraph-start "\\|\\s-*\\([(;\"]\\|\\s-:\\|`(\\|#'(\\)"))
+              (paragraph-separate
+                (concat paragraph-separate "\\|\\s-*\".*[,\\.]$"))
+              (fill-column
+                (if
+                 (and
+                  (integerp emacs-lisp-docstring-fill-column)
+                  (derived-mode-p 'emacs-lisp-mode))
+                 emacs-lisp-docstring-fill-column fill-column)))
+           (fill-paragraph justify))
+         t))
+      (setq-local fill-paragraph-function #'emacs27-lisp-fill-paragraph))
+     (eval modify-syntax-entry 43 "'")
+     (eval modify-syntax-entry 36 "'")
+     (eval modify-syntax-entry 126 "'")
+     (eval let
+      ((root-dir-unexpanded
+        (locate-dominating-file default-directory ".dir-locals.el")))
+      (when root-dir-unexpanded
+        (let*
+            ((root-dir
+               (expand-file-name root-dir-unexpanded))
+             (root-dir*
+               (directory-file-name root-dir)))
+          (unless
+              (boundp 'geiser-guile-load-path)
+            (defvar geiser-guile-load-path 'nil))
+          (make-local-variable 'geiser-guile-load-path)
+          (require 'cl-lib)
+          (cl-pushnew root-dir* geiser-guile-load-path :test #'string-equal))))
+     (eval setq-local guix-directory
+      (locate-dominating-file default-directory ".dir-locals.el"))
+     (org-export-allow-bind-keywords . t)
      (eval add-hook 'after-save-hook
-           (lambda nil
-             (org-babel-tangle-file
-              (expand-file-name "dotemacs.org"))
-             (byte-compile-file
-              (expand-file-name "dotemacs.el")))
-           nil t)))
+      (lambda nil
+        (org-babel-tangle-file
+         (expand-file-name "dotemacs.org"))
+        (byte-compile-file
+         (expand-file-name "dotemacs.el")))
+      nil t)))
  '(timesheet-invoice-number 2)
  '(vc-annotate-background "#282c34")
  '(vc-annotate-color-map

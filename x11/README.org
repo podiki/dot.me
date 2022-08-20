@@ -187,16 +187,15 @@ Previously used [[https://wiki.archlinux.org/index.php/I3][i3]], my first tiling
 #+end_src
 
 I love anything Lisp related, so used [[https://wiki.archlinux.org/index.php/Stumpwm][StumpWM]] for a while. Still really like using Lisp to hack and configure a WM, but now trying and learning [[https://wiki.archlinux.org/index.php/Xmonad][xmonad]]. Multiple monitor and/or hotplugging monitors causes me crashes (or at least reloading Stump), e.g. [[https://github.com/stumpwm/stumpwm/issues/763][this issue]].
-#+begin_src sh :tangle no
+#+begin_src sh
   # exec sbcl --load ~/.config/stumpwm/startstump.lisp
   # for running a compiled version
-  export SBCL_HOME=/usr/lib/sbcl/
-  $HOME/quicklisp/local-projects/stumpwm/stumpwm
+  export SBCL_HOME=$(dirname $(which sbcl))/../lib/sbcl/
+  dbus-run-session stumpwm
 #+end_src
 
-Currently on xmonad. Running into some issues with D-Bus on GuixSD, and probably should explicitly use ~dbus-launch~ anyway. However, that leads to problems with LightDM. ~dbus-run-session~ seems to work just as well without extra problems.
-#+begin_src sh
-  # exec ~/.xmonad/my-xmonad
+Currently on xmonad. Running into some issues with D-Bus on Guix System, and probably should explicitly use ~dbus-launch~ anyway. However, that leads to problems with LightDM. ~dbus-run-session~ seems to work just as well without extra problems.
+#+begin_src sh :tangle no
   dbus-run-session ~/.xmonad/xmonad-x86_64-linux
 #+end_src
 

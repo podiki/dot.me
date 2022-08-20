@@ -112,9 +112,11 @@ $HOME/.config/wpg/wp_init.sh
 
 
 
-# Currently on xmonad. Running into some issues with D-Bus on GuixSD, and probably should explicitly use ~dbus-launch~ anyway. However, that leads to problems with LightDM. ~dbus-run-session~ seems to work just as well without extra problems.
+# I love anything Lisp related, so used [[https://wiki.archlinux.org/index.php/Stumpwm][StumpWM]] for a while. Still really like using Lisp to hack and configure a WM, but now trying and learning [[https://wiki.archlinux.org/index.php/Xmonad][xmonad]]. Multiple monitor and/or hotplugging monitors causes me crashes (or at least reloading Stump), e.g. [[https://github.com/stumpwm/stumpwm/issues/763][this issue]].
 
-# [[file:README.org::*Window Manager][Window Manager:3]]
-# exec ~/.xmonad/my-xmonad
-dbus-run-session ~/.xmonad/xmonad-x86_64-linux
-# Window Manager:3 ends here
+# [[file:README.org::*Window Manager][Window Manager:2]]
+# exec sbcl --load ~/.config/stumpwm/startstump.lisp
+# for running a compiled version
+export SBCL_HOME=$(dirname $(which sbcl))/../lib/sbcl/
+dbus-run-session stumpwm
+# Window Manager:2 ends here

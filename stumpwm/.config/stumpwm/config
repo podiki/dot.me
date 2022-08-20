@@ -1,5 +1,5 @@
 ;; -*-lisp-*-
-(require :stumpwm)
+;(require :stumpwm)
 (in-package :stumpwm)
 
 ;;==============================================================================
@@ -32,9 +32,13 @@
 
 (setf *mouse-focus-policy* :click)
 (run-shell-command "xsetroot -cursor_name left_ptr")
+;; robot?
+(setf *grab-pointer-character* 80)
+(setf *grab-pointer-character-mask* 81)
 
 ;; for scrolling not working (only on desktop it seems)
 (setf (getenv "GDK_CORE_DEVICE_EVENTS") "1")
+;(setf *debug-level* 1)
 
 ;;==============================================================================
 ;; modules
@@ -51,17 +55,23 @@
 ;;==============================================================================
 ;; looks
 ;;==============================================================================
-(set-font (make-instance 'xft:font
-                         :family "Hack Nerd Font Mono"
-                         :subfamily "Regular"
-                         :size 12))
+(setf xft:*font-dirs*
+      (list (concat (getenv "HOME") "/.local/share/fonts/")))
+(setf clx-truetype:+font-cache-filename+
+      (concat (getenv "HOME") "/.local/share/fonts/font-cache.sexp"))
+(xft:cache-fonts)
+(set-font
+ (make-instance 'xft:font
+                :family "Hack Nerd Font Mono"
+                :subfamily "Regular"
+                :size 12))
 
 ;;==============================================================================
 ;; key bindings
 ;;==============================================================================
 
 ;; default terminal binding
-(define-key *root-map* (kbd "c") "exec termite")
+(define-key *root-map* (kbd "c") "exec kitty")
 ;; pule audio controls
 (define-key *top-map* (kbd "XF86AudioRaiseVolume")
   "exec pactl set-sink-volume @DEFAULT_SINK@ +2.5%")
@@ -74,22 +84,30 @@
 (define-key *top-map* (kbd "XF86AudioNext") "exec mpc next")
 (define-key *top-map* (kbd "XF86AudioPlay") "exec mpc toggle")
 ;; lock
-(define-key *top-map* (kbd "s-q") "exec ~/lock.sh")
+;(define-key *top-map* (kbd "s-q") "exec ~/lock.sh")
 
 ;; Emacs keys for Firefox (from StumpWM manual)
 (define-remapped-keys
     `((,(lambda (win)
-          (string-equal "Firefox" (window-class win)))
+          ;(string-equal "firefox-default" (window-class win))
+          (not (or (string-equal "Emacs" (window-class win))
+                   (string-equal "kitty" (window-class win))
+                   (string-equal "Nyxt" (window-class win)))))
         ("C-n"   . "Down")
         ("C-p"   . "Up")
         ("C-f"   . "Right")
         ("C-b"   . "Left")
+        ("C-a"   . "Home")
+        ("C-e"   . "End")
         ("C-v"   . "Next")
         ("M-v"   . "Prior")
+        ("C-d"   . "Delete")
         ("M-w"   . "C-c")
         ("C-w"   . "C-x")
         ("C-x"   . "C-w") ; switch close tab to 'cut'
-        ("C-s"   . "/")
+        ("C-s"   . "C-f")
+        ;("C-s"   . "/")
+        ;("C-S"   . "C-f")
         ("C-/"   . "C-z")
         ("C-y"   . "C-v")
         ("M-<"   . "Home")
@@ -99,24 +117,24 @@
         ("C-k"   . ("C-S-End" "C-x")))))
 
 ;; rofi
-(define-key *top-map* (kbd "s-d") "exec rofi -show run")
+(define-key *top-map* (kbd "s-d") "exec rofi -modi combi,window -show combi -combi-modi run,drun")
 (define-key *top-map* (kbd "s-p") "exec rofi-pass")
 (define-key *top-map* (kbd "s-c") "exec rofi -show calc -modi calc -no-show-match -no-sort > /dev/null")
 
 ;; scratchpad
 (defcommand scratchpad-term () ()
-  (scratchpad:toggle-floating-scratchpad "term" "termite"
+  (scratchpad:toggle-floating-scratchpad "term" "kitty"
                                          :initial-gravity :center
-                                         :initial-width 1900
-                                         :initial-height 1200))
+                                         :initial-width 1550
+                                         :initial-height 1150))
 (define-key *top-map* (kbd "s-t") "scratchpad-term")
 
-(defcommand scratchpad-rambox () ()
-  (scratchpad:toggle-floating-scratchpad "rambox" "rambox"
+(defcommand scratchpad-element () ()
+  (scratchpad:toggle-floating-scratchpad "element" "element-desktop" ;"flatpak run im.riot.Riot"
                                          :initial-gravity :center
-                                         :initial-width 1960
-                                         :initial-height 1400))
-(define-key *top-map* (kbd "s-m") "scratchpad-rambox")
+                                         :initial-width 1500
+                                         :initial-height 1100))
+(define-key *top-map* (kbd "s-m") "scratchpad-element")
 
 (defcommand scratchpad-signal () ()
   (scratchpad:toggle-floating-scratchpad "signal" "signal-desktop --use-tray-icon"
@@ -125,15 +143,84 @@
                                          :initial-height 1000))
 (define-key *top-map* (kbd "s-n") "scratchpad-signal")
 
+(defcommand toggle-float () ()
+  (when-let* ((win (current-window))
+         (wgr (window-group win)))
+    (if (float-window-p win)
+        (unfloat-window win wgr)
+        (float-window win wgr))))
+
+(defcommand center-float () ()
+  (let* ((cs (slot-value (stumpwm:current-screen) 'number))
+         (sw (xlib:screen-width cs))
+         (sh (xlib:screen-height cs))
+         (wind (current-window))
+         (ww (window-width wind))
+         (wh (window-height wind)))
+    (unless (float-window-p wind)
+      (float-window wind (window-group wind)))
+    (float-window-move-resize (current-window)
+                              ;; Use round to get an integer (signed-byte)
+                              :x (round (- (/ sw 2) (/ ww 2)))
+                              :y (round (- (/ sh 2) (/ wh 2))))))
+
+(define-key *top-map* (kbd "s-a") "center-float")
+
+(defun float-window-on-click (window on-focus-p)
+  (let* ((xwin (window-xwin window)))
+    ;; x and y from *click-hook* call seem to be within window coordinates
+    ;; and we want to make sure we only act on either current window
+    ;; (for *click-hook*) or else *focus-window-hook* will take care of it.
+    (multiple-value-bind (x y same-screen-p)
+        (xlib:pointer-position xwin)
+      (declare (ignore same-screen-p))
+      (multiple-value-bind (relx rely same-screen-p child state-mask)
+          (xlib:query-pointer (window-parent window))
+        (declare (ignore relx rely same-screen-p child))
+        (when (and (> x (xlib:drawable-x xwin))
+                   (< x (+ (xlib:drawable-width xwin)
+                           (xlib:drawable-x xwin)))
+                   (> y (xlib:drawable-y xwin))
+                   (< y (+ (xlib:drawable-height xwin)
+                           (xlib:drawable-y xwin)))
+                   (intersection (float-window-modifier)
+                                 (xlib:make-state-keys state-mask))
+                   (or (find :button-1 (xlib:make-state-keys state-mask))
+                       (find :button-3 (xlib:make-state-keys state-mask))))
+          (float-window window (window-group window))
+          ;; needed for focus-hook to keep moving window (dummy values seem fine)
+          ;; and get focus; potentially janky? ...test more
+          (when on-focus-p
+            (group-button-press (window-group window) nil 0 0 window)))))))
+
+(defun float-on-click-hook (screen button x y)
+  (declare (ignore screen button x y))
+  (when-let ((win (current-window)))
+    (unless (float-window-p win)
+      (float-window-on-click win nil))))
+
+(add-hook *click-hook* 'float-on-click-hook)
+
+(defun float-on-click-focus-hook (wind last-wind)
+  (declare (ignore last-wind))
+  (unless (float-window-p wind)
+    (float-window-on-click wind t)))
+
+(add-hook *focus-window-hook* 'float-on-click-focus-hook)
+
 ;; toggles
 (defvar *toggle-map* (make-sparse-keymap))
 (define-key *root-map* (kbd "t") '*toggle-map*)
 (define-key *toggle-map* (kbd "g") "toggle-gaps")
 (define-key *toggle-map* (kbd "m") "mode-line")
-(define-key *toggle-map* (kbd "f") "float-this")
-(define-key *toggle-map* (kbd "u") "unfloat-this")
+(define-key *toggle-map* (kbd "f") "toggle-float")
+;(define-key *toggle-map* (kbd "f") "float-this")
+;(define-key *toggle-map* (kbd "u") "unfloat-this")
 (define-key *toggle-map* (kbd "a") "toggle-always-show")
 (define-key *toggle-map* (kbd "t") "toggle-always-on-top")
+
+(define-key *root-map* (kbd "d") '*dynamic-group-root-map*)
+(define-key *top-map* (kbd "s-Return") "exchange-with-master")
 
 ;; group switching
 (defun switch-group-smart (group)
@@ -150,23 +237,25 @@
 (define-key *top-map* (kbd "s-Tab") "gnext")
 (define-key *top-map* (kbd "s-ISO_Left_Tab") "gprev")
 (define-key *top-map* (kbd "s-1") "switch-group fire")
-(define-key *top-map* (kbd "s-2") "switch-group chrome")
-(define-key *top-map* (kbd "s-3") "switch-group school")
-(define-key *top-map* (kbd "s-4") "switch-group code")
-(define-key *top-map* (kbd "s-5") "switch-group term")
-(define-key *top-map* (kbd "s-6") "switch-group photo")
-(define-key *top-map* (kbd "s-7") "switch-group movie")
-(define-key *top-map* (kbd "s-8") "switch-group steam")
-(define-key *top-map* (kbd "s-9") "switch-group read")
-(define-key *top-map* (kbd "s-0") "switch-group music")
+(define-key *top-map* (kbd "s-2") "switch-group school")
+(define-key *top-map* (kbd "s-3") "switch-group code")
+(define-key *top-map* (kbd "s-4") "switch-group term")
+(define-key *top-map* (kbd "s-5") "switch-group photo")
+(define-key *top-map* (kbd "s-6") "switch-group steam")
 
 ;; window moving
-(define-key *top-map* (kbd "s-Right") "move-window right")
-(define-key *top-map* (kbd "s-Left") "move-window left")
-(define-key *top-map* (kbd "s-Up") "move-window up")
-(define-key *top-map* (kbd "s-Down") "move-window down")
+(define-key *top-map* (kbd "s-L") "move-window right")
+(define-key *top-map* (kbd "s-H") "move-window left")
+(define-key *top-map* (kbd "s-K") "move-window up")
+(define-key *top-map* (kbd "s-J") "move-window down")
+(define-key *top-map* (kbd "s-!") "gmove fire")
+(define-key *top-map* (kbd "s-@") "gmove school")
+(define-key *top-map* (kbd "s-#") "gmove code")
+(define-key *top-map* (kbd "s-$") "gmove term")
+(define-key *top-map* (kbd "s-%") "gmove photo")
+(define-key *top-map* (kbd "s-^") "gmove steam")
 
-;; focus swtiching
+;; focus switching
 (define-key *top-map* (kbd "s-h") "move-focus left")
 (define-key *top-map* (kbd "s-j") "move-focus down")
 (define-key *top-map* (kbd "s-k") "move-focus up")
@@ -194,35 +283,58 @@
 ;;   startup programs
 ;; =============================================================================
 
-;; use dex for autostart .desktop entries
-(run-shell-command "dex -ae stump")
-(run-shell-command "udiskie --tray")
-; (run-shell-command "xscreensaver -no-splash")
-(run-shell-command "blueshift-tray -c ~/blueshift.conf")
-(run-shell-command "volumeicon")
-;; polybar
-(run-shell-command "$HOME/.config/polybar/launch.sh")
-;; compositing with picom
-(run-shell-command "picom -b")
-;; flashfocus
-(run-shell-command "flashfocus")
+(when *initializing*
+  ;; use dex for autostart .desktop entries
+  (run-shell-command "dex -ae stump")
+  (run-shell-command "feh --bg-center \"$HOME/wallpaper.jpg\"")
+  (run-shell-command "udiskie --tray")
+  ;; polybar
+  (run-shell-command "$HOME/.config/polybar/launch.sh")
+  ;; compositing with picom
+  (run-shell-command "picom -b --experimental-backends")
+  ;; flashfocus
+  (run-shell-command "flashfocus"))
 ;; lock on idle
-(run-shell-command "xss-lock -- ~/lock.sh")
+;(run-shell-command "xss-lock -- ~/lock.sh")
 
 ;; xiccd seems to not fully load(?) X atom ICC profile, so do this also
 ;; but doesn't seem to work (need to wait for xiccd first?), and end up
 ;; running it again after startup
-(run-shell-command "dispwin -L")
+;(run-shell-command "dispwin -L")
+
+;; =============================================================================
+;;   frame rules
+;; =============================================================================
+
+(define-frame-preference nil 
+  (:float t t :class "zoom"))
+
+(define-frame-preference nil 
+  (:float t t :class "discord"))
+
+(define-frame-preference nil 
+  (:float t t :class "Steam"))
+
+(define-frame-preference nil 
+    (:float t t :title "Picture-in-Picture"))
+
+(defun pip-move-size (win)
+  (if (string= (window-name win)
+               "Picture-in-Picture")
+      (float-window-move-resize win :x 2560 :y 1440
+                                :width 1280 :height 720)))
+
+(add-hook *new-window-hook* 'pip-move-size)
 
 ;; =============================================================================
 ;;   setup groups
 ;; =============================================================================
 
-(grename "fire")
-(gnew "chrome")
-(gnew "school")
-(gnew "code")
-(gnew "term")
-(gnew "photo")
-(gnew "movie")
-(gnew "steam")
+(when *initializing*
+  (grename "fire")
+  (mapcar #'gnewbg
+          '("school"
+            "code"
+            "term"
+            "photo"
+            "steam")))

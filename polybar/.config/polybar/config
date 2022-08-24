@@ -31,7 +31,7 @@ fixed-center = true
 enable-ipc = true
 
 wlan-interface = wlp2s0
-hwmon-path = /sys/devices/platform/coretemp.0/hwmon/hwmon2/temp1_input
+hwmon-path = /sys/devices/platform/coretemp.0/hwmon/hwmon6/temp1_input
 
 background = ${colors.background}
 foreground = ${colors.foreground}

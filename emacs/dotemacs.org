@@ -1257,31 +1257,24 @@ Auto tangling of config files
   (use-package mu4e
       :ensure nil
       :bind ([f5] . mu4e)
+      :hook (mu4e-compose-pre . my-set-from-address)
       :config
       ;; use mu4e for e-mail in emacs
       (setq mail-user-agent 'mu4e-user-agent)
-      ;; email addresses
-      (setq mu4e-user-mail-address-list '("kehayias@sas.upenn.edu"
-                                          "kehayias@upenn.edu"
-                                          "john.kehayias@gmail.com"
-                                          "john.kehayias@vanderbilt.edu"
-                                          "john.kehayias@ipmu.jp"
-                                          "kehayias@physics.ucsc.edu"))
-      ;; mu4e config
-      (setq mu4e-maildir       "~/.mail"
-            mu4e-refile-folder "/gmail/all"
-            mu4e-sent-folder   "/gmail/sent"
-            mu4e-trash-folder  "/gmail/trash"
-            mu4e-drafts-folder "/gmail/drafts"
-            ;; mbsync (isync) for IMAP syncing
-            mu4e-get-mail-command "mbsync gmail"
+      ;; global mu4e config
+      (setq ;; mbsync (isync) for IMAP syncing
+            mu4e-get-mail-command "mbsync -a"
             ;; sync every 5 minutes (though get new messages via goimapnotify)
             mu4e-update-interval 300
             ;; rename files when moving (for mbsync)
             mu4e-change-filenames-when-moving t
             ;; Gmail handles sent messages
-            ;; mu4e-sent-messages-behavior 'delete
+            ;; (actually, using 'delete seems to not work, sent message
+            ;; doesn't appear anywhere)
             mu4e-sent-messages-behavior 'sent
+            ;; (lambda ()
+            ;;   (if (string= (message-sendmail-envelope-from) "kehayias@sas.upenn.edu")
+            ;;       'delete 'sent))
             ;; use mu4e for e-mail in emacs
             mail-user-agent 'mu4e-user-agent
             ;; format=flowed for plain text wrapping
@@ -1289,16 +1282,7 @@ Auto tangling of config files
             ;; Another possibility: https://vxlabs.com/2019/08/25/format-flowed-with-long-lines/
             ;; but then get overly long lines in wide windows, for example
             ;; mu4e-compose-format-flowed t
-            ;; setup some handy shortcuts
-            ;; you can quickly switch to your Inbox -- press ``ji''
-            ;; then, when you want archive some messages, move them to
-            ;; the 'All Mail' folder by pressing ``ma''.
-            mu4e-maildir-shortcuts
-            '(("/gmail/Inbox"  . ?i)
-              ("/gmail/drafts" . ?d)
-              ("/gmail/sent"   . ?s)
-              ("/gmail/trash"  . ?t)
-              ("/gmail/all"    . ?a))
+
             mu4e-headers-fields
             '((:human-date . 12)
               (:flags      . 6)
@@ -1316,7 +1300,109 @@ Auto tangling of config files
             mu4e-headers-include-related nil
             ;; don't show multiple copies of same message
             mu4e-headers-skip-duplicates t)
-
+      ;; contexts
+      (setq mu4e-contexts
+            `(,(make-mu4e-context
+                :name "UPenn"
+                :enter-func (lambda () (mu4e-message "Entering UPenn context"))
+                :leave-func (lambda () (mu4e-message "Leaving UPenn context"))
+                ;; we match based on the maildir of the message
+                ;; this matches maildir /gmail and its sub-directories,
+                ;; as well as when From/To matches the main email
+                :match-func (lambda (msg)
+                              (when msg
+                                (or (string-match-p "^/gmail" (mu4e-message-field msg :maildir))
+                                    (mu4e-message-contact-field-matches
+                                     msg
+                                     :to "kehayias@sas.upenn.edu")
+                                    (mu4e-message-contact-field-matches
+                                     msg
+                                     :from "kehayias@sas.upenn.edu"))))
+                :vars '((user-mail-address . "kehayias@sas.upenn.edu")
+                        (user-full-name    . "John Kehayias" )
+                        (mu4e-refile-folder . "/gmail/all")
+                        (mu4e-sent-folder   . "/gmail/sent")
+                        (mu4e-trash-folder  . "/gmail/trash")
+                        (mu4e-drafts-folder . "/gmail/drafts")
+                        ;; setup some handy shortcuts
+                        ;; you can quickly switch to your Inbox -- press ``ji''
+                        ;; then, when you want archive some messages, move them to
+                        ;; the 'All Mail' folder by pressing ``ma''.
+                        (mu4e-maildir-shortcuts .
+                         (("/gmail/Inbox"  . ?i)
+                          ("/gmail/drafts" . ?d)
+                          ("/gmail/sent"   . ?s)
+                          ("/gmail/trash"  . ?t)
+                          ("/gmail/all"    . ?a)))
+                        (smtpmail-smtp-server  . "smtp.office365.com")
+                        (smtpmail-local-domain . "office365.com")
+                        (smtpmail-smtp-service . 587)
+                        (smtpmail-stream-type  . nil)
+                        ;; so we don't get i-did-not-set--mail-host-address--so-tickle-me
+                        (mail-host-address . "sas.upenn.edu")))
+               ;; This should be sort of a "sub" context, being switched within the above one,
+               ;; so only put the settings needed to change for the different smtp settings
+               ,(make-mu4e-context
+                :name "Gmail"
+                :enter-func (lambda () (mu4e-message "Entering Gmail context"))
+                :leave-func (lambda () (mu4e-message "Leaving Gmail context"))
+                ;; match when From/To matches the main email, though I think only called
+                ;; manually on the mu4e-compose-pre-hook via my-set-from-address
+                :match-func (lambda (msg)
+                              (when msg
+                                (or (mu4e-message-contact-field-matches
+                                     msg
+                                     :to "john.kehayias@gmail.com")
+                                    (mu4e-message-contact-field-matches
+                                     msg
+                                     :from "john.kehayias@gmail.com"))))
+                :vars '((user-mail-address     . "john.kehayias@gmail.com")
+                        (smtpmail-smtp-server  . "smtp.gmail.com")
+                        (smtpmail-local-domain . "gmail.com")
+                        (smtpmail-smtp-service . 587)
+                        (smtpmail-stream-type  . starttls)
+                        (mail-host-address     . "gmail.com")))
+              ,(make-mu4e-context
+                :name "Proton Mail"
+                :enter-func (lambda () (mu4e-message "Entering Proton Mail context"))
+                :leave-func (lambda () (mu4e-message "Leaving Proton Mail context"))
+                :match-func (lambda (msg)
+                              (when msg
+                                (string-match-p "^/protonmail" (mu4e-message-field msg :maildir))))
+                :vars '((user-mail-address  . "john.kehayias@protonmail.com")
+                        (user-full-name     . "John Kehayias" )
+                        (mu4e-refile-folder . "/protonmail/Archive")
+                        (mu4e-sent-folder   . "/protonmail/Sent")
+                        (mu4e-trash-folder  . "/protonmail/Trash")
+                        (mu4e-drafts-folder . "/protonmail/Drafts")
+                        (mu4e-maildir-shortcuts .
+                         (("/protonmail/Inbox"    . ?i)
+                          ("/protonmail/Drafts"   . ?d)
+                          ("/protonmail/Sent"     . ?s)
+                          ("/protonmail/Trash"    . ?t)
+                          ("/protonmail/Archive" . ?a)))
+                        (smtpmail-smtp-server  . "127.0.0.1")
+                        (smtpmail-local-domain . "protonmail.com")
+                        (smtpmail-smtp-service . 1025)
+                        (smtpmail-stream-type  . starttls)
+                        (mail-host-address     . "protonmail.com")))))
+      ;; from mu4e docs
+      ;; with loop from https://old.reddit.com/r/emacs/comments/tvfpli/email_setting_up_an_automated_from_while_replying/ijqa637/
+      (defun my-set-from-address ()
+        "Set the From address based on the To address of the original."
+        (let ((msg mu4e-compose-parent-message))
+          (when msg
+            (if (mu4e-message-contact-field-matches-me msg :to)
+                (setq user-mail-address 
+                      (cl-loop for to-data in (mu4e-message-field msg :to)
+                            for to-email = (pcase to-data
+                                             (`(_ . email) email)
+                                             (x (mu4e-contact-email x)))
+                            when (mu4e-user-mail-address-p to-email)
+                            return to-email)))
+            ;; Switch to the "sub" context for sending with gmail.com address
+            (if (string= user-mail-address "john.kehayias@gmail.com")
+                (mu4e-context-switch nil "Gmail")))))
       ;; To get Gmail-like behavior when using the delete action,
       ;; i.e. deleting from inbox removes duplicate in All Mail and goes
       ;; in trash folder
@@ -1420,7 +1506,7 @@ Pretty icons
     :init (mu4e-marker-icons-mode 1))
 #+end_src
 ** Sending mail
-Sending mail with built-in message mode and smtpmail, using the instructions from [[https://github.com/harishkrupo/oauth2ms/blob/main/steps.org][oauth2ms]] to handle authentication (needed with two-step verification):
+Sending mail with built-in message mode and smtpmail, using the instructions from [[https://github.com/harishkrupo/oauth2ms/blob/main/steps.org][oauth2ms]] to handle authentication (needed with two-step verification) for Office365:
 #+begin_src emacs-lisp
   ;;; Call the oauth2ms program to fetch the authentication token
   (defun fetch-access-token ()
@@ -1439,23 +1525,78 @@ Sending mail with built-in message mode and smtpmail, using the instructions fro
 
   ;;; Register the method
   (with-eval-after-load 'smtpmail
+    ;; work around but #57373 where smtp-auth method from authinfo
+    ;; is a string so it won't work
+    (defun smtpmail-try-auth-methods (process supported-extensions host port
+                                            &optional ask-for-password)
+    (setq port
+          (if port
+              (format "%s" port)
+            "smtp"))
+    (let* ((mechs (seq-intersection
+                   smtpmail-auth-supported
+                   (cdr-safe (assoc 'auth supported-extensions))
+                   #'eq))
+           (auth-source-creation-prompts
+            '((user  . "SMTP user name for %h: ")
+              (secret . "SMTP password for %u@%h: ")))
+           (auth-info (car
+                       (auth-source-search
+                        :host host
+                        :port port
+                        :user smtpmail-smtp-user
+                        :max 1
+                        :require (and ask-for-password
+                                      '(:user :secret))
+                        :create ask-for-password)))
+           (mech (or (plist-get auth-info :smtp-auth) (car mechs)))
+           (user (plist-get auth-info :user))
+           (password (plist-get auth-info :secret))
+           (save-function (and ask-for-password
+                               (plist-get auth-info :save-function))))
+      (when (functionp password)
+        (setq password (funcall password)))
+      (when (and user
+                 (not password))
+        ;; The user has stored the user name, but not the password, so
+        ;; ask for the password, even if we're not forcing that through
+        ;; `ask-for-password'.
+        (setq auth-info
+              (car
+               (auth-source-search
+                :max 1
+                :host host
+                :port port
+                :user smtpmail-smtp-user
+                :require '(:user :secret)
+                :create t))
+              password (plist-get auth-info :secret)))
+      (when (functionp password)
+        (setq password (funcall password)))
+      (let ((result (catch 'done
+                      (if (and mech user password)
+                          ;; TODO: remove when updating emacs; the change to fix #57373:
+                          (smtpmail-try-auth-method process (intern-soft mech) user password)
+                        ;; No mechanism, or no credentials.
+                        mech))))
+        (if (stringp result)
+            (progn
+              (auth-source-forget+ :host host :port port)
+              (throw 'done result))
+          (when save-function
+            (funcall save-function))
+          result))))
     (add-to-list 'smtpmail-auth-supported 'xoauth2))
+
+  (setq starttls-use-gnutls t)
 
   (setq message-send-mail-function 'smtpmail-send-it
         ;; don't keep message buffers
         message-kill-buffer-on-exit t
-        smtpmail-smtp-server "smtp.office365.com"
-        smtpmail-local-domain "office365.com"
-        ; smtpmail-smtp-server "smtp.gmail.com"
-        smtpmail-smtp-service 587
-        smtpmail-stream-type 'starttls
-        ;; so we don't get i-did-not-set--mail-host-address--so-tickle-me
-        mail-host-address "sas.upenn.edu"
         user-full-name "John Kehayias"
-        user-mail-address "kehayias@sas.upenn.edu"
         ;; format reply line as On day, month day, year at time,
-        ;; name with email wrote
-        message-citation-line-format "On %a, %b %d, %Y at %I:%M %p, %f wrote:\n"
+        ;; name (or email) wrote
+        message-citation-line-format "On %a, %b %d, %Y at %I:%M %p, %N wrote:\n"
         message-citation-line-function 'message-insert-formatted-citation-line)
 #+end_src
 * Programming

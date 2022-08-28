@@ -1,21 +1,32 @@
-;; -*-lisp-*-
-;(require :stumpwm)
-(in-package :stumpwm)
+;; Getting Started
+;; Put us in the StumpWM package
 
-;;==============================================================================
-;; swank setup
-;;==============================================================================
+;; [[file:../../README.org::*Getting Started][Getting Started:1]]
+(in-package :stumpwm)
+;; Getting Started:1 ends here
+
+;; Swank Setup
+;; Start a Swank server to be able to talk directly to the running StumpWM instance:
+
+;; [[file:../../README.org::*Swank Setup][Swank Setup:1]]
 (require :swank)
 (swank:create-server :port 4004
                      :style swank:*communication-style*
                      :dont-close t)
+;; Swank Setup:1 ends here
 
-;;==============================================================================
-;; basic settings
-;;==============================================================================
+;; Basic Settings
+;; First, set the prefix key to something easy but unused, in this case =C-m= (ctrl-m)
 
+;; [[file:../../README.org::*Basic Settings][Basic Settings:1]]
 (set-prefix-key (kbd "C-m"))
+;; Basic Settings:1 ends here
 
+
+
+;; Basic settings of where windows should appear, border widths
+
+;; [[file:../../README.org::*Basic Settings][Basic Settings:2]]
 (setf *message-window-gravity* :center
       *input-window-gravity* :center
       *window-border-style* :none
@@ -29,21 +40,36 @@
 (set-normal-gravity :center)
 (set-maxsize-gravity :center)
 (set-transient-gravity :center)
+;; Basic Settings:2 ends here
 
+;; Mouse
+;; Focus policy: click to focus
+
+;; [[file:../../README.org::*Mouse][Mouse:1]]
 (setf *mouse-focus-policy* :click)
+;; Mouse:1 ends here
+
+
+
+;; Mouse looks: don't use the old default X11 cursor, set the cursor when doing a Stump command to a robot(?)
+
+;; [[file:../../README.org::*Mouse][Mouse:2]]
 (run-shell-command "xsetroot -cursor_name left_ptr")
-;; robot?
 (setf *grab-pointer-character* 80)
 (setf *grab-pointer-character-mask* 81)
+;; Mouse:2 ends here
 
-;; for scrolling not working (only on desktop it seems)
+
+
+;; For scrolling with a mouse wheel/gesture, this is (usually) needed
+
+;; [[file:../../README.org::*Mouse][Mouse:3]]
 (setf (getenv "GDK_CORE_DEVICE_EVENTS") "1")
-;(setf *debug-level* 1)
+;; Mouse:3 ends here
 
-;;==============================================================================
-;; modules
-;;==============================================================================
+;; Module Setup
 
+;; [[file:../../README.org::*Module Setup][Module Setup:1]]
 (set-module-dir "~/stumpwm")
 (load-module "end-session")
 (load-module "swm-gaps")
@@ -51,25 +77,96 @@
 
 ;; scratchpad from https://github.com/herbertjones/my-stumpwm-config
 (load-module "scratchpad")
+;; Module Setup:1 ends here
 
-;;==============================================================================
-;; looks
-;;==============================================================================
-(setf xft:*font-dirs*
-      (list (concat (getenv "HOME") "/.local/share/fonts/")))
-(setf clx-truetype:+font-cache-filename+
-      (concat (getenv "HOME") "/.local/share/fonts/font-cache.sexp"))
-(xft:cache-fonts)
+;; Looks
+
+;; [[file:../../README.org::*Looks][Looks:1]]
+;; Uses the older default ~/.fonts so symlink that to ~/.local/share/fonts, or could add
+;; it to xft:*font-dirs*
+;(setf xft:*font-dirs*
+;      (list (concat (getenv "HOME") "/.local/share/fonts/")))
+;(setf clx-truetype:+font-cache-filename+
+;      (concat (getenv "HOME") "/.local/share/fonts/font-cache.sexp"))
+;; this should be run when changing any fonts
+;;(xft:cache-fonts)
 (set-font
  (make-instance 'xft:font
                 :family "Hack Nerd Font Mono"
                 :subfamily "Regular"
                 :size 12))
+;; Looks:1 ends here
 
-;;==============================================================================
-;; key bindings
-;;==============================================================================
+;; Float Helpers
 
+;; [[file:../../README.org::*Float Helpers][Float Helpers:1]]
+(defcommand toggle-float () ()
+  (when-let* ((win (current-window))
+         (wgr (window-group win)))
+    (if (float-window-p win)
+        (unfloat-window win wgr)
+        (float-window win wgr))))
+
+(defcommand center-float () ()
+  (let* ((cs (slot-value (stumpwm:current-screen) 'number))
+         (sw (xlib:screen-width cs))
+         (sh (xlib:screen-height cs))
+         (wind (current-window))
+         (ww (window-width wind))
+         (wh (window-height wind)))
+    (unless (float-window-p wind)
+      (float-window wind (window-group wind)))
+    (float-window-move-resize (current-window)
+                              ;; Use round to get an integer (signed-byte)
+                              :x (round (- (/ sw 2) (/ ww 2)))
+                              :y (round (- (/ sh 2) (/ wh 2))))))
+
+(defun float-window-on-click (window on-focus-p)
+  (let* ((xwin (window-xwin window)))
+    ;; x and y from *click-hook* call seem to be within window coordinates
+    ;; and we want to make sure we only act on either current window
+    ;; (for *click-hook*) or else *focus-window-hook* will take care of it.
+    (multiple-value-bind (x y same-screen-p)
+        (xlib:pointer-position xwin)
+      (declare (ignore same-screen-p))
+      (multiple-value-bind (relx rely same-screen-p child state-mask)
+          (xlib:query-pointer (window-parent window))
+        (declare (ignore relx rely same-screen-p child))
+        (when (and (> x (xlib:drawable-x xwin))
+                   (< x (+ (xlib:drawable-width xwin)
+                           (xlib:drawable-x xwin)))
+                   (> y (xlib:drawable-y xwin))
+                   (< y (+ (xlib:drawable-height xwin)
+                           (xlib:drawable-y xwin)))
+                   (intersection (float-window-modifier)
+                                 (xlib:make-state-keys state-mask))
+                   (or (find :button-1 (xlib:make-state-keys state-mask))
+                       (find :button-3 (xlib:make-state-keys state-mask))))
+          (float-window window (window-group window))
+          ;; needed for focus-hook to keep moving window (dummy values seem fine)
+          ;; and get focus; potentially janky? ...test more
+          (when on-focus-p
+            (group-button-press (window-group window) nil 0 0 window)))))))
+
+(defun float-on-click-hook (screen button x y)
+  (declare (ignore screen button x y))
+  (when-let ((win (current-window)))
+    (unless (float-window-p win)
+      (float-window-on-click win nil))))
+
+(add-hook *click-hook* 'float-on-click-hook)
+
+(defun float-on-click-focus-hook (wind last-wind)
+  (declare (ignore last-wind))
+  (unless (float-window-p wind)
+    (float-window-on-click wind t)))
+
+(add-hook *focus-window-hook* 'float-on-click-focus-hook)
+;; Float Helpers:1 ends here
+
+;; Key Bindings
+
+;; [[file:../../README.org::*Key Bindings][Key Bindings:1]]
 ;; default terminal binding
 (define-key *root-map* (kbd "c") "exec kitty")
 ;; pule audio controls
@@ -143,70 +240,8 @@
                                          :initial-height 1000))
 (define-key *top-map* (kbd "s-n") "scratchpad-signal")
 
-(defcommand toggle-float () ()
-  (when-let* ((win (current-window))
-         (wgr (window-group win)))
-    (if (float-window-p win)
-        (unfloat-window win wgr)
-        (float-window win wgr))))
-
-(defcommand center-float () ()
-  (let* ((cs (slot-value (stumpwm:current-screen) 'number))
-         (sw (xlib:screen-width cs))
-         (sh (xlib:screen-height cs))
-         (wind (current-window))
-         (ww (window-width wind))
-         (wh (window-height wind)))
-    (unless (float-window-p wind)
-      (float-window wind (window-group wind)))
-    (float-window-move-resize (current-window)
-                              ;; Use round to get an integer (signed-byte)
-                              :x (round (- (/ sw 2) (/ ww 2)))
-                              :y (round (- (/ sh 2) (/ wh 2))))))
 
 (define-key *top-map* (kbd "s-a") "center-float")
-
-(defun float-window-on-click (window on-focus-p)
-  (let* ((xwin (window-xwin window)))
-    ;; x and y from *click-hook* call seem to be within window coordinates
-    ;; and we want to make sure we only act on either current window
-    ;; (for *click-hook*) or else *focus-window-hook* will take care of it.
-    (multiple-value-bind (x y same-screen-p)
-        (xlib:pointer-position xwin)
-      (declare (ignore same-screen-p))
-      (multiple-value-bind (relx rely same-screen-p child state-mask)
-          (xlib:query-pointer (window-parent window))
-        (declare (ignore relx rely same-screen-p child))
-        (when (and (> x (xlib:drawable-x xwin))
-                   (< x (+ (xlib:drawable-width xwin)
-                           (xlib:drawable-x xwin)))
-                   (> y (xlib:drawable-y xwin))
-                   (< y (+ (xlib:drawable-height xwin)
-                           (xlib:drawable-y xwin)))
-                   (intersection (float-window-modifier)
-                                 (xlib:make-state-keys state-mask))
-                   (or (find :button-1 (xlib:make-state-keys state-mask))
-                       (find :button-3 (xlib:make-state-keys state-mask))))
-          (float-window window (window-group window))
-          ;; needed for focus-hook to keep moving window (dummy values seem fine)
-          ;; and get focus; potentially janky? ...test more
-          (when on-focus-p
-            (group-button-press (window-group window) nil 0 0 window)))))))
-
-(defun float-on-click-hook (screen button x y)
-  (declare (ignore screen button x y))
-  (when-let ((win (current-window)))
-    (unless (float-window-p win)
-      (float-window-on-click win nil))))
-
-(add-hook *click-hook* 'float-on-click-hook)
-
-(defun float-on-click-focus-hook (wind last-wind)
-  (declare (ignore last-wind))
-  (unless (float-window-p wind)
-    (float-window-on-click wind t)))
-
-(add-hook *focus-window-hook* 'float-on-click-focus-hook)
 
 ;; toggles
 (defvar *toggle-map* (make-sparse-keymap))
@@ -338,3 +373,14 @@
             "term"
             "photo"
             "steam")))
+;; Key Bindings:1 ends here
+
+
+
+;; If viewing the config file directly, since it doesn't have a file extension, set the mode (with a formfeed character so the org file is not misinterpreted)
+
+;; [[file:../../README.org::*Key Bindings][Key Bindings:2]]
+;; Local Variables:
+;; mode: lisp
+;; End:
+;; Key Bindings:2 ends here

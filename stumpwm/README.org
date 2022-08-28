@@ -1,0 +1,368 @@
+#+TITLE: Stumpwm Configuration
+#+PROPERTY: header-args :tangle "./.config/stumpwm/config" :tangle-mode (identity #o444) :mkdirp yes :comments both
+#+AUTO_TANGLE: t
+
+* Getting Started
+Put us in the StumpWM package
+#+begin_src lisp
+  (in-package :stumpwm)
+#+end_src
+* Swank Setup
+Start a Swank server to be able to talk directly to the running StumpWM instance:
+#+begin_src lisp
+    (require :swank)
+    (swank:create-server :port 4004
+                         :style swank:*communication-style*
+                         :dont-close t)
+#+end_src
+
+** TODO Set this to only run if the port is available (so, not on reload)
+* Basic Settings
+First, set the prefix key to something easy but unused, in this case =C-m= (ctrl-m)
+#+begin_src lisp
+  (set-prefix-key (kbd "C-m"))
+#+end_src
+
+Basic settings of where windows should appear, border widths
+#+begin_src lisp
+  (setf *message-window-gravity* :center
+        ,*input-window-gravity* :center
+        ,*window-border-style* :none
+        ,*message-window-padding* 10
+        ,*maxsize-border-width* 5
+        ,*normal-border-width* 5
+        ,*transient-border-width* 2
+        stumpwm::*float-window-border* 0
+        stumpwm::*float-window-title-height* 0)
+
+  (set-normal-gravity :center)
+  (set-maxsize-gravity :center)
+  (set-transient-gravity :center)
+#+end_src
+
+** Mouse
+Focus policy: click to focus
+#+begin_src lisp
+  (setf *mouse-focus-policy* :click)
+#+end_src
+
+Mouse looks: don't use the old default X11 cursor, set the cursor when doing a Stump command to a robot(?)
+#+begin_src lisp
+  (run-shell-command "xsetroot -cursor_name left_ptr")
+  (setf *grab-pointer-character* 80)
+  (setf *grab-pointer-character-mask* 81)
+#+end_src
+
+For scrolling with a mouse wheel/gesture, this is (usually) needed
+#+begin_src lisp
+  (setf (getenv "GDK_CORE_DEVICE_EVENTS") "1")
+#+end_src
+* Module Setup
+#+begin_src lisp
+    (set-module-dir "~/stumpwm")
+    (load-module "end-session")
+    (load-module "swm-gaps")
+    (load-module "ttf-fonts")
+
+    ;; scratchpad from https://github.com/herbertjones/my-stumpwm-config
+    (load-module "scratchpad")
+#+end_src
+* Looks
+#+begin_src lisp
+  ;; Uses the older default ~/.fonts so symlink that to ~/.local/share/fonts, or could add
+  ;; it to xft:*font-dirs*
+  ;(setf xft:*font-dirs*
+  ;      (list (concat (getenv "HOME") "/.local/share/fonts/")))
+  ;(setf clx-truetype:+font-cache-filename+
+  ;      (concat (getenv "HOME") "/.local/share/fonts/font-cache.sexp"))
+  ;; this should be run when changing any fonts
+  ;;(xft:cache-fonts)
+  (set-font
+   (make-instance 'xft:font
+                  :family "Hack Nerd Font Mono"
+                  :subfamily "Regular"
+                  :size 12))
+#+end_src
+* Float Helpers
+#+begin_src lisp
+  (defcommand toggle-float () ()
+    (when-let* ((win (current-window))
+           (wgr (window-group win)))
+      (if (float-window-p win)
+          (unfloat-window win wgr)
+          (float-window win wgr))))
+
+  (defcommand center-float () ()
+    (let* ((cs (slot-value (stumpwm:current-screen) 'number))
+           (sw (xlib:screen-width cs))
+           (sh (xlib:screen-height cs))
+           (wind (current-window))
+           (ww (window-width wind))
+           (wh (window-height wind)))
+      (unless (float-window-p wind)
+        (float-window wind (window-group wind)))
+      (float-window-move-resize (current-window)
+                                ;; Use round to get an integer (signed-byte)
+                                :x (round (- (/ sw 2) (/ ww 2)))
+                                :y (round (- (/ sh 2) (/ wh 2))))))
+
+  (defun float-window-on-click (window on-focus-p)
+    (let* ((xwin (window-xwin window)))
+      ;; x and y from *click-hook* call seem to be within window coordinates
+      ;; and we want to make sure we only act on either current window
+      ;; (for *click-hook*) or else *focus-window-hook* will take care of it.
+      (multiple-value-bind (x y same-screen-p)
+          (xlib:pointer-position xwin)
+        (declare (ignore same-screen-p))
+        (multiple-value-bind (relx rely same-screen-p child state-mask)
+            (xlib:query-pointer (window-parent window))
+          (declare (ignore relx rely same-screen-p child))
+          (when (and (> x (xlib:drawable-x xwin))
+                     (< x (+ (xlib:drawable-width xwin)
+                             (xlib:drawable-x xwin)))
+                     (> y (xlib:drawable-y xwin))
+                     (< y (+ (xlib:drawable-height xwin)
+                             (xlib:drawable-y xwin)))
+                     (intersection (float-window-modifier)
+                                   (xlib:make-state-keys state-mask))
+                     (or (find :button-1 (xlib:make-state-keys state-mask))
+                         (find :button-3 (xlib:make-state-keys state-mask))))
+            (float-window window (window-group window))
+            ;; needed for focus-hook to keep moving window (dummy values seem fine)
+            ;; and get focus; potentially janky? ...test more
+            (when on-focus-p
+              (group-button-press (window-group window) nil 0 0 window)))))))
+
+  (defun float-on-click-hook (screen button x y)
+    (declare (ignore screen button x y))
+    (when-let ((win (current-window)))
+      (unless (float-window-p win)
+        (float-window-on-click win nil))))
+
+  (add-hook *click-hook* 'float-on-click-hook)
+
+  (defun float-on-click-focus-hook (wind last-wind)
+    (declare (ignore last-wind))
+    (unless (float-window-p wind)
+      (float-window-on-click wind t)))
+
+  (add-hook *focus-window-hook* 'float-on-click-focus-hook)
+
+#+end_src
+* Key Bindings
+#+begin_src lisp
+  ;; default terminal binding
+  (define-key *root-map* (kbd "c") "exec kitty")
+  ;; pule audio controls
+  (define-key *top-map* (kbd "XF86AudioRaiseVolume")
+    "exec pactl set-sink-volume @DEFAULT_SINK@ +2.5%")
+  (define-key *top-map* (kbd "XF86AudioLowerVolume")
+    "exec pactl set-sink-volume @DEFAULT_SINK@ -2.5%")
+  (define-key *top-map* (kbd "XF86AudioMute")
+    "exec pactl set-sink-mute @DEFAULT_SINK@ toggle")
+  ;; mpc media keys
+  (define-key *top-map* (kbd "XF86AudioPrev") "exec mpc prev")
+  (define-key *top-map* (kbd "XF86AudioNext") "exec mpc next")
+  (define-key *top-map* (kbd "XF86AudioPlay") "exec mpc toggle")
+  ;; lock
+  ;(define-key *top-map* (kbd "s-q") "exec ~/lock.sh")
+
+  ;; Emacs keys for Firefox (from StumpWM manual)
+  (define-remapped-keys
+      `((,(lambda (win)
+            ;(string-equal "firefox-default" (window-class win))
+            (not (or (string-equal "Emacs" (window-class win))
+                     (string-equal "kitty" (window-class win))
+                     (string-equal "Nyxt" (window-class win)))))
+          ("C-n"   . "Down")
+          ("C-p"   . "Up")
+          ("C-f"   . "Right")
+          ("C-b"   . "Left")
+          ("C-a"   . "Home")
+          ("C-e"   . "End")
+          ("C-v"   . "Next")
+          ("M-v"   . "Prior")
+          ("C-d"   . "Delete")
+          ("M-w"   . "C-c")
+          ("C-w"   . "C-x")
+          ("C-x"   . "C-w") ; switch close tab to 'cut'
+          ("C-s"   . "C-f")
+          ;("C-s"   . "/")
+          ;("C-S"   . "C-f")
+          ("C-/"   . "C-z")
+          ("C-y"   . "C-v")
+          ("M-<"   . "Home")
+          ("M->"   . "End")
+          ("C-M-b" . "M-Left")
+          ("C-M-f" . "M-Right")
+          ("C-k"   . ("C-S-End" "C-x")))))
+
+  ;; rofi
+  (define-key *top-map* (kbd "s-d") "exec rofi -modi combi,window -show combi -combi-modi run,drun")
+  (define-key *top-map* (kbd "s-p") "exec rofi-pass")
+  (define-key *top-map* (kbd "s-c") "exec rofi -show calc -modi calc -no-show-match -no-sort > /dev/null")
+
+  ;; scratchpad
+  (defcommand scratchpad-term () ()
+    (scratchpad:toggle-floating-scratchpad "term" "kitty"
+                                           :initial-gravity :center
+                                           :initial-width 1550
+                                           :initial-height 1150))
+  (define-key *top-map* (kbd "s-t") "scratchpad-term")
+
+  (defcommand scratchpad-element () ()
+    (scratchpad:toggle-floating-scratchpad "element" "element-desktop" ;"flatpak run im.riot.Riot"
+                                           :initial-gravity :center
+                                           :initial-width 1500
+                                           :initial-height 1100))
+  (define-key *top-map* (kbd "s-m") "scratchpad-element")
+
+  (defcommand scratchpad-signal () ()
+    (scratchpad:toggle-floating-scratchpad "signal" "signal-desktop --use-tray-icon"
+                                           :initial-gravity :center
+                                           :initial-width 1600
+                                           :initial-height 1000))
+  (define-key *top-map* (kbd "s-n") "scratchpad-signal")
+
+
+  (define-key *top-map* (kbd "s-a") "center-float")
+
+  ;; toggles
+  (defvar *toggle-map* (make-sparse-keymap))
+  (define-key *root-map* (kbd "t") '*toggle-map*)
+  (define-key *toggle-map* (kbd "g") "toggle-gaps")
+  (define-key *toggle-map* (kbd "m") "mode-line")
+  (define-key *toggle-map* (kbd "f") "toggle-float")
+  ;(define-key *toggle-map* (kbd "f") "float-this")
+  ;(define-key *toggle-map* (kbd "u") "unfloat-this")
+  (define-key *toggle-map* (kbd "a") "toggle-always-show")
+  (define-key *toggle-map* (kbd "t") "toggle-always-on-top")
+
+  (define-key *root-map* (kbd "d") '*dynamic-group-root-map*)
+  (define-key *top-map* (kbd "s-Return") "exchange-with-master")
+
+  ;; group switching
+  (defun switch-group-smart (group)
+    "Switch to the named group, or to the previously active group if already
+     the current group."
+    (if (not (equal group (group-name (current-group))))
+        ;; this must be a stupid roundabout way, but I fail at direct calling
+        (run-commands (concat "gselect " group))
+        (gother)))
+
+  (defcommand switch-group (group) ((:string "Group: "))
+    (switch-group-smart group))
+
+  (define-key *top-map* (kbd "s-Tab") "gnext")
+  (define-key *top-map* (kbd "s-ISO_Left_Tab") "gprev")
+  (define-key *top-map* (kbd "s-1") "switch-group fire")
+  (define-key *top-map* (kbd "s-2") "switch-group school")
+  (define-key *top-map* (kbd "s-3") "switch-group code")
+  (define-key *top-map* (kbd "s-4") "switch-group term")
+  (define-key *top-map* (kbd "s-5") "switch-group photo")
+  (define-key *top-map* (kbd "s-6") "switch-group steam")
+
+  ;; window moving
+  (define-key *top-map* (kbd "s-L") "move-window right")
+  (define-key *top-map* (kbd "s-H") "move-window left")
+  (define-key *top-map* (kbd "s-K") "move-window up")
+  (define-key *top-map* (kbd "s-J") "move-window down")
+  (define-key *top-map* (kbd "s-!") "gmove fire")
+  (define-key *top-map* (kbd "s-@") "gmove school")
+  (define-key *top-map* (kbd "s-#") "gmove code")
+  (define-key *top-map* (kbd "s-$") "gmove term")
+  (define-key *top-map* (kbd "s-%") "gmove photo")
+  (define-key *top-map* (kbd "s-^") "gmove steam")
+
+  ;; focus switching
+  (define-key *top-map* (kbd "s-h") "move-focus left")
+  (define-key *top-map* (kbd "s-j") "move-focus down")
+  (define-key *top-map* (kbd "s-k") "move-focus up")
+  (define-key *top-map* (kbd "s-l") "move-focus right")
+  (define-key *top-map* (kbd "s-o") "fnext")
+
+  ;;==============================================================================
+  ;; those sweet gaps
+  ;;==============================================================================
+
+  ;; Head gaps run along the 4 borders of the monitor(s)
+  ;; Inner gaps run along all the 4 borders of a window
+  ;; Outer gaps add more padding to the outermost borders of a window (touching
+  ;; the screen border)
+  (setf swm-gaps:*head-gaps-size*  0
+        swm-gaps:*inner-gaps-size* 20
+        swm-gaps:*outer-gaps-size* 10)
+
+  ;; Call command is toggle-gaps
+  ;; Start with gaps enabled
+  (if (not swm-gaps:*gaps-on*)
+      (swm-gaps:toggle-gaps))
+
+  ;; =============================================================================
+  ;;   startup programs
+  ;; =============================================================================
+
+  (when *initializing*
+    ;; use dex for autostart .desktop entries
+    (run-shell-command "dex -ae stump")
+    (run-shell-command "feh --bg-center \"$HOME/wallpaper.jpg\"")
+    (run-shell-command "udiskie --tray")
+    ;; polybar
+    (run-shell-command "$HOME/.config/polybar/launch.sh")
+    ;; compositing with picom
+    (run-shell-command "picom -b --experimental-backends")
+    ;; flashfocus
+    (run-shell-command "flashfocus"))
+  ;; lock on idle
+  ;(run-shell-command "xss-lock -- ~/lock.sh")
+
+  ;; xiccd seems to not fully load(?) X atom ICC profile, so do this also
+  ;; but doesn't seem to work (need to wait for xiccd first?), and end up
+  ;; running it again after startup
+  ;(run-shell-command "dispwin -L")
+
+  ;; =============================================================================
+  ;;   frame rules
+  ;; =============================================================================
+
+  (define-frame-preference nil 
+    (:float t t :class "zoom"))
+
+  (define-frame-preference nil 
+    (:float t t :class "discord"))
+
+  (define-frame-preference nil 
+    (:float t t :class "Steam"))
+
+  (define-frame-preference nil 
+      (:float t t :title "Picture-in-Picture"))
+
+  (defun pip-move-size (win)
+    (if (string= (window-name win)
+                 "Picture-in-Picture")
+        (float-window-move-resize win :x 2560 :y 1440
+                                  :width 1280 :height 720)))
+
+  (add-hook *new-window-hook* 'pip-move-size)
+
+  ;; =============================================================================
+  ;;   setup groups
+  ;; =============================================================================
+
+  (when *initializing*
+    (grename "fire")
+    (mapcar #'gnewbg
+            '("school"
+              "code"
+              "term"
+              "photo"
+              "steam")))
+#+end_src
+
+If viewing the config file directly, since it doesn't have a file extension, set the mode (with a formfeed character so the org file is not misinterpreted)
+#+begin_src lisp
+  ;; Local Variables:
+  ;; mode: lisp
+  ;; End:
+#+end_src
+

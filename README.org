@@ -20,13 +20,13 @@ Files are linked using GNU stow, with the following configuration file
   --target=$HOME
 #+end_src
 
-* Progress in converting to literate programming [3/15]
+* Progress in converting to literate programming [4/14]
 - [ ] bash
 - [X] Emacs (in separate way)
 - [ ] Firefox
 - [ ] flashfocus
 - [ ] fontconfig
-- [ ] i3
++- [ ] i3+
 - [ ] libinput-gestures
 - [ ] ncmpcpp
 - [ ] picom
@@ -35,7 +35,7 @@ Files are linked using GNU stow, with the following configuration file
 - [X] termite
 - [X] X11
 - [ ] xmonad
-- [ ] zsh
+- [X] zsh
 
 * General resources
 - [[https://orgmode.org/manual/Working-with-Source-Code.html][Working with Source Code (The Org Manual)]]

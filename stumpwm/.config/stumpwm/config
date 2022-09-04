@@ -88,6 +88,11 @@
 ;      (list (concat (getenv "HOME") "/.local/share/fonts/")))
 ;(setf clx-truetype:+font-cache-filename+
 ;      (concat (getenv "HOME") "/.local/share/fonts/font-cache.sexp"))
+(unless (equal clx-truetype::+font-cache-filename+
+                 (concat (getenv "HOME") "/.local/share/fonts/font-cache.sexp"))
+  (setf clx-truetype::+font-cache-filename+
+        (concat (getenv "HOME") "/.local/share/fonts/font-cache.sexp"))
+  (setf clx-truetype::*font-cache* (cl-store:restore clx-truetype::+font-cache-filename+)))
 ;; this should be run when changing any fonts
 ;;(xft:cache-fonts)
 (set-font

@@ -4,8 +4,10 @@
 (use-modules (gnu)
              (guix download) ;for url-fetch (udev rule)
              (guix packages) ;for origin (udev rule)
+             (peroxide-service) ;testing
              (nongnu packages linux) ; this and next for nongnu linux
              (nongnu system linux-initrd)
+             (gnu packages games) ; for steam devices udev
              (gnu packages shells) ; for zsh
              (gnu packages linux) ; for fstrim
              (gnu packages display-managers) ; for sddm
@@ -52,29 +54,6 @@
   ;; The job's action is a shell command.
   #~(job "5 0 * * *"            ;Vixie cron syntax
          "guix gc -F 1G"))
-
-;; TODO make these git version
-(define %steam-input-udev-rules
-  (file->udev-rule
-    "60-steam-input.rules"
-    (let ((version "8a3f1a0e2d208b670aafd5d65e216c71f75f1684"))
-      (origin
-       (method url-fetch)
-       (uri (string-append "https://raw.githubusercontent.com/ValveSoftware/"
-                           "steam-devices/" version "/60-steam-input.rules"))
-       (sha256
-        (base32 "1k6sa9y6qb9vh7qsgvpgfza55ilcsvhvmli60yfz0mlks8skcd1f"))))))
-
-(define %steam-vr-udev-rules
-  (file->udev-rule
-    "60-steam-vr.rules"
-    (let ((version "13847addfd56ef70dee98c1f7e14c4b4079e2ce8"))
-      (origin
-       (method url-fetch)
-       (uri (string-append "https://raw.githubusercontent.com/ValveSoftware/"
-                           "steam-devices/" version "/60-steam-vr.rules"))
-       (sha256
-        (base32 "0f05w4jp2pfp948vwwqa17ym2ps7sgh3i6sdc69ha76jlm49rp0z"))))))
 
 ;; From https://guix.gnu.org/cookbook/en/html_node/Customizing-the-Kernel.html
 ;; and https://gitlab.com/nonguix/nonguix/-/issues/42#note_931635766
@@ -132,13 +111,13 @@
                (pam-limits-entry "*" 'both 'nice -19)
                (pam-limits-entry "root" 'both 'nice -20)))
              (service pcscd-service-type)
+             (service peroxide-service-type) ;testing
              ;; suddenly needed (after staging merge in June 2022?)
              ;; should be switched to libfido2 but waiting for this patch:
              ;; https://issues.guix.gnu.org/52900
              (udev-rules-service 'u2f libu2f-host #:groups '("plugdev"))
              (udev-rules-service 'headsetcontrol headsetcontrol)
-             (udev-rules-service 'steam-input %steam-input-udev-rules)
-             (udev-rules-service 'steam-vr %steam-vr-udev-rules)
+             (udev-rules-service 'steam-devices steam-devices-udev-rules)
              (simple-service 'ratbagd dbus-root-service-type (list libratbag))
              (simple-service 'corectrl-polkit polkit-service-type
                              (list corectrl))

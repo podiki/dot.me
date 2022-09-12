@@ -4,23 +4,32 @@
 ;; capture the channels being used, as returned by "guix describe".
 ;; See the "Replicating Guix" section in the manual.
 
-(specifications->manifest
-  '("emacs-pgtk-native-comp"
-    "emacs-pdf-tools"
-    "emacs-use-package"
-    "emacs-guix"
-    "emacs-highlight-sexp"
-    "emacs-ledger-mode"
-    "emacs-ivy"
-    "emacs-counsel"
-    "emacs-swiper"
-    "emacs-ivy-posframe"
-    "emacs-ivy-rich"
-    "emacs-hydra"
-    "emacs-ivy-hydra"
-    "python-lsp-server"
-    ;; mail
-    "mu"
-    "oauth2ms"
-    "isync"
-    "go-gitlab.com-shackra-goimapnotify"))
+(use-modules (guix transformations))
+
+(define native-comp
+  (options->transformation
+   '((with-input . "emacs-minimal=emacs"))))
+
+(concatenate-manifests
+ (list
+  (packages->manifest
+   (map native-comp
+        (map specification->package
+             '("emacs"
+               ;; failing in native-comp for some reason
+               ;; "emacs-pdf-tools"
+               "emacs-use-package"
+               "emacs-guix"
+               "emacs-highlight-sexp"
+               "emacs-ledger-mode"
+               "emacs-vertico"
+               "emacs-vertico-posframe"
+               "emacs-marginalia"
+               "python-lsp-server"
+               ;; mail
+               "mu"
+               "oauth2ms"
+               "isync"
+               "go-gitlab.com-shackra-goimapnotify"))))
+  (specifications->manifest
+   '("emacs-pdf-tools"))))

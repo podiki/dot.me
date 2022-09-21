@@ -1381,7 +1381,7 @@ Auto tangling of config files
                           ("/protonmail/Sent"     . ?s)
                           ("/protonmail/Trash"    . ?t)
                           ("/protonmail/Archive" . ?a)))
-                        (smtpmail-smtp-server  . "127.0.0.1")
+                        (smtpmail-smtp-server  . (system-name))
                         (smtpmail-local-domain . "protonmail.com")
                         (smtpmail-smtp-service . 1025)
                         (smtpmail-stream-type  . starttls)

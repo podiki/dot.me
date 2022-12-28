@@ -47,7 +47,7 @@ xdotool_delay=12
 
 ## Programs to be used
 # Editor
-# EDITOR='gvim -f'
+EDITOR='emacsclient -a nano'
 
 # Browser
 BROWSER='xdg-open'

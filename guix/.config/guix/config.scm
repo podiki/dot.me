@@ -14,8 +14,8 @@
              (guix profiles) ;; For manifest-entries
              (srfi srfi-1) ;; For filter-map
              (gnu packages hardware) ;; openrgb
-             (gnu packages security-token) ;; for libu2f-host (udev rule)
-             (openrgb) ;; for corectrl
+             (gnu packages security-token) ;; for libfido2 (udev rule)
+             (openrgb) ;; for corectrl and openrgb-next
              (gnu packages gnome)) ;; for libratbag (piper)
 
 (use-service-modules
@@ -32,15 +32,6 @@
  syncthing
  sysctl
  xorg)
-
-(use-modules (guix transformations))
-
-(define transform1
-  (options->transformation
-    '((with-git-url
-        .
-        "openrgb=https://gitlab.com/Celmerine/OpenRGB")
-      (with-branch . "openrgb=lian_li_al120"))))
 
 (define fstrim-job
   ;; Run fstrim on all applicable mounted drives once a week
@@ -112,12 +103,10 @@
                (pam-limits-entry "root" 'both 'nice -20)))
              (service pcscd-service-type)
              (service peroxide-service-type) ;testing
-             ;; suddenly needed (after staging merge in June 2022?)
-             ;; should be switched to libfido2 but waiting for this patch:
-             ;; https://issues.guix.gnu.org/52900
-             (udev-rules-service 'u2f libu2f-host #:groups '("plugdev"))
+             (udev-rules-service 'u2f libfido2 #:groups '("plugdev"))
              (udev-rules-service 'headsetcontrol headsetcontrol)
              (udev-rules-service 'steam-devices steam-devices-udev-rules)
+             (udev-rules-service 'openrgb openrgb-next)
              (simple-service 'ratbagd dbus-root-service-type (list libratbag))
              (simple-service 'corectrl-polkit polkit-service-type
                              (list corectrl))
@@ -165,11 +154,6 @@
                                                    (append (list (local-file "substitutes.nonguix.org.pub")
                                                                  (local-file "substitutes.guix.sama.re.pub"))
                                                            %default-authorized-guix-keys))))
-                              (udev-service-type config =>
-                                                 (udev-configuration
-                                                  (inherit config)
-                                                  (rules (cons (transform1 openrgb) ;openrgb
-                                                               (udev-configuration-rules config)))))
                               (sysctl-service-type config =>
                                                    (sysctl-configuration
                                                     (settings (append '(("vm.swappiness" . "10"))

@@ -10,26 +10,21 @@
   (options->transformation
    '((with-input . "emacs-minimal=emacs"))))
 
-(concatenate-manifests
- (list
-  (packages->manifest
-   (map native-comp
-        (map specification->package
-             '("emacs"
-               ;; failing in native-comp for some reason
-               ;; "emacs-pdf-tools"
-               "emacs-use-package"
-               "emacs-guix"
-               "emacs-highlight-sexp"
-               "emacs-ledger-mode"
-               "emacs-vertico"
-               "emacs-vertico-posframe"
-               "emacs-marginalia"
-               "python-lsp-server"
-               ;; mail
-               "mu"
-               "oauth2ms"
-               "isync"
-               "go-gitlab.com-shackra-goimapnotify"))))
-  (specifications->manifest
-   '("emacs-pdf-tools"))))
+(packages->manifest
+ (map native-comp
+      (map specification->package
+           '("emacs"
+             "emacs-pdf-tools"
+             "emacs-use-package"
+             "emacs-guix"
+             "emacs-highlight-sexp"
+             "emacs-ledger-mode"
+             "emacs-vertico"
+             "emacs-vertico-posframe"
+             "emacs-marginalia"
+             "python-lsp-server"
+             ;; mail
+             "mu"
+             "oauth2ms"
+             "isync"
+             "go-gitlab.com-shackra-goimapnotify"))))

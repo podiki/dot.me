@@ -7,6 +7,8 @@
    "tree"
    "btrfs-progs"
    "compsize"
+   "autoconf"
+   "automake"
    "mu"
    "lm-sensors"
    "unzip"

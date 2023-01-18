@@ -10,7 +10,6 @@
              (gnu packages games) ; for steam devices udev
              (gnu packages shells) ; for zsh
              (gnu packages linux) ; for fstrim
-             (gnu packages display-managers) ; for sddm
              (guix profiles) ;; For manifest-entries
              (srfi srfi-1) ;; For filter-map
              (gnu packages hardware) ;; openrgb
@@ -23,10 +22,10 @@
  dbus
  desktop
  docker
+ lightdm
  mcron
  networking
  security-token ; for pcscd
- sddm
  sound
  ssh
  syncthing
@@ -45,32 +44,6 @@
   ;; The job's action is a shell command.
   #~(job "5 0 * * *"            ;Vixie cron syntax
          "guix gc -F 1G"))
-
-;; From https://guix.gnu.org/cookbook/en/html_node/Customizing-the-Kernel.html
-;; and https://gitlab.com/nonguix/nonguix/-/issues/42#note_931635766
-(define-public my-linux-libre
-  ;; XXX: Access the internal 'make-linux-libre*' procedure, which is
-  ;; private and unexported, and is liable to change in the future.
-  ((@@ (gnu packages linux) make-linux-libre*)
-   (@@ (gnu packages linux) linux-libre-version)
-   (@@ (gnu packages linux) linux-libre-gnu-revision)
-   (@@ (gnu packages linux) linux-libre-source)
-   '("x86_64-linux")
-   #:configuration-file (@@ (gnu packages linux) kernel-config)
-   #:extra-options
-   ;; Appending works even when the option wasn't in the
-   ;; file.  The last one prevails if duplicated.
-   (append
-    ;; sets CONFIG_HSA_AMD for ROCm OpenCL support, see
-    ;; https://issues.guix.gnu.org/55111
-    `(("CONFIG_HSA_AMD" . #true))
-    (@@ (gnu packages linux) %default-extra-linux-options))))
-
-;; (define-public my-corrupt-linux
-;;   ;; can get version of latest linux-libre as linux-libre-version
-;;   ;; but not sure how to get the hash from nonguix's linux
-;;   (corrupt-linux my-linux-libre "5.17.15"
-;;                  "0a5n1lb43nhnhwjwclkk3dqp2nxsx5ny7zfl8idvzshf94m9472a"))
 
 (operating-system
   (locale "en_US.utf8")
@@ -126,16 +99,21 @@
              ;;                       fstrim-job))
              (service syncthing-service-type
                       (syncthing-configuration (user "john")))
-             (service sddm-service-type (sddm-configuration))
+             (service lightdm-service-type)
              (service docker-service-type)
              (modify-services %desktop-services
-                              (delete gdm-service-type) ; replaced by sddm
+                              (delete gdm-service-type) ; replaced by lightdm
                               ;; don't use USB modems, scanners, or network-manager-applet
                               (delete modem-manager-service-type)
                               (delete usb-modeswitch-service-type)
                               (delete sane-service-type)
                               ;; not sure how to
                               ;(delete (specification->package "network-manager-applet"))
+                              ;; ignore the power key since a certain naughty kitten likes to press it
+                              (elogind-service-type config =>
+                                                    (elogind-configuration
+                                                     (inherit config)
+                                                     (handle-power-key 'ignore)))
                               ;; Set the default sample rate for the pulseaudio daemon to be
                               ;; 48000; needed for the Valve Index mic, see
                               ;; https://github.com/ValveSoftware/SteamVR-for-Linux/issues/215#issuecomment-526791835
@@ -146,20 +124,18 @@
                                                  (guix-configuration
                                                   (inherit config)
                                                   (substitute-urls
-                                                   ;; Reverse the order to put Bordeaux first
-                                                   (reverse (append (list "http://substitutes.guix.sama.re"
-                                                                          "https://substitutes.nonguix.org")
-                                                                    %default-substitute-urls)))
+                                                   ;; Reverse the order to put Bordeaux first, adding in the US mirror
+                                                   (reverse (append '("https://substitutes.nonguix.org")
+                                                                    %default-substitute-urls
+                                                                    '("https://bordeaux-us-east-mirror.cbaines.net/"))))
                                                   (authorized-keys
-                                                   (append (list (local-file "substitutes.nonguix.org.pub")
-                                                                 (local-file "substitutes.guix.sama.re.pub"))
+                                                   (append (list (local-file "substitutes.nonguix.org.pub"))
                                                            %default-authorized-guix-keys))))
                               (sysctl-service-type config =>
                                                    (sysctl-configuration
                                                     (settings (append '(("vm.swappiness" . "10"))
                                                                       %default-sysctl-settings)))))))
 
-  ;; (kernel my-corrupt-linux)
   (kernel linux)
   (kernel-loadable-modules (list v4l2loopback-linux-module))
   (kernel-arguments

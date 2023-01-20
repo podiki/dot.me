@@ -454,6 +454,7 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
 
   ;; flx-ido (better matching)
   (use-package flx-ido
+    :disabled
     :ensure t
     :config
     (flx-ido-mode 1)
@@ -462,6 +463,7 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
 
   ;; vertical ido list
   (use-package ido-vertical-mode
+    :disabled
     :ensure t
     :config
     (ido-vertical-mode 1)
@@ -471,6 +473,7 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
 
   ;; smex (ido-like for commands)
   (use-package smex
+    :disabled
     :ensure t
     :init
     (smex-initialize) ; Can be omitted. This might cause a (minimal) delay
@@ -502,6 +505,7 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
 ** ivy and friends
 #+begin_src emacs-lisp
   (use-package ivy
+    :disabled
     :config
     ;; ivy completion everywhere
     (ivy-mode 1)
@@ -521,6 +525,7 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
 swiper
 #+begin_src emacs-lisp
   (use-package swiper
+    :disabled
     :after ivy
     :config
     (setq swiper-action-recenter nil
@@ -530,6 +535,7 @@ swiper
 counsel
 #+begin_src emacs-lisp
   (use-package counsel
+    :disabled
     :after swiper
     :bind (("C-x C-r" . counsel-recentf)
            ("<f7>"    . counsel-imenu)))
@@ -538,6 +544,7 @@ counsel
 Floating display with ivy-posframe
 #+begin_src emacs-lisp
   (use-package ivy-posframe
+    :disabled
     :config
     (setq ivy-posframe-display-functions-alist
           '((swiper          . nil)
@@ -553,6 +560,7 @@ Floating display with ivy-posframe
 More info with ivy-rich (with config starting from a [[https://www.reddit.com/r/emacs/comments/ehjcu2/screenshot_polishing_my_emacs_who_said_an_old/fcmbozm/][Reddit post/comment]])
 #+begin_src emacs-lisp
   (use-package ivy-rich
+    :disabled
     :preface
     (defun ivy-rich-switch-buffer-icon (candidate)
       (with-current-buffer
@@ -613,8 +621,155 @@ Clocking helper
 
 Hydra
 #+begin_src emacs-lisp
-  (use-package hydra)
-  (use-package ivy-hydra)
+  (use-package hydra
+    :disabled)
+  (use-package ivy-hydra
+    :disabled)
+#+end_src
+** vertico
+#+begin_src emacs-lisp
+  (use-package vertico
+    :init
+    (vertico-mode))
+
+  ;; Persist history over Emacs restarts. Vertico sorts by history position.
+  (use-package savehist
+    :init
+    (savehist-mode))
+
+  (use-package marginalia
+    :after vertico
+    :ensure t
+    :custom
+    (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
+    :init
+    (marginalia-mode))
+#+end_src
+
+#+begin_src emacs-lisp
+  (use-package vertico-posframe
+    :init
+    (vertico-posframe-mode 1))
+#+end_src
+** consult
+#+begin_src emacs-lisp
+  ;; Example configuration for Consult
+  (use-package consult
+    ;; Replace bindings. Lazily loaded due by `use-package'.
+    :bind (;; C-c bindings (mode-specific-map)
+           ("C-c h" . consult-history)
+           ("C-c m" . consult-mode-command)
+           ("C-c k" . consult-kmacro)
+           ;; C-x bindings (ctl-x-map)
+           ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+           ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
+           ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+           ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+           ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
+           ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
+           ;; Custom M-# bindings for fast register access
+           ("M-#" . consult-register-load)
+           ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
+           ("C-M-#" . consult-register)
+           ;; Other custom bindings
+           ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+           ("<help> a" . consult-apropos)            ;; orig. apropos-command
+           ;; M-g bindings (goto-map)
+           ("M-g e" . consult-compile-error)
+           ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
+           ("M-g g" . consult-goto-line)             ;; orig. goto-line
+           ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+           ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
+           ("M-g m" . consult-mark)
+           ("M-g k" . consult-global-mark)
+           ("M-g i" . consult-imenu)
+           ("M-g I" . consult-imenu-multi)
+           ;; M-s bindings (search-map)
+           ("M-s d" . consult-find)
+           ("M-s D" . consult-locate)
+           ("M-s g" . consult-grep)
+           ("M-s G" . consult-git-grep)
+           ("M-s r" . consult-ripgrep)
+           ("M-s l" . consult-line)
+           ("M-s L" . consult-line-multi)
+           ("M-s m" . consult-multi-occur)
+           ("M-s k" . consult-keep-lines)
+           ("M-s u" . consult-focus-lines)
+           ;; Isearch integration
+           ("C-s"   . consult-line)
+           ("M-s e" . consult-isearch-history)
+           :map isearch-mode-map
+           ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
+           ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
+           ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
+           ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
+           ;; Minibuffer history
+           :map minibuffer-local-map
+           ("M-s" . consult-history)                 ;; orig. next-matching-history-element
+           ("M-r" . consult-history))                ;; orig. previous-matching-history-element
+
+    ;; Enable automatic preview at point in the *Completions* buffer. This is
+    ;; relevant when you use the default completion UI.
+    :hook (completion-list-mode . consult-preview-at-point-mode)
+
+    ;; The :init configuration is always executed (Not lazy)
+    :init
+
+    ;; Optionally configure the register formatting. This improves the register
+    ;; preview for `consult-register', `consult-register-load',
+    ;; `consult-register-store' and the Emacs built-ins.
+    (setq register-preview-delay 0.5
+          register-preview-function #'consult-register-format)
+
+    ;; Optionally tweak the register preview window.
+    ;; This adds thin lines, sorting and hides the mode line of the window.
+    (advice-add #'register-preview :override #'consult-register-window)
+
+    ;; Use Consult to select xref locations with preview
+    (setq xref-show-xrefs-function #'consult-xref
+          xref-show-definitions-function #'consult-xref)
+
+    ;; Configure other variables and modes in the :config section,
+    ;; after lazily loading the package.
+    :config
+
+    ;; Optionally configure preview. The default value
+    ;; is 'any, such that any key triggers the preview.
+    ;; (setq consult-preview-key 'any)
+    ;; (setq consult-preview-key (kbd "M-."))
+    ;; (setq consult-preview-key (list (kbd "<S-down>") (kbd "<S-up>")))
+    ;; For some commands and buffer sources it is useful to configure the
+    ;; :preview-key on a per-command basis using the `consult-customize' macro.
+    (consult-customize
+     consult-theme
+     :preview-key '(:debounce 0.2 any)
+     consult-ripgrep consult-git-grep consult-grep
+     consult-bookmark consult-recent-file consult-xref
+     consult--source-bookmark consult--source-recent-file
+     consult--source-project-recent-file
+     :preview-key (kbd "M-."))
+
+    ;; Optionally configure the narrowing key.
+    ;; Both < and C-+ work reasonably well.
+    (setq consult-narrow-key "<") ;; (kbd "C-+")
+
+    ;; Optionally make narrowing help available in the minibuffer.
+    ;; You may want to use `embark-prefix-help-command' or which-key instead.
+    ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
+
+    ;; By default `consult-project-function' uses `project-root' from project.el.
+    ;; Optionally configure a different project root function.
+    ;; There are multiple reasonable alternatives to chose from.
+    ;;;; 1. project.el (the default)
+    ;; (setq consult-project-function #'consult--default-project--function)
+    ;;;; 2. projectile.el (projectile-project-root)
+    ;; (autoload 'projectile-project-root "projectile")
+    ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
+    ;;;; 3. vc.el (vc-root-dir)
+    ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
+    ;;;; 4. locate-dominating-file
+    ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
+  )
 #+end_src
 ** which-key
 #+BEGIN_SRC emacs-lisp

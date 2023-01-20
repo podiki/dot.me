@@ -68,7 +68,7 @@ Also, prevent wide lines by wrapping at fill column
 #+begin_src emacs-lisp
   (use-package visual-fill-column
     :config
-    (setq visual-fill-column-width 110)
+    (setq-default visual-fill-column-width 100)
     (setq visual-fill-column-split-window-sensibly t)
     :hook
     (visual-line-mode . visual-fill-column-mode))

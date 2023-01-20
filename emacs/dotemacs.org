@@ -34,12 +34,6 @@
   (setq gc-cons-threshold 20000000)
   ;; no goddamn tabs
   (setq-default indent-tabs-mode nil)
-
-  ;; Windows key bindings
-  (when (memq window-system '(w32))
-    (setq w32-pass-lwindow-to-system nil)
-    (setq w32-lwindow-modifier 'super))
-
   ;; all prompts use only y or n
   (fset 'yes-or-no-p 'y-or-n-p)
 
@@ -162,23 +156,9 @@ Also, prevent wide lines by wrapping at fill column
   (setq set-mark-command-repeat-pop t)
 #+END_SRC
 
-** Smooth scroll (Windows)
+** Smooth scroll
 Found [[http://zwell.net/content/emacs.html][this attempt]] (works okay so far) on the gnu.emacs.help mailing list discussion about [[https://groups.google.com/forum/#!topic/gnu.emacs.help/l7ymPQItP18][smooth scrolling]] (was also thinking of using this [[http://bug-gnu-emacs.gnu.narkive.com/cXKzPf3R/bug-21-4-19-smooth-vscroll-up-down][sample code]] to try to whip up something as a little project). There is an slightly different and more generic version on the same webpage.
 *** TODO Fix: scrolling only happen in active buffer, not where mouse is over
-#+BEGIN_SRC emacs-lisp
-  (when (memq window-system '(w32))
-    (defun smooth-scroll (increment)
-      (scroll-up increment) (sit-for 0.05)
-      (scroll-up increment) (sit-for 0.02)
-      (scroll-up increment) (sit-for 0.02)
-      (scroll-up increment) (sit-for 0.05)
-      (scroll-up increment) (sit-for 0.06)
-      (scroll-up increment))
-  
-    (global-set-key [(wheel-down)] '(lambda () (interactive) (smooth-scroll 1)))
-    (global-set-key [(wheel-up)] '(lambda () (interactive) (smooth-scroll -1))))
-#+END_SRC
-
 *** TODO Fix this to be better
 Also tried adding some other [[https://stackoverflow.com/questions/3631220/fix-to-get-smooth-scrolling-in-emacs][settings]]
 #+BEGIN_SRC emacs-lisp
@@ -201,7 +181,6 @@ Also tried adding some other [[https://stackoverflow.com/questions/3631220/fix-t
     (global-set-key [(mouse-4)] '(lambda () (interactive) (smooth-scroll -1))))
 #+END_SRC
 
-(For Mac I use the [[https://github.com/railwaycat/emacs-mac-port][railwaycat]] provided homebrew of the Mac port by Yamamoto Mitsuharu, which also adds a few other nice features like swipe gestures.)
 ** Server
 #+BEGIN_SRC emacs-lisp
   (use-package server
@@ -332,24 +311,6 @@ And a function for switching between two (day/night) themes, modified from this 
 #+END_SRC
 *** Fonts
 #+BEGIN_SRC emacs-lisp
-  (when (memq window-system '(mac ns))
-    (set-face-attribute 'default nil :family "Input Mono Narrow" :height 120)
-    ; extra unicode characters via:
-    ; https://github.com/joodie/emacs-literal-config/blob/master/emacs.org
-    ; http://endlessparentheses.com/manually-choose-a-fallback-font-for-unicode.html
-    (set-fontset-font "fontset-default" nil (font-spec :name "Symbola")))
-
-  (when (memq window-system '(w32))
-    (set-face-attribute 'default nil :font "InputMono" :height 85)
-    (when (functionp 'set-fontset-font)
-      (set-fontset-font "fontset-default"
-                     'unicode
-                     (font-spec :family "DejaVu Sans Mono"
-                                :width 'normal
-                                ;; :size 12.2
-                                :height 85
-                                :weight 'normal))))
-
   (when (memq window-system '(x pgtk))
     (cond ((string= "raven" (system-name))
            (set-face-attribute 'default nil :family "Hack Nerd Font" :weight 'light :height 110)
@@ -956,12 +917,6 @@ Hydra
   ;; languagetool grammar checker
   (use-package langtool
     :config
-    (when (memq window-system '(mac ns))
-      (setq langtool-language-tool-jar
-        "/usr/local/Cellar/languagetool/2.7/libexec/languagetool-commandline.jar"))
-    (when (memq window-system '(w32))
-      (setq langtool-language-tool-jar
-        "~/LanguageTool-3.1/languagetool-commandline.jar"))
     (setq langtool-default-language "en-US"
       langtool-mother-tongue "en")
     (defun langtool-autoshow-detail-popup (overlays)
@@ -1779,24 +1734,6 @@ Magit for source control with git/github. Some modifications necessary for deali
     :bind (("\C-xg" . magit-status))
     :init
     (add-hook 'magit-process-find-password-functions 'magit-process-password-auth-source))
-
-  ;; for windows paths in msys2 with default install directory
-  ;; modified from solutions in https://github.com/magit/magit/issues/1318
-  ;; Doesn't seem to be needed anymore, not sure since when (on magit 2.3.1)
-  ;; (defun magit-expand-git-file-name--msys2 (args)
-  ;;   "Handle msys2 directory names starting with /home by prefixing with c:/msys2"
-  ;;   (let ((filename (car args)))
-  ;;         (when (string-match "^\\(/home\\)\\(.*\\)" filename)
-  ;;           (setq filename (concat  "c:/msys64/home" (match-string 2 filename))))
-  ;;         (list filename)))
-  ;; (when (memq window-system '(w32))
-  ;;   (advice-add 'magit-expand-git-file-name :filter-args
-  ;;               #'magit-expand-git-file-name--msys2))
-
-  ;; work around for https git on windows
-  ;; https://github.com/magit/magit/wiki/FAQ#windows-cannot-push-via-https
-  (when (memq window-system '(w32))
-    (setenv "GIT_ASKPASS" "git-gui--askpass"))
 #+END_SRC
 
 ** Autocompletion with company-mode
@@ -2078,27 +2015,6 @@ This is a nice distraction free writing environment, but currently has a bug wit
   (use-package flycheck-ledger)
 #+end_src
 
-* Maxima math
-** For Mac, with brew installed ghostscript, maxima, etc. (and TeX through MacTeX) we need to manually include the imaxima .el files.
-** TODO Would be better to get this path automatically since it depends on version number.
-#+BEGIN_SRC emacs-lisp
-  (use-package imaxima
-    :if (memq window-system '(mac ns))
-    :load-path "/usr/local/Cellar/maxima/5.37.2/share/maxima/5.37.2/emacs/"
-    :ensure nil
-    :config
-    (setq imaxima-use-maxima-mode-flag t))
-  (use-package imath
-    :if (memq window-system '(mac ns))
-    :load-path "/usr/local/Cellar/maxima/5.37.2/share/maxima/5.37.2/emacs/"
-    :ensure nil)
-#+END_SRC
-** For Windows use a modified version of setup-imaxima-imath.el file included with maxima (see also windows_pains.org notes)
-#+BEGIN_SRC emacs-lisp
-  (when (memq window-system '(w32))
-    (load-file "~/codemonkey/setup-imaxima-imath.el")
-    (setq imaxima-use-maxima-mode-flag t))
-#+END_SRC
 * LaTeX configuration
 #+BEGIN_SRC emacs-lisp
   ; Enable AucTeX
@@ -2162,24 +2078,9 @@ This is a nice distraction free writing environment, but currently has a bug wit
                              (string= char-point "$"))
                         (TeX-fold-paragraph)))))
                    t t)))
-    ; Set pdf mode
+    ;; Set pdf mode
     (setq TeX-PDF-mode 1)
-
-    ;; use Skim as default pdf viewer on Mac
-    ;; Skim's displayline is used for forward search (from .tex to .pdf)
-    ;; option -b highlights the current line; option -g opens Skim in the background  
-    (when (memq window-system '(mac ns))
-      (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
-      (setq TeX-view-program-list
-            '(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b"))))
-
-    ;; use Sumatra as pdf viewer on Windows
-    (when (memq window-system '(w32))
-      (setq TeX-view-program-selection '((output-pdf "Sumatra PDF")))
-      (setq TeX-view-program-list
-            '(("Sumatra PDF" ("\"C:/Program Files (x86)/SumatraPDF/SumatraPDF.exe\" -reuse-instance" (mode-io-correlate " -forward-search %b %n") " %o")))))
-
-    ; Enable synctex
+    ;; Enable synctex
     (setq TeX-source-correlate-mode 1)
     (setq TeX-source-correlate-method 'synctex))
 
@@ -2222,15 +2123,7 @@ Make sure mp3info is installed (and found by emacs)
     :defer t
     :config
     (emms-devel)
-    (emms-default-players)
-    ;; for Mac use built-in afplay
-    (when (memq window-system '(mac ns))
-          (define-emms-simple-player afplay '(file)
-            (regexp-opt '(".mp3" ".m4a" ".aac"))
-            "afplay")
-          (setq emms-player-list `(,emms-player-afplay))
-          (setq emms-source-file-default-directory
-                "~/Music/iTunes/iTunes Media/Music/")))
+    (emms-default-players))
 #+END_SRC
 ** Icons. All of them.
 Prepend a font to fix icon issues in mu4e with mu4e-marker-icons (see [[https://github.com/stardiviner/mu4e-marker-icons/issues/1][this issue]])

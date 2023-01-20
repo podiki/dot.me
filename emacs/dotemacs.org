@@ -1369,7 +1369,7 @@ Auto tangling of config files
                 :match-func (lambda (msg)
                               (when msg
                                 (string-match-p "^/protonmail" (mu4e-message-field msg :maildir))))
-                :vars '((user-mail-address  . "john.kehayias@protonmail.com")
+                :vars `((user-mail-address  . "john.kehayias@protonmail.com")
                         (user-full-name     . "John Kehayias" )
                         (mu4e-refile-folder . "/protonmail/Archive")
                         (mu4e-sent-folder   . "/protonmail/Sent")
@@ -1381,25 +1381,30 @@ Auto tangling of config files
                           ("/protonmail/Sent"     . ?s)
                           ("/protonmail/Trash"    . ?t)
                           ("/protonmail/Archive" . ?a)))
-                        (smtpmail-smtp-server  . (system-name))
+                        (smtpmail-smtp-server  . ,(system-name))
                         (smtpmail-local-domain . "protonmail.com")
                         (smtpmail-smtp-service . 1025)
                         (smtpmail-stream-type  . starttls)
                         (mail-host-address     . "protonmail.com")))))
       ;; from mu4e docs
       ;; with loop from https://old.reddit.com/r/emacs/comments/tvfpli/email_setting_up_an_automated_from_while_replying/ijqa637/
+      ;; modified to use to/cc/bcc
       (defun my-set-from-address ()
-        "Set the From address based on the To address of the original."
-        (let ((msg mu4e-compose-parent-message))
+        "Set the From address based on the To/CC/BCC address of the original."
+        (let ((msg mu4e-compose-parent-message)
+              field)
           (when msg
-            (if (mu4e-message-contact-field-matches-me msg :to)
+            (if (or (setq field (mu4e-message-contact-field-matches-me msg :to))
+                    (setq field (mu4e-message-contact-field-matches-me msg :cc))
+                    (setq field (mu4e-message-contact-field-matches-me msg :bcc)))
                 (setq user-mail-address 
-                      (cl-loop for to-data in (mu4e-message-field msg :to)
+                      (cl-loop for to-data in (list field)
                             for to-email = (pcase to-data
                                              (`(_ . email) email)
                                              (x (mu4e-contact-email x)))
                             when (mu4e-user-mail-address-p to-email)
                             return to-email)))
+            (message "%s" (mu4e-message-field msg :cc))
             ;; Switch to the "sub" context for sending with gmail.com address
             (if (string= user-mail-address "john.kehayias@gmail.com")
                 (mu4e-context-switch nil "Gmail")))))
@@ -1504,6 +1509,15 @@ Pretty icons
   (use-package mu4e-marker-icons
     :after mu4e
     :init (mu4e-marker-icons-mode 1))
+#+end_src
+
+For Gnus, currently just in using debbugs to reply to all (not just bug number address)
+#+begin_src emacs-lisp
+  (use-package gnus
+    :bind (:map gnus-summary-mode-map
+                ("R" . gnus-summary-wide-reply-with-original)
+                :map gnus-article-mode-map
+                ("R" . gnus-summary-wide-reply-with-original)))
 #+end_src
 ** Sending mail
 Sending mail with built-in message mode and smtpmail, using the instructions from [[https://github.com/harishkrupo/oauth2ms/blob/main/steps.org][oauth2ms]] to handle authentication (needed with two-step verification) for Office365:

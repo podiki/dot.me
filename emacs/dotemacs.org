@@ -177,8 +177,8 @@ Also tried adding some other [[https://stackoverflow.com/questions/3631220/fix-t
           scroll-conservatively 10000
           scroll-preserve-screen-position 1)
 
-    (global-set-key [(mouse-5)] '(lambda () (interactive) (smooth-scroll 1)))
-    (global-set-key [(mouse-4)] '(lambda () (interactive) (smooth-scroll -1))))
+    (global-set-key [(mouse-5)] #'(lambda () (interactive) (smooth-scroll 1)))
+    (global-set-key [(mouse-4)] #'(lambda () (interactive) (smooth-scroll -1))))
 #+END_SRC
 
 ** Server
@@ -201,14 +201,6 @@ for package listing and browsing
 #+BEGIN_SRC emacs-lisp
   (use-package paradox
     :defer t)
-#+END_SRC
-
-** Paths
-   When running emacs.app in Mac OS X, copy the path from terminal (this avoids problems with finding aspell, latex, etc.)
-#+BEGIN_SRC emacs-lisp
-  ;; (use-package exec-path-from-shell
-  ;;   :config
-  ;;   (exec-path-from-shell-initialize))
 #+END_SRC
 
 ** Themes and fonts
@@ -852,52 +844,14 @@ Hydra
   (unless window-system
     (require 'mouse)
     (xterm-mouse-mode t)
-    (global-set-key [mouse-4] '(lambda ()
-                                (interactive)
-                                (scroll-down 1)))
-    (global-set-key [mouse-5] '(lambda ()
-                                (interactive)
-                                (scroll-up 1)))
+    (global-set-key [mouse-4] #'(lambda ()
+                                  (interactive)
+                                  (scroll-down 1)))
+    (global-set-key [mouse-5] #'(lambda ()
+                                  (interactive)
+                                  (scroll-up 1)))
     (defun track-mouse (e))
-    (setq mouse-sel-mode t)
-  )
-  (setq mac-emulate-three-button-mouse 1)
-
-  ;;
-  ;; Mac copy/cut command (iterm2 set to send command-c/x to ESC-p/])
-  ;; probably only needed when in terminal?
-  ;;
-  (defvar osx-pbpaste-cmd "/usr/bin/pbpaste"
-    "*command-line paste program")
-
-  (defvar osx-pbcopy-cmd "/usr/bin/pbcopy"
-    "*command-line copy program")
-
-  (defun osx-pbpaste ()
-    "paste the contents of the os x clipboard into the buffer at point."
-    (interactive)
-    (call-process osx-pbpaste-cmd nil t t))
-
-  (defun osx-pbcopy ()
-    "copy the contents of the region into the os x clipboard."
-    (interactive)
-    (if (use-region-p)
-      (call-process-region 
-       (region-beginning) (region-end) osx-pbcopy-cmd nil t t)
-      (error "region not selected")))
-
-  (defun osx-pbcut ()
-    "cut the contents of the region; put in os x clipboard."
-    (interactive)
-    (if (use-region-p)
-      (call-process-region 
-       (region-beginning) (region-end) osx-pbcopy-cmd t t t)
-      (error "region not selected")))
-
-  ;; Paste already works fine
-  ;;(define-key global-map "\C-c\M-v" 'osx-pbpaste)
-  (define-key global-map "\M-p" 'osx-pbcopy)
-  (define-key global-map "\M-]" 'osx-pbcut)
+    (setq mouse-sel-mode t))
 
   ;; flyspell
   ;; checks all buffers on opening, too slow

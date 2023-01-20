@@ -64,11 +64,11 @@ And have some indicators in fringe
 ;  (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 #+END_SRC
 
-Also, prevent wide lines by wrapping at fill column
+Also, prevent wide lines by wrapping
 #+begin_src emacs-lisp
   (use-package visual-fill-column
     :config
-    (setq-default visual-fill-column-width 100)
+    (setq-default visual-fill-column-width 90)
     (setq visual-fill-column-split-window-sensibly t)
     :hook
     (visual-line-mode . visual-fill-column-mode))

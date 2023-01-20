@@ -161,7 +161,7 @@ Found [[http://zwell.net/content/emacs.html][this attempt]] (works okay so far) 
 *** TODO Fix: scrolling only happen in active buffer, not where mouse is over
 *** TODO Fix this to be better
 Also tried adding some other [[https://stackoverflow.com/questions/3631220/fix-to-get-smooth-scrolling-in-emacs][settings]]
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (when (memq window-system '(x))
     (defun smooth-scroll (increment)
       (scroll-up increment) (sit-for 0.04)

@@ -5,21 +5,18 @@
   (options->transformation
     '((with-git-url
         .
-        "stumwpm=https://github.com/stumpwm/stumpwm"))))
+        "stumpwm=https://github.com/stumpwm/stumpwm"))))
 
-(concatenate-manifests
- (list
-  (packages->manifest
+(packages->manifest
   (list (transform1 (specification->package "stumpwm"))
         (list (transform1 (specification->package "stumpwm"))
-              "lib")))
-  (specifications->manifest
-   '("sbcl"
-     "sbcl-slime-swank"
-     "sbcl-alexandria"
-     "sbcl-anaphora"
-     "xsetroot"
-     ;"stumpwm"
-     ;"stumpwm:lib"
-     "sbcl-stumpwm-swm-gaps"
-     "sbcl-stumpwm-ttf-fonts"))))
+              "lib")
+        (transform1
+          (specification->package "sbcl-stumpwm-swm-gaps"))
+        (transform1
+          (specification->package "sbcl-stumpwm-ttf-fonts"))
+        (specification->package "sbcl")
+        (specification->package "sbcl-slime-swank")
+        (specification->package "sbcl-alexandria")
+        (specification->package "sbcl-anaphora")
+        (specification->package "xsetroot")))

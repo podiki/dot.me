@@ -142,7 +142,8 @@ After moving from Infinality to freetype 2.7/fontconfig 2.12 suddenly fonts got 
 Now, for the desktop Guix system need some scaling settings
 #+begin_src sh
   if [ "$HOSTNAME" = "narya" ]; then
-      QT_SCALE_FACTOR=0.75
+      export GDK_SCALE=1.5
+      export QT_SCALE_FACTOR=0.5
   fi
 #+end_src
 
@@ -150,7 +151,7 @@ Now, for the desktop Guix system need some scaling settings
 This should probably just be written to the Xorg configuration, but I'm lazy. Also, it doesn't seem to be a problem at the login manger (gdm), but only after logging in.
 #+begin_src sh
   if [ "$HOSTNAME" = "narya" ]; then
-      xrandr --output DisplayPort-0 --primary --mode 3840x2160 --pos 0x0 --rotate normal --output DisplayPort-1 --off --output DisplayPort-2 --off --output HDMI-A-0 --off
+      xrandr --output DisplayPort-1 --primary --mode 3840x2160 --pos 0x0 --rotate normal --output DisplayPort-0 --off --output HDMI-A-0 --off --output HDMI-A-1 --off
   fi
 #+end_src
 
@@ -170,13 +171,13 @@ An xsettings daemon
   xsettingsd&
 #+end_src
 
-Colors from [[https://github.com/deviantfero/wpgtk][wpgtk]]
-#+begin_src sh
+Colors from [[https://github.com/deviantfero/wpgtk][wpgtk]] (disabled)
+#+begin_src sh :tangle no
   $HOME/.config/wpg/wp_init.sh
 #+end_src
 
-MPD daemon start (if no other user instance exists)
-#+begin_src sh
+MPD daemon start (if no other user instance exists) (disabled)
+#+begin_src sh :tangle no
   [ ! -s ~/.config/mpd/pid ] && mpd
 #+end_src
 

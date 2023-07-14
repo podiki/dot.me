@@ -2,6 +2,6 @@ Xft/Hinting 1
 Xft/RGBA "rgb"
 Xft/HintStyle "hintslight"
 Xft/Antialias 1
-Net/ThemeName "Orchis-dark"
-Net/IconThemeName "Papirus-Dark"
+Net/ThemeName "Orchis-light"
+Net/IconThemeName "Papirus-Light"
 Gtk/CursorThemeName "capitaine-cursors"

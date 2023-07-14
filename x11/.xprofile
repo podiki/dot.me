@@ -1,5 +1,5 @@
 #!/bin/sh
-# xprofile
+
 # :PROPERTIES:
 # :header-args: :tangle ".xprofile" :shebang "#!/bin/sh" :tangle-mode (identity #o555) :comments both
 # :END:

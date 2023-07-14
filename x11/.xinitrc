@@ -1,5 +1,5 @@
 #!/bin/sh
-# Resources and environment
+
 # Load in the default and user resources and keys
 
 # [[file:README.org::*Resources and environment][Resources and environment:1]]
@@ -45,7 +45,7 @@ export QT_QPA_PLATFORMTHEME="qt5ct"
 # export GTK_THEME="Adwaita:light"
 # Resources and environment:3 ends here
 
-# DPI
+
 # Set DPI based on hostname of the machine
 
 # [[file:README.org::*DPI][DPI:1]]
@@ -61,20 +61,21 @@ esac
 
 # [[file:README.org::*DPI][DPI:3]]
 if [ "$HOSTNAME" = "narya" ]; then
-    QT_SCALE_FACTOR=0.75
+    export GDK_SCALE=1.5
+    export QT_SCALE_FACTOR=0.5
 fi
 # DPI:3 ends here
 
-# Screen setup
+
 # This should probably just be written to the Xorg configuration, but I'm lazy. Also, it doesn't seem to be a problem at the login manger (gdm), but only after logging in.
 
 # [[file:README.org::*Screen setup][Screen setup:1]]
 if [ "$HOSTNAME" = "narya" ]; then
-    xrandr --output DisplayPort-0 --primary --mode 3840x2160 --pos 0x0 --rotate normal --output DisplayPort-1 --off --output DisplayPort-2 --off --output HDMI-A-0 --off
+    xrandr --output DisplayPort-1 --primary --mode 3840x2160 --pos 0x0 --rotate normal --output DisplayPort-0 --off --output HDMI-A-0 --off --output HDMI-A-1 --off
 fi
 # Screen setup:1 ends here
 
-# Startup programs
+
 # Start any system default programs from ~xinit~
 
 # [[file:README.org::*Startup programs][Startup programs:1]]
@@ -93,22 +94,6 @@ fi
 # [[file:README.org::*Startup programs][Startup programs:2]]
 xsettingsd&
 # Startup programs:2 ends here
-
-
-
-# Colors from [[https://github.com/deviantfero/wpgtk][wpgtk]]
-
-# [[file:README.org::*Startup programs][Startup programs:3]]
-$HOME/.config/wpg/wp_init.sh
-# Startup programs:3 ends here
-
-
-
-# MPD daemon start (if no other user instance exists)
-
-# [[file:README.org::*Startup programs][Startup programs:4]]
-[ ! -s ~/.config/mpd/pid ] && mpd
-# Startup programs:4 ends here
 
 
 

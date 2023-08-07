@@ -157,7 +157,7 @@ For scrolling with a mouse wheel/gesture, this is (usually) needed
 * Key Bindings
 #+begin_src lisp
   ;; default terminal binding
-  (define-key *root-map* (kbd "c") "exec kitty")
+  (define-key *root-map* (kbd "c") "exec alacritty")
   ;; pule audio controls
   (define-key *top-map* (kbd "XF86AudioRaiseVolume")
     "exec pactl set-sink-volume @DEFAULT_SINK@ +2.5%")
@@ -177,6 +177,7 @@ For scrolling with a mouse wheel/gesture, this is (usually) needed
       `((,(lambda (win)
             ;(string-equal "firefox-default" (window-class win))
             (not (or (string-equal "Emacs" (window-class win))
+                     (string-equal "Alacritty" (window-class win))
                      (string-equal "kitty" (window-class win))
                      (string-equal "Nyxt" (window-class win)))))
           ("C-n"   . "Down")
@@ -209,7 +210,7 @@ For scrolling with a mouse wheel/gesture, this is (usually) needed
 
   ;; scratchpad
   (defcommand scratchpad-term () ()
-    (scratchpad:toggle-floating-scratchpad "term" "kitty"
+    (scratchpad:toggle-floating-scratchpad "term" "alacritty"
                                            :initial-gravity :center
                                            :initial-width 1550
                                            :initial-height 1150))
@@ -337,7 +338,7 @@ For scrolling with a mouse wheel/gesture, this is (usually) needed
     (:float t t :class "discord"))
 
   (define-frame-preference nil 
-    (:float t t :class "Steam"))
+    (:float t t :class "steam"))
 
   (define-frame-preference nil 
       (:float t t :title "Picture-in-Picture"))

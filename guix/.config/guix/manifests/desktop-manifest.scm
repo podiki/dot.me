@@ -36,7 +36,7 @@
    "dunst"
    "xdg-utils"
    "piper"
-   "openrgb-next"
+   "openrgb"
    "corectrl"
    "lm-sensors"
    "udiskie"
@@ -69,11 +69,10 @@
    "xrandr"
    "pavucontrol"
    "pasystray"
-                                        ;"glib" ; to pick up XDG_DATA_DIRS, picked up somewhere else now
+   ;; "glib" ; to pick up XDG_DATA_DIRS, picked up somewhere else now
    "rofi-pass"
    "rofi"
    "yubikey-oath-dmenu"
    "font-dejavu"
    "arandr"
-   "xprop"
-   "icecat"))
+   "xprop"))

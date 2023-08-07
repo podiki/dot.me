@@ -58,7 +58,7 @@
                   (home-directory "/home/john")
                   (shell (file-append zsh "/bin/zsh"))
                   (supplementary-groups
-                    '("wheel" "netdev" "audio" "video" "docker")))
+                    '("wheel" "netdev" "audio" "video" "docker" "kvm")))
                 %base-user-accounts))
   (packages
     (append
@@ -67,19 +67,19 @@
             (specification->package "ntfs-3g"))
       %base-packages))
   (services (cons*
-             (pam-limits-service
-              (list
-               ;; higher open file limit, helpful for Wine and esync
-               (pam-limits-entry "*" 'both 'nofile 524288)
-               ;; lower nice limit for users, but root can go further to rescue system
-               (pam-limits-entry "*" 'both 'nice -19)
-               (pam-limits-entry "root" 'both 'nice -20)))
+             (service pam-limits-service-type
+               (list
+                 ;; higher open file limit, helpful for Wine and esync
+                 (pam-limits-entry "*" 'both 'nofile 524288)
+                 ;; lower nice limit for users, but root can go further to rescue system
+                 (pam-limits-entry "*" 'both 'nice -19)
+                 (pam-limits-entry "root" 'both 'nice -20)))
              (service pcscd-service-type)
              (service peroxide-service-type) ;testing
              (udev-rules-service 'u2f libfido2 #:groups '("plugdev"))
              (udev-rules-service 'headsetcontrol headsetcontrol)
              (udev-rules-service 'steam-devices steam-devices-udev-rules)
-             (udev-rules-service 'openrgb openrgb-next)
+             (udev-rules-service 'openrgb openrgb)
              (simple-service 'ratbagd dbus-root-service-type (list libratbag))
              (simple-service 'corectrl-polkit polkit-service-type
                              (list corectrl))
@@ -100,6 +100,13 @@
              (service syncthing-service-type
                       (syncthing-configuration (user "john")))
              (service lightdm-service-type)
+             (set-xorg-configuration (xorg-configuration (extra-config
+                                                          '("Section \"Device\"
+                                                               Identifier \"device-amdgpu\"
+                                                               Driver \"amdgpu\"
+                                                               Option \"SWCursor\" \"on\"
+                                                             EndSection")))
+                                     lightdm-service-type)
              (service docker-service-type)
              (modify-services %desktop-services
                               (delete gdm-service-type) ; replaced by lightdm
@@ -119,7 +126,7 @@
                               ;; https://github.com/ValveSoftware/SteamVR-for-Linux/issues/215#issuecomment-526791835
                               (pulseaudio-service-type config =>
                                                        (pulseaudio-configuration
-                                                        (daemon-conf '((default-sample-rate . 48000)))))
+                                                        (daemon-conf '((default-sample-rate . 44100)))))
                               (guix-service-type config =>
                                                  (guix-configuration
                                                   (inherit config)
@@ -136,7 +143,7 @@
                                                     (settings (append '(("vm.swappiness" . "10"))
                                                                       %default-sysctl-settings)))))))
 
-  (kernel linux)
+  (kernel linux-6.4)
   (kernel-loadable-modules (list v4l2loopback-linux-module))
   (kernel-arguments
    '("quiet"

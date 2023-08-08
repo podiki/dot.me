@@ -7,23 +7,23 @@
   (setq package-quickstart t)
   (setq package-enable-at-startup nil)   ; To prevent initialising twice
 
-  ;; package archives: nongnu (by default in v28+ already) and Melpa
-  (add-to-list 'package-archives
-               '("nongnu" . "http://elpa.nongnu.org/nongnu/"))
+  ;; package archives: add MELPA
   (add-to-list 'package-archives
                '("melpa" . "https://melpa.org/packages/"))
 
   ;; bootstrap use-package
-  (unless (package-installed-p 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package))
+  ;; (unless (package-installed-p 'use-package)
+  ;;   (package-refresh-contents)
+  ;;   (package-install 'use-package))
 
   (eval-when-compile (require 'use-package))
   (require 'bind-key)
-  (setq use-package-verbose 1
-        use-package-always-ensure t)
+  (setq use-package-verbose 1)
 
   (load-file "~/codemonkey/dot.me/emacs/dotemacs.elc")
+  ;; this could be nice instead of the save and compile hook, but
+  ;; seems this always compiles the file even if no changes
+  ;; (org-babel-load-file "~/codemonkey/dot.me/emacs/dotemacs.org" t)
 
   (setq gc-cons-threshold 800000))
 
@@ -54,68 +54,93 @@
      ("FIXME" . "#dc752f")
      ("XXX+" . "#dc752f")
      ("\\?\\?\\?+" . "#dc752f")))
- '(ivy-mode t)
  '(jdee-db-active-breakpoint-face-colors (cons "#1B2229" "#51afef"))
  '(jdee-db-requested-breakpoint-face-colors (cons "#1B2229" "#98be65"))
  '(jdee-db-spec-breakpoint-face-colors (cons "#1B2229" "#3f444a"))
  '(objed-cursor-color "#ff6c6b")
  '(org-msg-mode t)
  '(package-selected-packages
-   '(org2blog nov nov\.el nov-el haxe-mode debbugs python-mode eglot org-contrib info-look frames-only-mode pacfiles-mode org-auto-tangle mu4e-marker-icons transient-posframe org-special-block-extras mixed-pitch vterm org-table org-superstar org-superstar-mode counsel-org-clock ivy-hydra org-variable-pitch dashboard ivy-rich ivy-posframe advice-patch org-cliplink visual-fill-column dired-git-info diredfl dired cdlatex org-noter org-ref mu4e-conversation counsel ivy let-alist org-msg org-mime mu4e-alert notmuch calfw calfw-org org-gcal flycheck-ledger org-analyzer org-re-reveal pdf-tools solaire-mode hlinum doom-themes doom-modeline which-key use-package timesheet spacemacs-theme spaceline-all-the-icons smex smartparens slime-company rainbow-delimiters paradox ox-reveal org-plus-contrib org-bullets olivetti neotree multiple-cursors monokai-theme molokai-theme markdown-mode magit latex-pretty-symbols langtool imenu-list ido-vertical-mode ido-ubiquitous highlight-symbol highlight-sexp goto-chg fountain-mode flycheck-color-mode-line flx-ido exec-path-from-shell emms ein diminish define-word cython-mode company-quickhelp company-math company-jedi company-auctex color-theme-solarized color-identifiers-mode all-the-icons-dired))
+   '(org2blog marginalia vertico-posframe highlight-sexp magit-popup edit-indirect bui geiser-guile diminish use-package all-the-icons-dired emms company-math company-auctex flycheck-ledger ledger-mode olivetti fountain-mode eglot slime-company markdown-mode smartparens rainbow-delimiters company-quickhelp magit org-msg org-auto-tangle org-cliplink org-noter tablist biblio parsebib org-ref org-super-agenda calfw ox-reveal org-re-reveal org-present org-appear org-modern org-bullets org-superstar org-contrib dired-git-info diredfl neotree highlight-symbol which-key consult orderless multiple-cursors smex ido-vertical-mode ido-completing-read+ page-break-lines dashboard doom-modeline mixed-pitch solaire-mode doom-themes spacemacs-theme monokai-theme exec-path-from-shell frames-only-mode goto-chg visual-fill-column org-gcal mu4e-marker-icons mu4e-alert color-identifiers-mode advice-patch))
  '(paradox-github-token t)
  '(pdf-view-midnight-colors '("#655370" . "#fbf8ef"))
  '(rustic-ansi-faces
    ["#282c34" "#ff6c6b" "#98be65" "#ECBE7B" "#51afef" "#c678dd" "#46D9FF" "#bbc2cf"])
  '(safe-local-variable-values
-   '((eval progn
-      (require 'lisp-mode)
-      (defun emacs27-lisp-fill-paragraph
-          (&optional justify)
-        (interactive "P")
-        (or
-         (fill-comment-paragraph justify)
-         (let
-             ((paragraph-start
-                (concat paragraph-start "\\|\\s-*\\([(;\"]\\|\\s-:\\|`(\\|#'(\\)"))
-              (paragraph-separate
-                (concat paragraph-separate "\\|\\s-*\".*[,\\.]$"))
-              (fill-column
-                (if
-                 (and
-                  (integerp emacs-lisp-docstring-fill-column)
-                  (derived-mode-p 'emacs-lisp-mode))
-                 emacs-lisp-docstring-fill-column fill-column)))
-           (fill-paragraph justify))
-         t))
-      (setq-local fill-paragraph-function #'emacs27-lisp-fill-paragraph))
+   '((eval let
+           ((root-dir-unexpanded
+             (locate-dominating-file default-directory ".dir-locals.el")))
+           (when root-dir-unexpanded
+             (let*
+                 ((root-dir
+                   (file-local-name
+                    (expand-file-name root-dir-unexpanded)))
+                  (root-dir*
+                   (directory-file-name root-dir)))
+               (unless
+                   (boundp 'geiser-guile-load-path)
+                 (defvar geiser-guile-load-path 'nil))
+               (make-local-variable 'geiser-guile-load-path)
+               (require 'cl-lib)
+               (cl-pushnew root-dir* geiser-guile-load-path :test #'string-equal))))
+     (eval with-eval-after-load 'yasnippet
+           (let
+               ((guix-yasnippets
+                 (expand-file-name "etc/snippets/yas"
+                                   (locate-dominating-file default-directory ".dir-locals.el"))))
+             (unless
+                 (member guix-yasnippets yas-snippet-dirs)
+               (add-to-list 'yas-snippet-dirs guix-yasnippets)
+               (yas-reload-all))))
+     (eval add-to-list 'completion-ignored-extensions ".go")
+     (eval progn
+           (require 'lisp-mode)
+           (defun emacs27-lisp-fill-paragraph
+               (&optional justify)
+             (interactive "P")
+             (or
+              (fill-comment-paragraph justify)
+              (let
+                  ((paragraph-start
+                    (concat paragraph-start "\\|\\s-*\\([(;\"]\\|\\s-:\\|`(\\|#'(\\)"))
+                   (paragraph-separate
+                    (concat paragraph-separate "\\|\\s-*\".*[,\\.]$"))
+                   (fill-column
+                    (if
+                        (and
+                         (integerp emacs-lisp-docstring-fill-column)
+                         (derived-mode-p 'emacs-lisp-mode))
+                        emacs-lisp-docstring-fill-column fill-column)))
+                (fill-paragraph justify))
+              t))
+           (setq-local fill-paragraph-function #'emacs27-lisp-fill-paragraph))
      (eval modify-syntax-entry 43 "'")
      (eval modify-syntax-entry 36 "'")
      (eval modify-syntax-entry 126 "'")
      (eval let
-      ((root-dir-unexpanded
-        (locate-dominating-file default-directory ".dir-locals.el")))
-      (when root-dir-unexpanded
-        (let*
-            ((root-dir
-               (expand-file-name root-dir-unexpanded))
-             (root-dir*
-               (directory-file-name root-dir)))
-          (unless
-              (boundp 'geiser-guile-load-path)
-            (defvar geiser-guile-load-path 'nil))
-          (make-local-variable 'geiser-guile-load-path)
-          (require 'cl-lib)
-          (cl-pushnew root-dir* geiser-guile-load-path :test #'string-equal))))
+           ((root-dir-unexpanded
+             (locate-dominating-file default-directory ".dir-locals.el")))
+           (when root-dir-unexpanded
+             (let*
+                 ((root-dir
+                   (expand-file-name root-dir-unexpanded))
+                  (root-dir*
+                   (directory-file-name root-dir)))
+               (unless
+                   (boundp 'geiser-guile-load-path)
+                 (defvar geiser-guile-load-path 'nil))
+               (make-local-variable 'geiser-guile-load-path)
+               (require 'cl-lib)
+               (cl-pushnew root-dir* geiser-guile-load-path :test #'string-equal))))
      (eval setq-local guix-directory
-      (locate-dominating-file default-directory ".dir-locals.el"))
+           (locate-dominating-file default-directory ".dir-locals.el"))
      (org-export-allow-bind-keywords . t)
      (eval add-hook 'after-save-hook
-      (lambda nil
-        (org-babel-tangle-file
-         (expand-file-name "dotemacs.org"))
-        (byte-compile-file
-         (expand-file-name "dotemacs.el")))
-      nil t)))
+           (lambda nil
+             (org-babel-tangle-file
+              (expand-file-name "dotemacs.org"))
+             (byte-compile-file
+              (expand-file-name "dotemacs.el")))
+           nil t)))
  '(timesheet-invoice-number 2)
  '(vc-annotate-background "#282c34")
  '(vc-annotate-color-map

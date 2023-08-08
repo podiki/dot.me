@@ -304,10 +304,10 @@ And a function for switching between two (day/night) themes, modified from this 
 *** Fonts
 #+BEGIN_SRC emacs-lisp
   (when (memq window-system '(x pgtk))
-    (cond ((string= "raven" (system-name))
+    (cond ((string= "narya" (system-name))
            (set-face-attribute 'default nil :family "Hack Nerd Font" :weight 'light :height 110)
            (set-fontset-font "fontset-default" nil (font-spec :name "Symbola"))
-           (set-face-attribute 'variable-pitch nil :family "Open Sans" :weight 'light :height 110))
+           (set-face-attribute 'variable-pitch nil :family "Noto Sans" :weight 'light :height 110))
           ((string= "azazel" (system-name))
            (set-face-attribute 'default nil :family "Hack Nerd Font" :weight 'light :height 110)
            (set-fontset-font "fontset-default" nil (font-spec :name "Symbola"))
@@ -344,8 +344,9 @@ Mixed pitches
   ;(add-to-list 'sml/replacer-regexp-list '("^~/codemonkey/" ":CM:") t)
 
   ;; powerline modeline, also required for spaceline
-  (use-package powerline
-    :ensure t)
+  ;; no longer maintained
+  ;; (use-package powerline
+  ;;   :ensure t)
 
   ;; (use-package spaceline-config
   ;;   :ensure spaceline
@@ -362,7 +363,6 @@ Mixed pitches
 
   ;; doom-modeline
   (use-package doom-modeline
-               :ensure t
                :init (doom-modeline-mode 1)
                :config
                (setq doom-modeline-icon t)
@@ -383,7 +383,7 @@ Mixed pitches
 #+end_src
 ** IDO and smex
 Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matching, vertical display of completions, and smex for command ido. defadvice for opening files as root (via [[http://emacsredux.com/blog/2013/04/21/edit-files-as-root/][Emacs Redux]])
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   ;; IDO mode
   (use-package ido
     :disabled
@@ -456,7 +456,7 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
 #+END_SRC
 
 ** ivy and friends
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package ivy
     :disabled
     :config
@@ -476,7 +476,7 @@ Use ido-mode with ido-ubiquitous to use it everywhere, flx-ido for better matchi
 #+end_src
 
 swiper
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package swiper
     :disabled
     :after ivy
@@ -486,7 +486,7 @@ swiper
 #+end_src
 
 counsel
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package counsel
     :disabled
     :after swiper
@@ -495,7 +495,7 @@ counsel
 #+end_src
 
 Floating display with ivy-posframe
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package ivy-posframe
     :disabled
     :config
@@ -511,7 +511,7 @@ Floating display with ivy-posframe
 #+end_src
 
 More info with ivy-rich (with config starting from a [[https://www.reddit.com/r/emacs/comments/ehjcu2/screenshot_polishing_my_emacs_who_said_an_old/fcmbozm/][Reddit post/comment]])
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package ivy-rich
     :disabled
     :preface
@@ -561,7 +561,7 @@ More info with ivy-rich (with config starting from a [[https://www.reddit.com/r/
 #+end_src
 
 Clocking helper
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package counsel-org-clock
     :config
     (setq counsel-org-clock-default-action 'clock-dwim
@@ -573,11 +573,22 @@ Clocking helper
 #+end_src
 
 Hydra
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package hydra
     :disabled)
   (use-package ivy-hydra
     :disabled)
+#+end_src
+** orderless
+#+begin_src emacs-lisp
+  (use-package orderless
+    :custom
+    ;; from the readme, needs basic as fallback and override for e.g. TRAMP
+    (completion-styles '(orderless basic))
+    (completion-category-overrides '((file (styles basic partial-completion))))
+    ;; enable more styles
+    (orderless-matching-styles '(orderless-flex orderless-initialism
+                                 orderless-literal orderless-regexp)))
 #+end_src
 ** vertico
 #+begin_src emacs-lisp
@@ -592,7 +603,6 @@ Hydra
 
   (use-package marginalia
     :after vertico
-    :ensure t
     :custom
     (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
     :init
@@ -700,7 +710,7 @@ Hydra
      consult-bookmark consult-recent-file consult-xref
      consult--source-bookmark consult--source-recent-file
      consult--source-project-recent-file
-     :preview-key (kbd "M-."))
+     :preview-key "M-.")
 
     ;; Optionally configure the narrowing key.
     ;; Both < and C-+ work reasonably well.
@@ -722,7 +732,7 @@ Hydra
     ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
     ;;;; 4. locate-dominating-file
     ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
-  )
+    )
 #+end_src
 ** which-key
 #+BEGIN_SRC emacs-lisp
@@ -824,6 +834,7 @@ Hydra
 #+BEGIN_SRC emacs-lisp
   ;; color-identifiers-mode
   (use-package color-identifiers-mode
+    :ensure t
     :hook
     (after-init . global-color-identifiers-mode))
 
@@ -942,7 +953,6 @@ Hydra
 *** Dired
 #+begin_src emacs-lisp
   (use-package dired
-    :ensure nil
     :hook (dired-mode . dired-hide-details-mode)
     :config
     ;; colorful columns
@@ -968,6 +978,8 @@ Hydra
     (setq org-startup-indented t)
     ;; syntax highlight code blocks
     (setq org-src-fontify-natively t)
+    ;; hide emphasis markers
+    (setq org-hide-emphasis-markers t)
     ;; use UTF-8 characters for e.g. \alpha and subscripts
     (setq org-pretty-entities t)
     ;; replace the folded section "..."s
@@ -1145,6 +1157,7 @@ Sync with Google Calendar using org-gcal
 #+begin_src emacs-lisp
   (use-package org-gcal
     :defer t
+    :ensure t
     :config
     (let* ((auth (car (auth-source-search :host "gcal")))
            (id (plist-get auth :user))
@@ -1152,10 +1165,13 @@ Sync with Google Calendar using org-gcal
       (setq org-gcal-local-timezone "America/New_York"
             org-gcal-client-id id
             org-gcal-client-secret secret
-            org-gcal-file-alist
+            org-gcal-fetch-file-alist
             '(("sweet.cheesus@gmail.com" .  "~/Files/Notes/gcal-main.org")
               ("u8vo3jc5fiva545r6icssgap369nti8b@import.calendar.google.com" . "~/Files/Notes/gcal-cw.org"))
-            org-gcal-notify-p nil)))
+            org-gcal-notify-p nil
+            epg-pinentry-mode 'loopback)
+      ;; for caching plist passphrase until can use authinfo/pass
+      (setq-default plstore-cache-passphrase-for-symmetric-encryption) t))
 #+end_src
 
 Pretty view with calfw (currently disabled as haven't used it)
@@ -1176,9 +1192,9 @@ And org-super-agenda
 pdf-tools for viewing pdfs in emacs
 #+begin_src emacs-lisp
   (use-package pdf-tools
-    :defer t
+    :mode  ("\\.pdf\\'" . pdf-view-mode)
     :config
-    (pdf-tools-install)
+    (pdf-loader-install)
     ;; open pdfs scaled to fit page
     (setq-default pdf-view-display-size 'fit-page)
     ;; use isearch instead of swiper
@@ -1277,7 +1293,8 @@ Now we add advice to the clocktable generating code to give ids to all entries t
 Finally, we do a quick and dirty hack to patch (using advice-patch) the clocktable formatting code to use these ids to generate better links.
 
 #+begin_src emacs-lisp
-  (use-package advice-patch)
+  (use-package advice-patch
+    :ensure t)
 
   (eval-after-load "org-clock"
     '(advice-patch 'org-clock-get-table-data
@@ -1313,13 +1330,24 @@ Auto tangling of config files
     :defer t
     :hook (org-mode . org-auto-tangle-mode))
 #+end_src
+
+Show things like emphasis markers when editing text within them with org-appear
+#+begin_src emacs-lisp
+  (use-package org-appear
+    :hook (org-mode . org-appear-mode))
+#+end_src
+
+#+begin_src emacs-lisp
+  (use-package org-modern
+    :hook ((org-mode . org-modern-mode)
+           (org-agenda-finalize . org-modern-agenda)))
+#+end_src
 * Email
 ** mu4e
 *** basics
 #+begin_src emacs-lisp
   (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
   (use-package mu4e
-      :ensure nil
       :bind ([f5] . mu4e)
       :hook (mu4e-compose-pre . my-set-from-address)
       :config
@@ -1401,7 +1429,7 @@ Auto tangling of config files
                         (smtpmail-smtp-server  . "smtp.office365.com")
                         (smtpmail-local-domain . "office365.com")
                         (smtpmail-smtp-service . 587)
-                        (smtpmail-stream-type  . nil)
+                        (smtpmail-stream-type  . starttls)
                         ;; so we don't get i-did-not-set--mail-host-address--so-tickle-me
                         (mail-host-address . "sas.upenn.edu")))
                ;; This should be sort of a "sub" context, being switched within the above one,
@@ -1416,7 +1444,7 @@ Auto tangling of config files
                               (when msg
                                 (or (mu4e-message-contact-field-matches
                                      msg
-                                     :to "john.kehayias@gmail.com")
+                                     :to '("john.kehayias@gmail.com" ".*@googlegroups.com"))
                                     (mu4e-message-contact-field-matches
                                      msg
                                      :from "john.kehayias@gmail.com"))))
@@ -1529,9 +1557,9 @@ Auto tangling of config files
 #+end_src
 *** org-mu4e
 #+begin_src emacs-lisp
-  (require 'org-mu4e)
+;  (require 'org-mu4e)
   ;; link to email not query
-  (setq org-mu4e-link-query-in-headers-mode nil)
+;  (setq org-mu4e-link-query-in-headers-mode nil)
 #+end_src
 *** org-msg
 Compose nice HTML messages using the power of org-mode
@@ -1555,8 +1583,9 @@ Compose nice HTML messages using the power of org-mode
 Use mu4e-alert
 #+begin_src emacs-lisp
   (use-package mu4e-alert
+    :ensure t
     :config
-    (mu4e-alert-set-default-style 'libnotify)
+    (mu4e-alert-set-default-style 'notifications)
     ;; don't notify for trashed messages or in all
     (setq mu4e-alert-interesting-mail-query
           (concat "flag:unread"
@@ -1572,6 +1601,7 @@ Pretty icons
 #+begin_src emacs-lisp
   (use-package mu4e-marker-icons
     :after mu4e
+    :ensure t
     :init (mu4e-marker-icons-mode 1))
 #+end_src
 
@@ -1586,84 +1616,93 @@ For Gnus, currently just in using debbugs to reply to all (not just bug number a
 ** Sending mail
 Sending mail with built-in message mode and smtpmail, using the instructions from [[https://github.com/harishkrupo/oauth2ms/blob/main/steps.org][oauth2ms]] to handle authentication (needed with two-step verification) for Office365:
 #+begin_src emacs-lisp
-  ;;; Call the oauth2ms program to fetch the authentication token
+  ;;; Call the hacked together script program to fetch the authentication token
   (defun fetch-access-token ()
-    (with-temp-buffer
-      (call-process "oauth2ms" nil t nil "--encode-xoauth2")
-      (buffer-string)))
+    ;; get the last string from split-string to get rid of the guix shell warnings
+    (car (last
+          (split-string
+           (shell-command-to-string
+            (concat "guix shell python-google-auth-oauthlib python python-msal python-o365 "
+                    "-- python3 ~/codemonkey/email/oauth_example.py --authstr "
+                    "kehayias@upenn.edu"))))))
 
-  ;;; Add new authentication method for xoauth2
+  ;; (defun fetch-access-token ()
+  ;;   (with-temp-buffer
+  ;;     (call-process "oauth2ms" nil t nil "--encode-xoauth2")
+  ;;     (buffer-string)))
+
+      ;;; Add new authentication method for xoauth2
   (cl-defmethod smtpmail-try-auth-method
-      (process (_mech (eql xoauth2)) user password)
+    (process (_mech (eql xoauth2)) user password)
     (let* ((access-token (fetch-access-token)))
       (smtpmail-command-or-throw
        process
        (concat "AUTH XOAUTH2 " access-token)
        235)))
 
-  ;;; Register the method
+      ;;; Register the method
   (with-eval-after-load 'smtpmail
     ;; work around but #57373 where smtp-auth method from authinfo
     ;; is a string so it won't work
     (defun smtpmail-try-auth-methods (process supported-extensions host port
-                                            &optional ask-for-password)
-    (setq port
-          (if port
-              (format "%s" port)
-            "smtp"))
-    (let* ((mechs (seq-intersection
-                   smtpmail-auth-supported
-                   (cdr-safe (assoc 'auth supported-extensions))
-                   #'eq))
-           (auth-source-creation-prompts
-            '((user  . "SMTP user name for %h: ")
-              (secret . "SMTP password for %u@%h: ")))
-           (auth-info (car
-                       (auth-source-search
-                        :host host
-                        :port port
-                        :user smtpmail-smtp-user
-                        :max 1
-                        :require (and ask-for-password
-                                      '(:user :secret))
-                        :create ask-for-password)))
-           (mech (or (plist-get auth-info :smtp-auth) (car mechs)))
-           (user (plist-get auth-info :user))
-           (password (plist-get auth-info :secret))
-           (save-function (and ask-for-password
-                               (plist-get auth-info :save-function))))
-      (when (functionp password)
-        (setq password (funcall password)))
-      (when (and user
-                 (not password))
-        ;; The user has stored the user name, but not the password, so
-        ;; ask for the password, even if we're not forcing that through
-        ;; `ask-for-password'.
-        (setq auth-info
-              (car
-               (auth-source-search
-                :max 1
-                :host host
-                :port port
-                :user smtpmail-smtp-user
-                :require '(:user :secret)
-                :create t))
-              password (plist-get auth-info :secret)))
-      (when (functionp password)
-        (setq password (funcall password)))
-      (let ((result (catch 'done
-                      (if (and mech user password)
-                          ;; TODO: remove when updating emacs; the change to fix #57373:
-                          (smtpmail-try-auth-method process (intern-soft mech) user password)
-                        ;; No mechanism, or no credentials.
-                        mech))))
-        (if (stringp result)
-            (progn
-              (auth-source-forget+ :host host :port port)
-              (throw 'done result))
-          (when save-function
-            (funcall save-function))
-          result))))
+                                              &optional ask-for-password)
+      (setq port
+            (if port
+                (format "%s" port)
+              "smtp"))
+      (let* ((mechs (seq-intersection
+                     smtpmail-auth-supported
+                     (cdr-safe (assoc 'auth supported-extensions))
+                     #'eq))
+             (auth-source-creation-prompts
+              '((user  . "SMTP user name for %h: ")
+                (secret . "SMTP password for %u@%h: ")))
+             (auth-info (car
+                         (auth-source-search
+                          :host host
+                          :port port
+                          :user smtpmail-smtp-user
+                          :max 1
+                          :require (and ask-for-password
+                                        '(:user :secret))
+                          :create ask-for-password)))
+             (mech (or (plist-get auth-info :smtp-auth) (car mechs)))
+             (user (plist-get auth-info :user))
+             (password (plist-get auth-info :secret))
+             (save-function (and ask-for-password
+                                 (plist-get auth-info :save-function))))
+        (when (functionp password)
+          (setq password (funcall password)))
+        (when (and user
+                   (not password))
+          ;; The user has stored the user name, but not the password, so
+          ;; ask for the password, even if we're not forcing that through
+          ;; `ask-for-password'.
+          (setq auth-info
+                (car
+                 (auth-source-search
+                  :max 1
+                  :host host
+                  :port port
+                  :user smtpmail-smtp-user
+                  :require '(:user :secret)
+                  :create t))
+                password (plist-get auth-info :secret)))
+        (when (functionp password)
+          (setq password (funcall password)))
+        (let ((result (catch 'done
+                        (if (and mech user password)
+                            ;; TODO: remove when updating emacs; the change to fix #57373:
+                            (smtpmail-try-auth-method process (intern-soft mech) user password)
+                          ;; No mechanism, or no credentials.
+                          mech))))
+          (if (stringp result)
+              (progn
+                (auth-source-forget+ :host host :port port)
+                (throw 'done result))
+            (when save-function
+              (funcall save-function))
+            result))))
     (add-to-list 'smtpmail-auth-supported 'xoauth2))
 
   (setq starttls-use-gnutls t)
@@ -1691,7 +1730,7 @@ Magit for source control with git/github. Some modifications necessary for deali
 #+END_SRC
 
 ** Autocompletion with company-mode
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   ;; auto-complete
   ;; (require 'auto-complete-config)
   ;; (global-auto-complete-mode 1)
@@ -1712,7 +1751,7 @@ Magit for source control with git/github. Some modifications necessary for deali
 *** company-mode keybindings
 Some keybindings to behave more like auto-complete (in another use-package for nowso that company-active-map exists, see [[https://github.com/jwiegley/use-package/issues/269][this issue]]).
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package company
     :bind (:map company-active-map
           ("TAB"       . company-complete-common-or-cycle)
@@ -1730,7 +1769,9 @@ Some keybindings to behave more like auto-complete (in another use-package for n
   ;; color the modeline by flycheck status
   ;; (compatibility issue with previous color theme/powerline :()
   ;; seems okay now with smart-mode-line
+  ;; (disabled due to no guix package)
   (use-package flycheck-color-mode-line
+    :disabled
     :config
     (eval-after-load "flycheck"
       '(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode)))
@@ -1835,6 +1876,7 @@ Set highlight background color to be slightly darker than the background color (
 
 #+begin_src emacs-lisp
   (use-package python-mode
+    :defer t
     :config
     (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
     (add-hook 'python-mode-hook #'eglot-ensure))
@@ -1888,7 +1930,9 @@ Commented out for now as I haven't used python in a while, will need to be updat
 #+END_SRC
 ** Haxe
 #+begin_src emacs-lisp
-  (use-package haxe-mode)
+  ;; disabled due to no guix package
+  (use-package haxe-mode
+    :disabled)
 #+end_src
 ** Eglot
 #+begin_src emacs-lisp
@@ -1910,8 +1954,8 @@ Commented out for now as I haven't used python in a while, will need to be updat
     ;; (add-to-list 'eglot-server-programs
     ;;              '((typescript-mode) "typescript-language-server" "--stdio"))
 
-    (add-to-list 'eglot-server-programs
-                 '((haxe-mode) "node"q " ~/transfer/server.js"))
+    ;; (add-to-list 'eglot-server-programs
+    ;;              '((haxe-mode) "node"q " ~/transfer/server.js"))
 
     (setq-default eglot-workspace-configuration
                   '((:pyls . ((:plugins .
@@ -1927,13 +1971,13 @@ Commented out for now as I haven't used python in a while, will need to be updat
 
 * Guix
 #+begin_src emacs-lisp
-  ;; (use-package geiser)
-  ;; (use-package geiser-guile
-  ;;   :config
-  ;;   (add-to-list 'geiser-guile-load-path "~/codemonkey/guix-src"))
-  ;; (use-package yasnippet
-  ;;   :config
-  ;;   (add-to-list 'yas-snippet-dirs "~/codemonkey/guix-src/etc/snippets"))
+  (use-package geiser)
+  (use-package geiser-guile
+    :config
+    (add-to-list 'geiser-guile-load-path "~/codemonkey/guix-src"))
+  (use-package yasnippet
+    :config
+    (add-to-list 'yas-snippet-dirs "~/codemonkey/guix-src/etc/snippets"))
 #+end_src
 * Other text modes
 ** Fountain for screenplay writing
@@ -2006,10 +2050,10 @@ This is a nice distraction free writing environment, but currently has a bug wit
 
     ;; force load on file open (still need to edit
     ;; something in math mode for it to kick in though)
-    (add-hook 'find-file-hook
-              (lambda () (when (eq major-mode 'latex-mode)
-                               (latex-unicode-simplified))))
-
+    ;; TODO: this doesn't exist anymore
+    ;(add-hook 'find-file-hook
+    ;          (lambda () (when (eq major-mode 'latex-mode)
+    ;                           (latex-unicode-simplified))))
 
     ;; Automatically activate TeX-fold-mode and fold after opening
     (add-hook 'find-file-hook
@@ -2039,7 +2083,9 @@ This is a nice distraction free writing environment, but currently has a bug wit
     (setq TeX-source-correlate-method 'synctex))
 
   ;; latex symbols via unicode (suplement fold-mode)
-  (use-package latex-pretty-symbols)
+  ;; (diabled due to no guix package)
+  (use-package latex-pretty-symbols
+    :disabled)
 
   ;; auto-complete using company-mode auctex and math backends
   (use-package company-auctex

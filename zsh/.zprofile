@@ -46,3 +46,13 @@ if [[ -s /run/current-system/profile ]]; then
     export XDG_CONFIG_DIRS=$GUIX_EXTRA_PROFILES/desktop/desktop/etc/xdg:$XDG_CONFIG_DIRS
 fi
 # ~XDG_CONFIG_DIRs~ fix:1 ends here
+
+# Homebrew
+# Utilize homebrew if it exists (Mac only)
+
+
+# [[file:README.org::*Homebrew][Homebrew:1]]
+if [[ -s /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+# Homebrew:1 ends here

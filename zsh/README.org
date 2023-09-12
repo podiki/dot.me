@@ -89,13 +89,20 @@ To work around some search paths not being exported consistently in Guix, e.g. [
       export XDG_CONFIG_DIRS=$GUIX_EXTRA_PROFILES/desktop/desktop/etc/xdg:$XDG_CONFIG_DIRS
   fi
 #+end_src
-
 ** xdg-desktop-portal fix
 Seems like a bug that the portals do not like multiple directories for ~XDG_DESKTOP_PORTAL_DIR~. So override it manually for now
 
 #+begin_src sh :tangle no
   if [[ -s /run/current-system/profile ]]; then
       export XDG_DESKTOP_PORTAL_DIR=$GUIX_EXTRA_PROFILES/desktop/desktop/share/xdg-desktop-portal/portals
+  fi
+#+end_src
+** Homebrew
+Utilize homebrew if it exists (Mac only)
+
+#+begin_src sh
+  if [[ -s /opt/homebrew/bin/brew ]]; then
+      eval "$(/opt/homebrew/bin/brew shellenv)"
   fi
 #+end_src
 

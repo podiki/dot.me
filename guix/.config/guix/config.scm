@@ -10,6 +10,7 @@
              (gnu packages games) ; for steam devices udev
              (gnu packages shells) ; for zsh
              (gnu packages linux) ; for fstrim
+             (gnu packages networking) ; for blueman
              (guix profiles) ;; For manifest-entries
              (srfi srfi-1) ;; For filter-map
              (gnu packages hardware) ;; openrgb
@@ -76,10 +77,15 @@
                  (pam-limits-entry "root" 'both 'nice -20)))
              (service pcscd-service-type)
              (service peroxide-service-type) ;testing
+             (service bluetooth-service-type
+                      (bluetooth-configuration (fast-connectable? #t)
+                                               (privacy 'device)
+                                               (just-works-repairing 'always)))
              (udev-rules-service 'u2f libfido2 #:groups '("plugdev"))
              (udev-rules-service 'headsetcontrol headsetcontrol)
              (udev-rules-service 'steam-devices steam-devices-udev-rules)
              (udev-rules-service 'openrgb openrgb)
+             (simple-service 'blueman dbus-root-service-type (list blueman))
              (simple-service 'ratbagd dbus-root-service-type (list libratbag))
              (simple-service 'corectrl-polkit polkit-service-type
                              (list corectrl))
@@ -132,9 +138,10 @@
                                                   (inherit config)
                                                   (substitute-urls
                                                    ;; Reverse the order to put Bordeaux first, adding in the US mirror
-                                                   (reverse (append '("https://substitutes.nonguix.org")
-                                                                    %default-substitute-urls
-                                                                    '("https://bordeaux-us-east-mirror.cbaines.net/"))))
+                                                   ;; don't reverse as the US mirror has become slow/unresponsive for unknown reasons
+                                                   (append '("https://substitutes.nonguix.org")
+                                                           %default-substitute-urls
+                                                           '("https://bordeaux-us-east-mirror.cbaines.net/")))
                                                   (authorized-keys
                                                    (append (list (local-file "substitutes.nonguix.org.pub"))
                                                            %default-authorized-guix-keys))))
@@ -143,7 +150,7 @@
                                                     (settings (append '(("vm.swappiness" . "10"))
                                                                       %default-sysctl-settings)))))))
 
-  (kernel linux-6.4)
+  (kernel linux)
   (kernel-loadable-modules (list v4l2loopback-linux-module))
   (kernel-arguments
    '("quiet"
@@ -154,6 +161,7 @@
      "amdgpu.ppfeaturemask=0xffffffff"))
   (initrd microcode-initrd)
   (firmware (cons* amdgpu-firmware
+                   realtek-firmware
                    %base-firmware))
   ;; Use the UEFI variant of GRUB with the EFI System
   ;; Partition mounted on /boot/efi.

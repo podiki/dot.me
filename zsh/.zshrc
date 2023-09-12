@@ -12,8 +12,8 @@ fi
 # Basic loading from installer
 
 # [[file:README.org::*Basic loading from installer][Basic loading from installer:1]]
-if [[ -r "/home/john/.config/zi/init.zsh" ]]; then
-  source "/home/john/.config/zi/init.zsh" && zzinit
+if [[ -r "$HOME/.config/zi/init.zsh" ]]; then
+  source "$HOME/.config/zi/init.zsh" && zzinit
 fi
 zi light-mode for \
   z-shell/z-a-meta-plugins \
@@ -49,7 +49,7 @@ SAVEHIST=10000
 setopt hist_ignore_dups append_history extended_history autocd
 
 # The following lines were added by compinstall
-zstyle :compinstall filename '/home/john/.zshrc'
+zstyle :compinstall filename '$HOME/.zshrc'
 
 autoload -Uz compinit
 compinit

@@ -1626,83 +1626,16 @@ Sending mail with built-in message mode and smtpmail, using the instructions fro
                     "-- python3 ~/codemonkey/email/oauth_example.py --authstr "
                     "kehayias@upenn.edu"))))))
 
-  ;; (defun fetch-access-token ()
-  ;;   (with-temp-buffer
-  ;;     (call-process "oauth2ms" nil t nil "--encode-xoauth2")
-  ;;     (buffer-string)))
-
-      ;;; Add new authentication method for xoauth2
-  (cl-defmethod smtpmail-try-auth-method
-    (process (_mech (eql xoauth2)) user password)
-    (let* ((access-token (fetch-access-token)))
-      (smtpmail-command-or-throw
-       process
-       (concat "AUTH XOAUTH2 " access-token)
-       235)))
-
-      ;;; Register the method
   (with-eval-after-load 'smtpmail
-    ;; work around but #57373 where smtp-auth method from authinfo
-    ;; is a string so it won't work
-    (defun smtpmail-try-auth-methods (process supported-extensions host port
-                                              &optional ask-for-password)
-      (setq port
-            (if port
-                (format "%s" port)
-              "smtp"))
-      (let* ((mechs (seq-intersection
-                     smtpmail-auth-supported
-                     (cdr-safe (assoc 'auth supported-extensions))
-                     #'eq))
-             (auth-source-creation-prompts
-              '((user  . "SMTP user name for %h: ")
-                (secret . "SMTP password for %u@%h: ")))
-             (auth-info (car
-                         (auth-source-search
-                          :host host
-                          :port port
-                          :user smtpmail-smtp-user
-                          :max 1
-                          :require (and ask-for-password
-                                        '(:user :secret))
-                          :create ask-for-password)))
-             (mech (or (plist-get auth-info :smtp-auth) (car mechs)))
-             (user (plist-get auth-info :user))
-             (password (plist-get auth-info :secret))
-             (save-function (and ask-for-password
-                                 (plist-get auth-info :save-function))))
-        (when (functionp password)
-          (setq password (funcall password)))
-        (when (and user
-                   (not password))
-          ;; The user has stored the user name, but not the password, so
-          ;; ask for the password, even if we're not forcing that through
-          ;; `ask-for-password'.
-          (setq auth-info
-                (car
-                 (auth-source-search
-                  :max 1
-                  :host host
-                  :port port
-                  :user smtpmail-smtp-user
-                  :require '(:user :secret)
-                  :create t))
-                password (plist-get auth-info :secret)))
-        (when (functionp password)
-          (setq password (funcall password)))
-        (let ((result (catch 'done
-                        (if (and mech user password)
-                            ;; TODO: remove when updating emacs; the change to fix #57373:
-                            (smtpmail-try-auth-method process (intern-soft mech) user password)
-                          ;; No mechanism, or no credentials.
-                          mech))))
-          (if (stringp result)
-              (progn
-                (auth-source-forget+ :host host :port port)
-                (throw 'done result))
-            (when save-function
-              (funcall save-function))
-            result))))
+    ;; Add new authentication method for xoauth2
+    (cl-defmethod smtpmail-try-auth-method
+      (process (_mech (eql xoauth2)) user password)
+      (let* ((access-token (fetch-access-token)))
+        (smtpmail-command-or-throw
+         process
+         (concat "AUTH XOAUTH2 " access-token)
+         235)))
+    ;; Register the method
     (add-to-list 'smtpmail-auth-supported 'xoauth2))
 
   (setq starttls-use-gnutls t)

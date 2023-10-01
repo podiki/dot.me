@@ -1,0 +1,11 @@
+#+TITLE: Alacritty Configuration
+#+PROPERTY: header-args :tangle "./.config/alacritty/alacritty.yml" :mkdirp yes :comments both :tangle-mode (identity #o444)
+#+AUTO_TANGLE: t
+
+Config for alacritty.
+
+* Looks
+#+begin_src sh
+  window:
+    opacity: 0.60
+#+end_src

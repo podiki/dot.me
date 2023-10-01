@@ -66,7 +66,8 @@
  '(rustic-ansi-faces
    ["#282c34" "#ff6c6b" "#98be65" "#ECBE7B" "#51afef" "#c678dd" "#46D9FF" "#bbc2cf"])
  '(safe-local-variable-values
-   '((eval let
+   '((geiser-repl-per-project-p . t)
+     (eval let
            ((root-dir-unexpanded
              (locate-dominating-file default-directory ".dir-locals.el")))
            (when root-dir-unexpanded

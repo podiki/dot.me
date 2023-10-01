@@ -1171,7 +1171,7 @@ Sync with Google Calendar using org-gcal
             org-gcal-notify-p nil
             epg-pinentry-mode 'loopback)
       ;; for caching plist passphrase until can use authinfo/pass
-      (setq-default plstore-cache-passphrase-for-symmetric-encryption) t))
+      (setq-default plstore-cache-passphrase-for-symmetric-encryption t)))
 #+end_src
 
 Pretty view with calfw (currently disabled as haven't used it)

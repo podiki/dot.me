@@ -46,6 +46,14 @@
   #~(job "5 0 * * *"            ;Vixie cron syntax
          "guix gc -F 1G"))
 
+(define linux-vrfix
+  (package/inherit linux
+    (source
+     (origin
+       (inherit (package-source linux))
+       (patches (append '("cap_sys_nice_begone.patch")
+                        (origin-patches (package-source linux))))))))
+
 (operating-system
   (locale "en_US.utf8")
   (timezone "America/New_York")
@@ -150,7 +158,7 @@
                                                     (settings (append '(("vm.swappiness" . "10"))
                                                                       %default-sysctl-settings)))))))
 
-  (kernel linux)
+  (kernel linux-vrfix)
   (kernel-loadable-modules (list v4l2loopback-linux-module))
   (kernel-arguments
    '("quiet"
@@ -158,7 +166,8 @@
      ;; Disable the PC speaker (do they still exist?)
      "modprobe.blacklist=pcspkr,snd_pcsp"
      ;; Enable more amdgpu features, e.g. controling power/performance with corectrl
-     "amdgpu.ppfeaturemask=0xffffffff"))
+     "amdgpu.ppfeaturemask=0xffffffff"
+     "amd_pstate=active"))
   (initrd microcode-initrd)
   (firmware (cons* amdgpu-firmware
                    realtek-firmware

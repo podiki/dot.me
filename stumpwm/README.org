@@ -88,6 +88,19 @@ For scrolling with a mouse wheel/gesture, this is (usually) needed
                   :subfamily "Regular"
                   :size 12))
 #+end_src
+* Layouts
+A layout with a center column, 3 times as wide as the 2 side columns.
+#+begin_src lisp
+  (defcommand center-column-layout () ()
+    (hsplit "0.2")
+    (fnext)
+    (hsplit "0.75"))
+#+end_src
+
+#+begin_src lisp
+  (defcommand two-third-layout () ()
+    (hsplit "0.6"))
+#+end_src
 * Float Helpers
 #+begin_src lisp
   (defcommand toggle-float () ()
@@ -179,7 +192,10 @@ For scrolling with a mouse wheel/gesture, this is (usually) needed
             (not (or (string-equal "Emacs" (window-class win))
                      (string-equal "Alacritty" (window-class win))
                      (string-equal "kitty" (window-class win))
-                     (string-equal "Nyxt" (window-class win)))))
+                     (string-equal "Nyxt" (window-class win))
+                     ;; crashes on load with "unbound variable ?" huh??
+                     ;(string-match (window-class win) "steam_app_")
+                     )))
           ("C-n"   . "Down")
           ("C-p"   . "Up")
           ("C-f"   . "Right")

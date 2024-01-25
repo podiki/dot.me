@@ -116,6 +116,7 @@
              "emacs-vertico-posframe"
              "emacs-marginalia"
              "python-lsp-server"
+             "emacs-docker-compose-mode"
              ;; mail
              "mu"
              "oauth2ms"

@@ -42,6 +42,10 @@ Get colors from [[https://github.com/deviantfero/wpgtk/][wpgtk]] so commands in 
   (cat ~/.config/wpg/sequences &)
 #+end_src
 
+Enable MangoHud by default
+#+begin_src sh
+  export MANGOHUD=1
+#+end_src
 * .zprofile
 :PROPERTIES:
 :header-args+: :tangle ".zprofile"

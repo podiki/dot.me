@@ -40,3 +40,11 @@ gpgconf --launch gpg-agent
 PATH=$HOME/.local/bin:$PATH
 export PATH
 # .zshenv:4 ends here
+
+
+
+# Enable MangoHud by default
+
+# [[file:README.org::*.zshenv][.zshenv:6]]
+export MANGOHUD=1
+# .zshenv:6 ends here

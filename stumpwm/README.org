@@ -193,9 +193,7 @@ A layout with a center column, 3 times as wide as the 2 side columns.
                      (string-equal "Alacritty" (window-class win))
                      (string-equal "kitty" (window-class win))
                      (string-equal "Nyxt" (window-class win))
-                     ;; crashes on load with "unbound variable ?" huh??
-                     ;(string-match (window-class win) "steam_app_")
-                     )))
+                     (string-match (window-class win) "steam_app_"))))
           ("C-n"   . "Down")
           ("C-p"   . "Up")
           ("C-f"   . "Right")

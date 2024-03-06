@@ -2062,14 +2062,17 @@ Make sure mp3info is installed (and found by emacs)
 Prepend a font to fix icon issues in mu4e with mu4e-marker-icons (see [[https://github.com/stardiviner/mu4e-marker-icons/issues/1][this issue]])
 
 #+BEGIN_SRC emacs-lisp
-  (use-package all-the-icons
-    :config
-    (set-fontset-font t 'unicode (font-spec :family "Material Icons") nil 'prepend))
+  (use-package all-the-icons)
 
   (use-package all-the-icons-dired
    :config
    (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 #+END_SRC
+
+For doom-modeline (should move to nerd-icons-dired too, but not in Guix currently)
+#+begin_src emacs-lisp
+  (use-package nerd-icons)
+#+end_src
 * Local Variables
 Rather than using ~org-auto-tangle-mode~, use a custom function on save to tangle and compile:
 

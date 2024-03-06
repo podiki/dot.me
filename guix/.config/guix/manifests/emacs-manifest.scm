@@ -99,6 +99,7 @@
              "emacs-company-auctex"
              "emacs-company-math"
              "emacs-emms"
+             "emacs-nerd-icons"
              "emacs-all-the-icons"
              "emacs-all-the-icons-dired"
              "emacs"
@@ -117,6 +118,7 @@
              "emacs-marginalia"
              "python-lsp-server"
              "emacs-docker-compose-mode"
+             "emacs-eat"
              ;; mail
              "mu"
              "oauth2ms"

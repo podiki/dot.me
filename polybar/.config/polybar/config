@@ -101,16 +101,13 @@ font-1 = FontAwesome:size=16;2
 
 modules-left = ewmh xwindow
 ;modules-center = mpd
-modules-right = wlan cpu temperature memory battery date
-
-tray-position = right
-tray-padding = 2
-;tray-scale = 1.0
-tray-maxsize = 45
-;tray-transparent = true
-;tray-background = #0063ff
+modules-right = wlan cpu temperature memory battery date tray
 
 override-redirect = false
+
+[module/tray]
+type = internal/tray
+tray-size = 90%
 
 [module/xwindow]
 type = internal/xwindow

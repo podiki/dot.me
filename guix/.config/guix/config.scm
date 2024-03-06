@@ -13,6 +13,7 @@
              (gnu packages networking) ; for blueman
              (guix profiles) ;; For manifest-entries
              (srfi srfi-1) ;; For filter-map
+             (rosenthal packages wm) ;; for hyprland
              (gnu packages hardware) ;; openrgb
              (gnu packages security-token) ;; for libfido2 (udev rule)
              (openrgb) ;; for corectrl and openrgb-next
@@ -23,7 +24,7 @@
  dbus
  desktop
  docker
- lightdm
+ sddm
  mcron
  networking
  security-token ; for pcscd
@@ -71,7 +72,8 @@
                 %base-user-accounts))
   (packages
     (append
-      (list (specification->package "xinitrc-xsession")
+     (list (specification->package "xinitrc-xsession")
+           (specification->package "hyprland")
             (specification->package "nss-certs")
             (specification->package "ntfs-3g"))
       %base-packages))
@@ -113,14 +115,14 @@
              ;;                       fstrim-job))
              (service syncthing-service-type
                       (syncthing-configuration (user "john")))
-             (service lightdm-service-type)
+             (service sddm-service-type)
              (set-xorg-configuration (xorg-configuration (extra-config
                                                           '("Section \"Device\"
                                                                Identifier \"device-amdgpu\"
                                                                Driver \"amdgpu\"
                                                                Option \"SWCursor\" \"on\"
                                                              EndSection")))
-                                     lightdm-service-type)
+                                     sddm-service-type)
              (service docker-service-type)
              (modify-services %desktop-services
                               (delete gdm-service-type) ; replaced by lightdm
@@ -138,9 +140,10 @@
                               ;; Set the default sample rate for the pulseaudio daemon to be
                               ;; 48000; needed for the Valve Index mic, see
                               ;; https://github.com/ValveSoftware/SteamVR-for-Linux/issues/215#issuecomment-526791835
-                              (pulseaudio-service-type config =>
-                                                       (pulseaudio-configuration
-                                                        (daemon-conf '((default-sample-rate . 44100)))))
+                              ;; (pulseaudio-service-type config =>
+                              ;;                          (pulseaudio-configuration
+                              ;;                           (daemon-conf '((default-sample-rate . 44100)))))
+                              (delete pulseaudio-service-type)
                               (guix-service-type config =>
                                                  (guix-configuration
                                                   (inherit config)

@@ -8,7 +8,7 @@
 
 (define native-comp
   (options->transformation
-   '((with-input . "emacs-minimal=emacs"))))
+   '((with-input . "emacs-minimal=emacs-pgtk"))))
 
 (packages->manifest
  (map native-comp
@@ -102,7 +102,7 @@
              "emacs-nerd-icons"
              "emacs-all-the-icons"
              "emacs-all-the-icons-dired"
-             "emacs"
+             "emacs-pgtk"
              "emacs-pdf-tools"
              "emacs-use-package"
              "guile"

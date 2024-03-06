@@ -9,6 +9,7 @@
    "gnome-themes-extra" ; for some defaults
    "adwaita-icon-theme" ; ditto
    "breeze-icons"       ; and for KDE too
+   "hicolor-icon-theme" ; fallback
    "arc-icon-theme"
    "arc-theme"
    "orchis-theme"
@@ -19,6 +20,7 @@
    "zoom"
    "flatpak"
    "xdg-desktop-portal-gtk"
+   "xdg-desktop-portal-wlr"
    "font-abattis-cantarell"
    "font-adobe-source-code-pro"
    "font-adobe-source-sans-pro"
@@ -62,6 +64,7 @@
    "polybar"
    "kitty"
    "alacritty"
+   "foot"
    "redshift:gtk"
    "picom"
    "python" ; for GUIX_PYTHONPATH needed for redshift
@@ -77,4 +80,10 @@
    "yubikey-oath-dmenu"
    "font-dejavu"
    "arandr"
-   "xprop"))
+   "xprop"
+   "wireplumber"
+   ;; wayland
+   ;"wlsunset"
+   "gammastep"
+   ;"waybar" ;once new version merged
+   ))

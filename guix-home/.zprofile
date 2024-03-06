@@ -4,15 +4,8 @@
 
 # [[file:README.org::*System-wide][System-wide:1]]
 source /etc/profile
-# System-wide:1 ends here
-
-# Guix Home
-# Since the shell is not (yet?) managed by Guix Home, make sure it sources needed setup
-
-
-# [[file:README.org::*Guix Home][Guix Home:1]]
 source ~/.profile
-# Guix Home:1 ends here
+# System-wide:1 ends here
 
 # Guix profile loading
 # Test if on a Guix System to set the extra profiles variable and source them. Otherwise, set and source the default one on a foreign distribution. For Guix, also source anything in a profiles ~/etc/profile.d~ directory (while this an expected place, have only seen Flatpak put something in there on Guix).

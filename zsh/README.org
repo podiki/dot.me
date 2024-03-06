@@ -56,6 +56,12 @@ Honor system-wide environment variables
 #+begin_src sh
   source /etc/profile
 #+end_src
+** Guix Home
+Since the shell is not (yet?) managed by Guix Home, make sure it sources needed setup
+
+#+begin_src sh
+  source ~/.profile
+#+end_src
 ** Guix profile loading
 Test if on a Guix System to set the extra profiles variable and source them. Otherwise, set and source the default one on a foreign distribution. For Guix, also source anything in a profiles ~/etc/profile.d~ directory (while this an expected place, have only seen Flatpak put something in there on Guix).
 

@@ -1,0 +1,33 @@
+#+begin_src sh
+  ❯ guix home reconfigure home-configuration.scm
+  guix home: warning: cannot determine provenance for current system
+  WARNING: (guile-user): imported module (guix build utils) overrides core binding `delete'
+  Symlinking /home/john/.profile -> /gnu/store/l27r8vj94ggr3na9pb1snizsmvh0zrxl-shell-profile... done
+  Backing up /home/john/.config/shepherd/init.scm... done
+  Symlinking /home/john/.config/shepherd/init.scm -> /gnu/store/yz87cxfcs9680b2p5m9m54pzfi3w3qf2-shepherd.conf... done
+  Symlinking /home/john/.config/pulse/client.conf -> /gnu/store/13d1jb5k2390r3jzywlhchg94m8zbf44-client.conf... done
+  Symlinking /home/john/.config/alsa/asoundrc -> /gnu/store/xx0w338mipimji09nc0f7shhc2xz5kfp-asoundrc... done
+  Backing up /home/john/.config/fontconfig/fonts.conf... done
+  Symlinking /home/john/.config/fontconfig/fonts.conf -> /gnu/store/sfj8h6zbacaz3y3gqzxqsbz3621nq4jv-fonts.conf... done
+   done
+  Finished updating symlinks.
+
+  Loading /gnu/store/yz87cxfcs9680b2p5m9m54pzfi3w3qf2-shepherd.conf.
+  Services already running, so not daemonizing.
+  Starting services...
+  Comparing /gnu/store/non-existing-generation/profile/share/fonts and
+            /gnu/store/l6w3kcj7palhlxz6dwhhq4axidcynz05-home/profile/share/fonts... done (same)
+  Evaluating on-change gexps.
+
+  On-change gexps evaluation finished.
+#+end_src
+
+can't roll back
+#+begin_src sh
+  ❯ guix home roll-back
+  guix home: error: cannot switch to home environment generation '-1'
+#+end_src
+
+backups in (random number?) =~/1706562808-guix-home-legacy-configs-backup=
+
+font service is a default (hence the messing fonts.conf above): see gnu/home.scm

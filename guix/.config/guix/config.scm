@@ -150,11 +150,13 @@
                                                   (substitute-urls
                                                    ;; Reverse the order to put Bordeaux first, adding in the US mirror
                                                    ;; don't reverse as the US mirror has become slow/unresponsive for unknown reasons
-                                                   (append '("https://substitutes.nonguix.org")
+                                                   (append ;'("https://bordeaux-us-east-mirror.cbaines.net/")
                                                            %default-substitute-urls
-                                                           '("https://bordeaux-us-east-mirror.cbaines.net/")))
+                                                           '("https://cuirass.genenetwork.org"
+                                                             "https://substitutes.nonguix.org")))
                                                   (authorized-keys
-                                                   (append (list (local-file "substitutes.nonguix.org.pub"))
+                                                   (append (list (local-file "substitutes.nonguix.org.pub")
+                                                                 (local-file "cuirass.genenetwork.org.pub"))
                                                            %default-authorized-guix-keys))))
                               (sysctl-service-type config =>
                                                    (sysctl-configuration

@@ -9,8 +9,6 @@
 
 (packages->manifest
   (list (transform1 (specification->package "stumpwm"))
-        (list (transform1 (specification->package "stumpwm"))
-              "lib")
         (transform1
           (specification->package "sbcl-stumpwm-swm-gaps"))
         (transform1

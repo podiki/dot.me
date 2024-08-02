@@ -114,17 +114,17 @@
              ;;                       fstrim-job))
              (service syncthing-service-type
                       (syncthing-configuration (user "john")))
-             (service sddm-service-type)
-             (set-xorg-configuration (xorg-configuration (extra-config
-                                                          '("Section \"Device\"
-                                                               Identifier \"device-amdgpu\"
-                                                               Driver \"amdgpu\"
-                                                               Option \"SWCursor\" \"on\"
-                                                             EndSection")))
-                                     sddm-service-type)
+             ;(service sddm-service-type)
+             ;(set-xorg-configuration (xorg-configuration (extra-config
+             ;                                             '("Section \"Device\"
+             ;                                                  Identifier \"device-amdgpu\"
+             ;                                                  Driver \"amdgpu\"
+             ;                                                  Option \"SWCursor\" \"on\"
+             ;                                                EndSection")))
+             ;                        sddm-service-type)
              (service docker-service-type)
              (modify-services %desktop-services
-                              (delete gdm-service-type) ; replaced by lightdm
+                              ;(delete gdm-service-type) ; replaced by lightdm
                               ;; don't use USB modems, scanners, or network-manager-applet
                               (delete modem-manager-service-type)
                               (delete usb-modeswitch-service-type)
@@ -158,11 +158,16 @@
                                                                  (local-file "cuirass.genenetwork.org.pub"))
                                                            %default-authorized-guix-keys))))
                               (sysctl-service-type config =>
-                                                   (sysctl-configuration
-                                                    (settings (append '(("vm.swappiness" . "10"))
-                                                                      %default-sysctl-settings)))))))
-
-  (kernel linux-6.7)
+                                (sysctl-configuration
+                                 (settings
+                                  (append '(("vm.swappiness" . "10")
+                                            ;; potential performance
+                                            ;; or stability with some
+                                            ;; games and now a default
+                                            ;; in e.g. Arch
+                                            ("vm.max_map_count" . "1048576"))
+                                          %default-sysctl-settings)))))))
+  (kernel linux-6.10)
   (kernel-loadable-modules (list v4l2loopback-linux-module))
   (kernel-arguments
    '("quiet"

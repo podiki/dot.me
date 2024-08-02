@@ -74,8 +74,7 @@
     (append
      (list (specification->package "xinitrc-xsession")
            (specification->package "hyprland")
-            (specification->package "nss-certs")
-            (specification->package "ntfs-3g"))
+           (specification->package "ntfs-3g"))
       %base-packages))
   (services (cons*
              (service pam-limits-service-type

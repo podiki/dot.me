@@ -4,6 +4,7 @@
 (use-modules (gnu)
              (guix download) ;for url-fetch (udev rule)
              (guix packages) ;for origin (udev rule)
+             (guix transformations)
              (peroxide-service) ;testing
              (nongnu packages linux) ; this and next for nongnu linux
              (nongnu system linux-initrd)
@@ -23,7 +24,7 @@
  cups
  dbus
  desktop
- docker
+ ;docker
  sddm
  mcron
  networking
@@ -48,12 +49,17 @@
          "guix gc -F 1G"))
 
 (define linux-vrfix
-  (package/inherit linux
-    (source
-     (origin
-       (inherit (package-source linux))
-       (patches (append '("cap_sys_nice_begone.patch")
-                        (origin-patches (package-source linux))))))))
+  (let ((linux-orig linux-6.11))
+    (package/inherit linux-orig
+                     (source
+                      (origin
+                        (inherit (package-source linux-orig))
+                        (patches (append '("cap_sys_nice_begone.patch")
+                                         (origin-patches (package-source linux-orig)))))))))
+
+(define transform-hyprland
+  (options->transformation
+   '((with-patch . "hyprland=hyprland-steamvr-fix.patch"))))
 
 (operating-system
   (locale "en_US.utf8")
@@ -68,12 +74,13 @@
                   (home-directory "/home/john")
                   (shell (file-append zsh "/bin/zsh"))
                   (supplementary-groups
-                    '("wheel" "netdev" "audio" "video" "docker" "kvm")))
+                   ;"docker" 
+                    '("wheel" "netdev" "audio" "video" "kvm")))
                 %base-user-accounts))
   (packages
     (append
      (list (specification->package "xinitrc-xsession")
-           (specification->package "hyprland")
+           (transform-hyprland (specification->package "hyprland"))
            (specification->package "ntfs-3g"))
       %base-packages))
   (services (cons*
@@ -115,14 +122,14 @@
              (service syncthing-service-type
                       (syncthing-configuration (user "john")))
              ;(service sddm-service-type)
-             ;(set-xorg-configuration (xorg-configuration (extra-config
-             ;                                             '("Section \"Device\"
-             ;                                                  Identifier \"device-amdgpu\"
-             ;                                                  Driver \"amdgpu\"
-             ;                                                  Option \"SWCursor\" \"on\"
-             ;                                                EndSection")))
-             ;                        sddm-service-type)
-             (service docker-service-type)
+             (set-xorg-configuration (xorg-configuration (extra-config
+                                                          '("Section \"Device\"
+                                                               Identifier \"device-amdgpu\"
+                                                               Driver \"amdgpu\"
+                                                               Option \"SWCursor\" \"on\"
+                                                             EndSection")))
+                                     gdm-service-type)
+             ;(service docker-service-type)
              (modify-services %desktop-services
                               ;(delete gdm-service-type) ; replaced by lightdm
                               ;; don't use USB modems, scanners, or network-manager-applet
@@ -151,11 +158,12 @@
                                                    ;; don't reverse as the US mirror has become slow/unresponsive for unknown reasons
                                                    (append ;'("https://bordeaux-us-east-mirror.cbaines.net/")
                                                            %default-substitute-urls
-                                                           '("https://cuirass.genenetwork.org"
+                                                           '(;"https://cuirass.genenetwork.org" nonresponsive
                                                              "https://substitutes.nonguix.org")))
                                                   (authorized-keys
                                                    (append (list (local-file "substitutes.nonguix.org.pub")
-                                                                 (local-file "cuirass.genenetwork.org.pub"))
+                                                                 ;(local-file "cuirass.genenetwork.org.pub")
+                                                                 )
                                                            %default-authorized-guix-keys))))
                               (sysctl-service-type config =>
                                 (sysctl-configuration
@@ -167,7 +175,7 @@
                                             ;; in e.g. Arch
                                             ("vm.max_map_count" . "1048576"))
                                           %default-sysctl-settings)))))))
-  (kernel linux-6.10)
+  (kernel linux-vrfix)
   (kernel-loadable-modules (list v4l2loopback-linux-module))
   (kernel-arguments
    '("quiet"
@@ -190,37 +198,37 @@
 
   (file-systems (append
                  (list (file-system
-                         (device (file-system-label "system"))
+                         (device (file-system-label "system-new"))
                          (mount-point "/")
                          (type "btrfs")
                          (flags '(no-atime))
-                         (options "subvol=root,compress=lzo,ssd"))
+                         (options "subvol=root,compress=zstd,ssd"))
                        (file-system
-                         (device (file-system-label "system"))
+                         (device (file-system-label "system-new"))
                          (mount-point "/swap")
                          (type "btrfs")
                          (flags '(no-atime))
                          (options "subvol=swap,ssd"))
                        (file-system
-                         (device (file-system-label "system"))
+                         (device (file-system-label "system-new"))
                          (mount-point "/gnu/store")
                          (type "btrfs")
                          (flags '(no-atime))
-                         (options "subvol=gnu-store,compress=lzo,ssd"))
+                         (options "subvol=gnu-store,compress=zstd,ssd"))
                        (file-system
-                         (device (file-system-label "system"))
+                         (device (file-system-label "system-new"))
                          (mount-point "/var/log")
                          (type "btrfs")
                          (flags '(no-atime))
-                         (options "subvol=var-log,compress=lzo,ssd"))
+                         (options "subvol=var-log,compress=zstd,ssd"))
                        (file-system
-                         (device (file-system-label "system"))
+                         (device (file-system-label "system-new"))
                          (mount-point "/home")
                          (type "btrfs")
                          (flags '(no-atime))
-                         (options "subvol=home,compress=lzo,ssd"))
+                         (options "subvol=home,compress=zstd,ssd"))
                        (file-system
-                         (device (uuid "5989-F926" 'fat))
+                         (device (uuid "8149-982B" 'fat))
                          (mount-point "/boot/efi")
                          (type "vfat"))
                        (file-system

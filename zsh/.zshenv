@@ -22,22 +22,11 @@ export HOSTNAME=$(hostname)
 
 
 
-# ssh with pgp
-
-# [[file:README.org::*.zshenv][.zshenv:3]]
-export GPG_TTY="$(tty)"
-export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
-gpgconf --launch gpg-agent
-# .zshenv:3 ends here
-
-
-
 # Add a user local bin to ~PATH~ (right now just for XMonad with Stack, default install location)
 
 # [[file:README.org::*.zshenv][.zshenv:4]]
-#typeset -U PATH path
-#PATH=("$HOME/.local/bin" "$path[@]")
-PATH=$HOME/.local/bin:$PATH
+typeset -U path PATH
+path=(~/.local/bin $path)
 export PATH
 # .zshenv:4 ends here
 

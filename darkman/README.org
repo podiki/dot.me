@@ -21,6 +21,14 @@ Firefox has the extension [[https://github.com/skhzhang/time-based-themes/][auto
   sleep 0.2
   killall lxappearance
 #+end_src
+
+Well, the above doesn't really work for Wayland at all (or maybe for some applications?), see [[https://github.com/swaywm/sway/wiki/GTK-3-settings-on-Wayland][Sway wiki]]. So, use ~gsettings~ directly.
+
+#+begin_src sh
+  gsettings set org.gnome.desktop.interface gtk-theme Orchis-dark
+  gsettings set org.gnome.desktop.interface icon-theme Papirus-Dark
+  gsettings set org.gnome.desktop.interface cursor-theme capitaine-cursors
+#+end_src
 ** emacs
 :PROPERTIES:
 :header-args+: :tangle "./.local/share/dark-mode.d/emacs.sh"
@@ -44,6 +52,12 @@ Does the same as the dark mode settings, just reversed.
   lxappearance&
   sleep 0.2
   killall lxappearance
+#+end_src
+
+#+begin_src sh
+  gsettings set org.gnome.desktop.interface gtk-theme Orchis-light
+  gsettings set org.gnome.desktop.interface icon-theme Papirus-Light
+  gsettings set org.gnome.desktop.interface cursor-theme capitaine-cursors
 #+end_src
 ** emacs
 :PROPERTIES:

@@ -16,3 +16,14 @@ lxappearance&
 sleep 0.2
 killall lxappearance
 # GTK:1 ends here
+
+
+
+# Well, the above doesn't really work for Wayland at all (or maybe for some applications?), see [[https://github.com/swaywm/sway/wiki/GTK-3-settings-on-Wayland][Sway wiki]]. So, use ~gsettings~ directly.
+
+
+# [[file:../../../README.org::*GTK][GTK:2]]
+gsettings set org.gnome.desktop.interface gtk-theme Orchis-dark
+gsettings set org.gnome.desktop.interface icon-theme Papirus-Dark
+gsettings set org.gnome.desktop.interface cursor-theme capitaine-cursors
+# GTK:2 ends here

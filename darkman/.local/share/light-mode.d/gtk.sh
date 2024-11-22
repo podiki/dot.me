@@ -12,3 +12,9 @@ lxappearance&
 sleep 0.2
 killall lxappearance
 # GTK:1 ends here
+
+# [[file:../../../README.org::*GTK][GTK:2]]
+gsettings set org.gnome.desktop.interface gtk-theme Orchis-light
+gsettings set org.gnome.desktop.interface icon-theme Papirus-Light
+gsettings set org.gnome.desktop.interface cursor-theme capitaine-cursors
+# GTK:2 ends here

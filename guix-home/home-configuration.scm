@@ -9,8 +9,10 @@
              (gnu services)
              (guix gexp)
              (gnu home services desktop)
+             (gnu home services gnupg)
              (gnu home services shepherd)
-             (gnu home services sound))
+             (gnu home services sound)
+             (gnu packages gnupg))
 
 (define goimapnotify-gmail-service
   (shepherd-service
@@ -21,7 +23,8 @@
                                   "/bin/goimapnotify")
                    "-conf"
                    "/home/john/gmail.conf")
-             #:log-file "/home/john/test.log"))
+             #:log-file "/home/john/test.log"
+             #:environment-variables (list "PATH=/run/current-system/profile/bin:/home/john/.config/guix/profiles/emacs/emacs/bin:/home/john/.config/guix/profiles/desktop/desktop/bin")))
    (stop #~(make-kill-destructor))
    (respawn? #t)))
 
@@ -34,7 +37,8 @@
                                   "/bin/goimapnotify")
                    "-conf"
                    "/home/john/proton.conf")
-             #:log-file "/home/john/testp.log"))
+             #:log-file "/home/john/testp.log"
+             #:environment-variables (list "PATH=/run/current-system/profile/bin:/home/john/.config/guix/profiles/emacs/emacs/bin:/home/john/.config/guix/profiles/desktop/desktop/bin")))
    (stop #~(make-kill-destructor))
    (respawn? #t)))
 
@@ -61,6 +65,20 @@
   (services
    (list (service home-dbus-service-type) ;; pipewire complains no dbus service
          (service home-pipewire-service-type)
+         (service home-gpg-agent-service-type
+                  (home-gpg-agent-configuration
+                   ;; Use the default gtk2 pintentry program.
+                   (pinentry-program
+                    (file-append pinentry "/bin/pinentry"))
+                   (ssh-support? #t)
+                   ;; From
+                   ;; <https://github.com/drduh/config/blob/master/gpg-agent.conf>,
+                   ;; except no TTY setting (just needed for
+                   ;; localization?).
+                   (default-cache-ttl 60)
+                   (max-cache-ttl 120)
+                   ;; Shouldn't this be set by the option above?
+                   (extra-content "enable-ssh-support")))
          (service home-shepherd-service-type
                   (home-shepherd-configuration
                    (services (list darkman-service

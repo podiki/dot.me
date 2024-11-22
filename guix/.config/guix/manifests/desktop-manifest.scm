@@ -6,20 +6,14 @@
 
 (use-modules (guix transformations))
 
-(define transform2
-  (options->transformation
-    '((with-latest . "rofi-wayland"))))
-
 (define transform1
   (options->transformation
-    '((with-latest . "rofi-wayland")
-      (with-input . "rofi=rofi-wayland"))))
+   '((with-input . "rofi=rofi-wayland"))))
 
 (concatenate-manifests
  (list
   (packages->manifest
-   (list (transform2 (specification->package "rofi-wayland"))
-         (transform1 (specification->package "rofi-calc"))))
+   (list (transform1 (specification->package "rofi-calc"))))
   (specifications->manifest
    '("gnome-themes-extra" ; for some defaults
      "adwaita-icon-theme" ; ditto

@@ -66,7 +66,21 @@
  '(rustic-ansi-faces
    ["#282c34" "#ff6c6b" "#98be65" "#ECBE7B" "#51afef" "#c678dd" "#46D9FF" "#bbc2cf"])
  '(safe-local-variable-values
-   '((geiser-insert-actual-lambda)
+   '((eval with-eval-after-load 'tempel
+           (if
+               (stringp tempel-path)
+               (setq tempel-path
+                     (list tempel-path)))
+           (let
+               ((guix-tempel-snippets
+                 (concat
+                  (expand-file-name "etc/snippets/tempel"
+                                    (locate-dominating-file default-directory ".dir-locals.el"))
+                  "/*.eld")))
+             (unless
+                 (member guix-tempel-snippets tempel-path)
+               (add-to-list 'tempel-path guix-tempel-snippets))))
+     (geiser-insert-actual-lambda)
      (geiser-guile-binary "guix" "repl")
      (geiser-repl-per-project-p . t)
      (eval let

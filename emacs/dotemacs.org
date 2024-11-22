@@ -27,6 +27,10 @@
   (menu-bar-mode -1)
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
+  ;; smooth scrolling as of v29
+  (pixel-scroll-precision-mode t)
+  ;; some alpha background
+  (add-to-list 'default-frame-alist '(alpha-background . 75))
   (setq delete-by-moving-to-trash 1)
   ;; possible display speed up (less responsive typing possible)
   (setq redisplay-dont-pause 1)
@@ -155,32 +159,6 @@ Also, prevent wide lines by wrapping
   ;; Allow pressing C-u C-SPC C-SPC etc. instead
   (setq set-mark-command-repeat-pop t)
 #+END_SRC
-
-** Smooth scroll
-Found [[http://zwell.net/content/emacs.html][this attempt]] (works okay so far) on the gnu.emacs.help mailing list discussion about [[https://groups.google.com/forum/#!topic/gnu.emacs.help/l7ymPQItP18][smooth scrolling]] (was also thinking of using this [[http://bug-gnu-emacs.gnu.narkive.com/cXKzPf3R/bug-21-4-19-smooth-vscroll-up-down][sample code]] to try to whip up something as a little project). There is an slightly different and more generic version on the same webpage.
-*** TODO Fix: scrolling only happen in active buffer, not where mouse is over
-*** TODO Fix this to be better
-Also tried adding some other [[https://stackoverflow.com/questions/3631220/fix-to-get-smooth-scrolling-in-emacs][settings]]
-#+BEGIN_SRC emacs-lisp :tangle no
-  (when (memq window-system '(x))
-    (defun smooth-scroll (increment)
-      (scroll-up increment) (sit-for 0.04)
-      (scroll-up increment) (sit-for 0.01)
-      (scroll-up increment) (sit-for 0.01)
-      (scroll-up increment) (sit-for 0.04)
-      (scroll-up increment) (sit-for 0.05)
-      (scroll-up increment))
-
-    (setq redisplay-dont-pause t
-          scroll-margin 1
-          scroll-step 1
-          scroll-conservatively 10000
-          scroll-preserve-screen-position 1)
-
-    (global-set-key [(mouse-5)] #'(lambda () (interactive) (smooth-scroll 1)))
-    (global-set-key [(mouse-4)] #'(lambda () (interactive) (smooth-scroll -1))))
-#+END_SRC
-
 ** Server
 #+BEGIN_SRC emacs-lisp
   (use-package server
@@ -1577,6 +1555,8 @@ Compose nice HTML messages using the power of org-mode
                                          (reply-to-text . (text))))
     ;; (setq org-msg-posting-style nil) ; don't top post
     (setq org-msg-convert-citation t)
+    ;; to stop extra buffers after sending
+    (setq org-export-show-temporary-export-buffer nil)
     (org-msg-mode))
 #+end_src
 *** Notifications

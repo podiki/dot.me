@@ -8,7 +8,7 @@
 sed --in-place --follow-symlinks 's/-dark/-light/' ~/.xsettingsd
 sed --in-place --follow-symlinks 's/-Dark/-Light/' ~/.xsettingsd
 killall -HUP xsettingsd
-lxappearance&
+DISPLAY=:0 GDK_BACKEND=x11 lxappearance&
 sleep 0.2
 killall lxappearance
 # GTK:1 ends here

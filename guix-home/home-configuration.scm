@@ -9,6 +9,14 @@
              (gnu services)
              (guix gexp)
              (guix transformations)
+             ;; darkman
+             (gnu home services)
+             (gnu services configuration)
+             (darkman)
+             (gnu packages glib)
+             (gnu packages gnome)
+             (ice-9 match)
+             ;;
              (gnu home services desktop)
              (gnu home services gnupg)
              (gnu home services shepherd)
@@ -299,53 +307,79 @@
    (stop #~(make-kill-destructor))
    (respawn? #t)))
 
-(define darkman-service
-  (shepherd-service
-   (documentation "Run 'darkman', a system light/dark theme service")
-   (provision '(darkman))
-   (start #~(make-forkexec-constructor
-             (list #$(file-append (specification->package "darkman")
-                                  "/bin/darkman")
-                   "run")
-             #:log-file "/home/john/testd.log"
-             #:environment-variables (list "PATH=/run/current-system/profile/bin:/home/john/.config/guix/profiles/emacs/emacs/bin:/home/john/.config/guix/profiles/desktop/desktop/bin")))
-   (stop #~(make-kill-destructor))
-   (respawn? #t)))
+(define (darkman-shepherd-service config)
+  (list (shepherd-service
+        (documentation "Run 'darkman', a system light/dark theme service")
+        (provision '(darkman))
+        (modules '((shepherd support))) ;for '%user-log-dir'
+        (start #~(make-forkexec-constructor
+                  (list #$(file-append (specification->package "darkman")
+                                       "/bin/darkman")
+                        "run")
+                  #:log-file (string-append %user-log-dir "/darkman.log")))
+        (stop #~(make-kill-destructor))
+        (respawn? #t))))
+
+(define (home-darkman-profile-entries config)
+  (list darkman (list glib "bin") gsettings-desktop-schemas))
+
+(define home-darkman-service-type
+  (service-type (name 'home-darkman)
+                (extensions
+                 (list (service-extension home-shepherd-service-type
+                                          darkman-shepherd-service)
+                       (service-extension home-profile-service-type
+                                          home-darkman-profile-entries)))
+                (default-value #f)
+                (description "darkman service")))
+
+(define (home-darkman-profile-entries config)
+  (list darkman (list glib "bin") gsettings-desktop-schemas))
+
+(define home-darkman-service-type
+  (service-type (name 'home-darkman)
+                (extensions
+                 (list (service-extension home-shepherd-service-type
+                                          darkman-shepherd-service)
+                       (service-extension home-profile-service-type
+                                          home-darkman-profile-entries)))
+                (default-value #f)
+                (description "darkman service")))
 
 (home-environment
-  ;; Below is the list of packages that will show up in your
-  ;; Home profile, under ~/.guix-home/profile.
-  (packages (append %cli-packages %emacs-packages %desktop-packages))
-
-  ;; Below is the list of Home services.  To search for available
-  ;; services, run 'guix home search KEYWORD' in a terminal.
-  (services
-   (list (service home-dbus-service-type) ;; pipewire complains no dbus service
-         (service home-pipewire-service-type)
-         (service home-gpg-agent-service-type
-                  (home-gpg-agent-configuration
-                   ;; Use the default gtk2 pintentry program.
-                   (pinentry-program
-                    (file-append pinentry "/bin/pinentry"))
-                   (ssh-support? #t)
-                   ;; From
-                   ;; <https://github.com/drduh/config/blob/master/gpg-agent.conf>,
-                   ;; except no TTY setting (just needed for
-                   ;; localization?).
-                   (default-cache-ttl 60)
-                   (max-cache-ttl 120)
-                   ;; Shouldn't this be set by the option above?
-                   (extra-content "enable-ssh-support")))
-         (service home-shepherd-service-type
-                  (home-shepherd-configuration
-                   (services (list darkman-service
-                                   goimapnotify-gmail-service
-                                   goimapnotify-proton-service))))
-         ;; (service home-bash-service-type
-         ;;          (home-bash-configuration
-         ;;           (aliases '(("grep" . "grep --color=auto") ("ll" . "ls -l")
-         ;;                      ("ls" . "ls -p --color=auto")))
-         ;;           (bashrc (list (local-file "guix-home/.bashrc" "bashrc")))
-         ;;           (bash-profile (list (local-file "guix-home/.bash_profile"
-         ;;                                           "bash_profile")))))
-         )))
+ ;; Below is the list of packages that will show up in your
+ ;; Home profile, under ~/.guix-home/profile.
+ (packages (append %cli-packages %emacs-packages %desktop-packages))
+ ;; Below is the list of Home services.  To search for available
+ ;; services, run 'guix home search KEYWORD' in a terminal.
+ (services
+  (list (service home-dbus-service-type) ;; pipewire complains no dbus service
+        (service home-pipewire-service-type)
+        (service home-gpg-agent-service-type
+                 (home-gpg-agent-configuration
+                  ;; Use the default gtk2 pintentry program.
+                  (pinentry-program
+                   (file-append pinentry "/bin/pinentry"))
+                  (ssh-support? #t)
+                  ;; From
+                  ;; <https://github.com/drduh/config/blob/master/gpg-agent.conf>,
+                  ;; except no TTY setting (just needed for
+                  ;; localization?).
+                  (default-cache-ttl 60)
+                  (max-cache-ttl 120)
+                  ;; Shouldn't this be set by the option above?
+                  (extra-content "enable-ssh-support")))
+        (service home-darkman-service-type)
+        (service home-shepherd-service-type
+                 (home-shepherd-configuration
+                  (services (list ;darkman-service
+                                  goimapnotify-gmail-service
+                                  goimapnotify-proton-service))))
+        ;; (service home-bash-service-type
+        ;;          (home-bash-configuration
+        ;;           (aliases '(("grep" . "grep --color=auto") ("ll" . "ls -l")
+        ;;                      ("ls" . "ls -p --color=auto")))
+        ;;           (bashrc (list (local-file "guix-home/.bashrc" "bashrc")))
+        ;;           (bash-profile (list (local-file "guix-home/.bash_profile"
+        ;;                                           "bash_profile")))))
+        )))

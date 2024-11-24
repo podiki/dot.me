@@ -119,6 +119,9 @@
              ;;                 mcron-service-type
              ;;                 (list ; garbage-collector-job
              ;;                       fstrim-job))
+             (service cups-service-type
+                      (cups-configuration
+                       (web-interface? #t)))
              (service syncthing-service-type
                       (syncthing-configuration (user "john")))
              ;(service sddm-service-type)

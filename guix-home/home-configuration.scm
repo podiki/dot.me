@@ -4,24 +4,22 @@
 ;; need to capture the channels being used, as returned by "guix describe".
 ;; See the "Replicating Guix" section in the manual.
 
-(use-modules (gnu home)
+(use-modules (darkman)
+             (ice-9 match)
+             (gnu home)
              (gnu packages)
              (gnu services)
-             (guix gexp)
-             (guix transformations)
-             ;; darkman
              (gnu home services)
-             (gnu services configuration)
-             (darkman)
-             (gnu packages glib)
-             (gnu packages gnome)
-             (ice-9 match)
-             ;;
              (gnu home services desktop)
              (gnu home services gnupg)
              (gnu home services shepherd)
              (gnu home services sound)
-             (gnu packages gnupg))
+             (gnu packages glib)
+             (gnu packages gnome)
+             (gnu packages gnupg)
+             (gnu services configuration)
+             (guix gexp)
+             (guix transformations))
 
 ;; Package lists, with some inspiration from
 ;; <https://git.sr.ht/~efraim/guix-config> (see item/efraim-home.scm).
@@ -307,20 +305,6 @@
                 (default-value "goimapnotify")
                 (description "goimapnotify service")))
 
-(define goimapnotify-proton-service
-  (shepherd-service
-   (documentation "Run 'goimapnotify', to watch a mailbox for events")
-   (provision '(goimapnotify-proton))
-   (start #~(make-forkexec-constructor
-             (list #$(file-append (specification->package "go-gitlab.com-shackra-goimapnotify")
-                                  "/bin/goimapnotify")
-                   "-conf"
-                   "/home/john/proton.conf")
-             #:log-file "/home/john/testp.log"
-             #:environment-variables (list "PATH=/run/current-system/profile/bin:/home/john/.config/guix/profiles/emacs/emacs/bin:/home/john/.config/guix/profiles/desktop/desktop/bin")))
-   (stop #~(make-kill-destructor))
-   (respawn? #t)))
-
 (define (darkman-shepherd-service config)
   (list (shepherd-service
         (documentation "Run 'darkman', a system light/dark theme service")
@@ -385,17 +369,4 @@
                   (extra-content "enable-ssh-support")))
         (service home-darkman-service-type)
         (service home-goimapnotify-service-type "gmail")
-        (service home-goimapnotify-service-type "proton")
-        ;; (service home-shepherd-service-type
-        ;;          (home-shepherd-configuration
-        ;;           (services (list ;darkman-service
-        ;;                           goimapnotify-gmail-service
-        ;;                           goimapnotify-proton-service))))
-        ;; (service home-bash-service-type
-        ;;          (home-bash-configuration
-        ;;           (aliases '(("grep" . "grep --color=auto") ("ll" . "ls -l")
-        ;;                      ("ls" . "ls -p --color=auto")))
-        ;;           (bashrc (list (local-file "guix-home/.bashrc" "bashrc")))
-        ;;           (bash-profile (list (local-file "guix-home/.bash_profile"
-        ;;                                           "bash_profile")))))
-        )))
+        (service home-goimapnotify-service-type "proton"))))

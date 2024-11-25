@@ -279,19 +279,33 @@
               "waybar"
               "swaynotificationcenter"))))
 
-(define goimapnotify-gmail-service
-  (shepherd-service
-   (documentation "Run 'goimapnotify', to watch a mailbox for events")
-   (provision '(goimapnotify-gmail))
-   (start #~(make-forkexec-constructor
-             (list #$(file-append (specification->package "go-gitlab.com-shackra-goimapnotify")
-                                  "/bin/goimapnotify")
-                   "-conf"
-                   "/home/john/gmail.conf")
-             #:log-file "/home/john/test.log"
-             #:environment-variables (list "PATH=/run/current-system/profile/bin:/home/john/.config/guix/profiles/emacs/emacs/bin:/home/john/.config/guix/profiles/desktop/desktop/bin")))
-   (stop #~(make-kill-destructor))
-   (respawn? #t)))
+(define (goimapnotify-shepherd-service config-name)
+  ;; config-name is base name, full path is $HOME/config-name.conf
+  (list (shepherd-service
+        (documentation "Run 'goimapnotify', to watch a mailbox for events")
+        (provision (list (string->symbol
+                          (string-append "goimapnotify-" config-name))))
+        (modules '((shepherd support))) ;for %user-log-dir
+        (start #~(make-forkexec-constructor
+                  (list #$(file-append
+                           (specification->package
+                            "go-gitlab.com-shackra-goimapnotify")
+                           "/bin/goimapnotify")
+                        "-conf" (string-append (getenv "HOME")
+                                               "/" #$config-name ".conf"))
+                  #:log-file (string-append %user-log-dir "/goimapnotify-"
+                                            #$config-name ".log")))
+        ;; in conf onNewMail --socket-name=/run/user/1000/emacs/server
+        (stop #~(make-kill-destructor))
+        (respawn? #t))))
+
+(define home-goimapnotify-service-type
+  (service-type (name 'goimapnotify)
+                (extensions
+                 (list (service-extension home-shepherd-service-type
+                                          goimapnotify-shepherd-service)))
+                (default-value "goimapnotify")
+                (description "goimapnotify service")))
 
 (define goimapnotify-proton-service
   (shepherd-service
@@ -311,7 +325,7 @@
   (list (shepherd-service
         (documentation "Run 'darkman', a system light/dark theme service")
         (provision '(darkman))
-        (modules '((shepherd support))) ;for '%user-log-dir'
+        (modules '((shepherd support))) ;for %user-log-dir
         (start #~(make-forkexec-constructor
                   (list #$(file-append (specification->package "darkman")
                                        "/bin/darkman")
@@ -370,11 +384,13 @@
                   ;; Shouldn't this be set by the option above?
                   (extra-content "enable-ssh-support")))
         (service home-darkman-service-type)
-        (service home-shepherd-service-type
-                 (home-shepherd-configuration
-                  (services (list ;darkman-service
-                                  goimapnotify-gmail-service
-                                  goimapnotify-proton-service))))
+        (service home-goimapnotify-service-type "gmail")
+        (service home-goimapnotify-service-type "proton")
+        ;; (service home-shepherd-service-type
+        ;;          (home-shepherd-configuration
+        ;;           (services (list ;darkman-service
+        ;;                           goimapnotify-gmail-service
+        ;;                           goimapnotify-proton-service))))
         ;; (service home-bash-service-type
         ;;          (home-bash-configuration
         ;;           (aliases '(("grep" . "grep --color=auto") ("ll" . "ls -l")

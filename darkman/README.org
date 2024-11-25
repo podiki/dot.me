@@ -27,7 +27,7 @@ Well, the above doesn't really work for Wayland at all (or maybe for some applic
 #+begin_src sh
   gsettings set org.gnome.desktop.interface gtk-theme Orchis-dark
   gsettings set org.gnome.desktop.interface icon-theme Papirus-Dark
-  gsettings set org.gnome.desktop.interface cursor-theme capitaine-cursors
+  gsettings set org.gnome.desktop.interface cursor-theme capitaine-cursors-light
 #+end_src
 ** emacs
 :PROPERTIES:

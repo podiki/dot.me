@@ -332,7 +332,7 @@
                 (description "darkman service")))
 
 (define (home-darkman-profile-entries config)
-  (list darkman (list glib "bin") gsettings-desktop-schemas))
+  (list darkman dconf (list glib "bin") gsettings-desktop-schemas))
 
 (define home-darkman-service-type
   (service-type (name 'home-darkman)

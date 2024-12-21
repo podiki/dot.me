@@ -11,6 +11,7 @@
 # [[file:../../../README.org::*GTK][GTK:1]]
 sed --in-place --follow-symlinks 's/-light/-dark/' ~/.xsettingsd
 sed --in-place --follow-symlinks 's/-Light/-Dark/' ~/.xsettingsd
+sed --in-place --follow-symlinks 's/capitaine-cursors/capitaine-cursors-light/' ~/.xsettingsd
 killall -HUP xsettingsd
 DISPLAY=:0 GDK_BACKEND=x11 lxappearance&
 sleep 0.2

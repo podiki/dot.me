@@ -5,6 +5,15 @@
 This is my setup to implement a global (of sorts) dark mode without something like Gnome and related settings daemons. I use [[https://gitlab.com/WhyNotHugo/darkman][darkman]]. For easing off that harsh blue light at night, I use [[https://github.com/maandree/blueshift/][blueshift]].
 
 * Dark Mode
+** Wallpaper
+:PROPERTIES:
+:header-args+: :tangle "./.local/share/dark-mode.d/wallpaper.sh"
+:END:
+Switch wallpaper with ~swaybg~
+#+begin_src sh
+  killall swaybg
+  WAYLAND_DISPLAY=wayland-1 guix shell swaybg -- swaybg -i /home/john/.local/share/guix-sandbox-home/.local/share/Steam/userdata/11883925/760/remote/2561580/screenshots/20241115012204_1.jpg &
+#+end_src
 ** GTK
 :PROPERTIES:
 :header-args+: :tangle "./.local/share/dark-mode.d/gtk.sh"
@@ -16,6 +25,7 @@ Firefox has the extension [[https://github.com/skhzhang/time-based-themes/][auto
 #+begin_src sh
   sed --in-place --follow-symlinks 's/-light/-dark/' ~/.xsettingsd
   sed --in-place --follow-symlinks 's/-Light/-Dark/' ~/.xsettingsd
+  sed --in-place --follow-symlinks 's/capitaine-cursors/capitaine-cursors-light/' ~/.xsettingsd
   killall -HUP xsettingsd
   DISPLAY=:0 GDK_BACKEND=x11 lxappearance&
   sleep 0.2
@@ -29,6 +39,15 @@ Well, the above doesn't really work for Wayland at all (or maybe for some applic
   gsettings set org.gnome.desktop.interface icon-theme Papirus-Dark
   gsettings set org.gnome.desktop.interface cursor-theme capitaine-cursors-light
 #+end_src
+** Hyprland
+:PROPERTIES:
+:header-args+: :tangle "./.local/share/dark-mode.d/hyprland.sh"
+:END:
+Set the cursor theme for Hyprland as well, see [[https://wiki.hyprland.org/FAQ/#how-do-i-change-me-mouse-cursor][this question in the Hyprland FAQ]]. Except this doesn't work as the darkman service spawned by guix-home doesn't see the Hyprland environment variable needed...
+
+#+begin_src sh
+  hyprctl setcursor capitaine-cursors-light 32
+#+end_src
 ** emacs
 :PROPERTIES:
 :header-args+: :tangle "./.local/share/dark-mode.d/emacs.sh"
@@ -41,6 +60,15 @@ For emacs, call a custom function that toggles between day and night themes. Pro
 
 * Light Mode
 Does the same as the dark mode settings, just reversed.
+** Wallpaper
+:PROPERTIES:
+:header-args+: :tangle "./.local/share/light-mode.d/wallpaper.sh"
+:END:
+Switch wallpaper with ~swaybg~
+#+begin_src sh
+  killall swaybg
+  WAYLAND_DISPLAY=wayland-1 guix shell swaybg -- swaybg -i /home/john/.local/share/guix-sandbox-home/.local/share/Steam/userdata/11883925/760/remote/2561580/screenshots/20241115011344_1.jpg &
+#+end_src
 ** GTK
 :PROPERTIES:
 :header-args+: :tangle "./.local/share/light-mode.d/gtk.sh"
@@ -48,6 +76,7 @@ Does the same as the dark mode settings, just reversed.
 #+begin_src sh
   sed --in-place --follow-symlinks 's/-dark/-light/' ~/.xsettingsd
   sed --in-place --follow-symlinks 's/-Dark/-Light/' ~/.xsettingsd
+  sed --in-place --follow-symlinks 's/capitaine-cursors-light/capitaine-cursors/' ~/.xsettingsd
   killall -HUP xsettingsd
   DISPLAY=:0 GDK_BACKEND=x11 lxappearance&
   sleep 0.2
@@ -58,6 +87,13 @@ Does the same as the dark mode settings, just reversed.
   gsettings set org.gnome.desktop.interface gtk-theme Orchis-light
   gsettings set org.gnome.desktop.interface icon-theme Papirus-Light
   gsettings set org.gnome.desktop.interface cursor-theme capitaine-cursors
+#+end_src
+** Hyprland
+:PROPERTIES:
+:header-args+: :tangle "./.local/share/light-mode.d/hyprland.sh"
+:END:
+#+begin_src sh
+  hyprctl setcursor capitaine-cursors 32
 #+end_src
 ** emacs
 :PROPERTIES:

@@ -142,7 +142,8 @@ fi
 # [[file:README.org::*Aliases][Aliases:1]]
 alias ls='ls --color=auto -F'
 alias ll='ls -lahF --color=auto'
-eval "$(thefuck --alias)"
+# removed thefuck for now (test breakage)
+# eval "$(thefuck --alias)"
 alias gp='grep --color -rniC 1'
 # Completion for aliases too
 setopt COMPLETE_ALIASES

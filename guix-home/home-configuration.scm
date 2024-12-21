@@ -28,7 +28,10 @@
        (list "python-tldr"
              "python-yubikey-manager"
              "colordiff"
-             "thefuck"
+             ;; tests fail post python-team merge, probably pytest
+             ;; update <https://github.com/nvbn/thefuck/issues/1438>
+             ;; but no upstream updates in a year... no fucks given?
+             ;; "thefuck"
              "curl"
              "tree"
              "btrfs-progs"

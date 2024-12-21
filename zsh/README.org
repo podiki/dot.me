@@ -269,7 +269,8 @@ Set up general keybindings, mostly just didn't have delete key registering corre
 #+begin_src sh
   alias ls='ls --color=auto -F'
   alias ll='ls -lahF --color=auto'
-  eval "$(thefuck --alias)"
+  # removed thefuck for now (test breakage)
+  # eval "$(thefuck --alias)"
   alias gp='grep --color -rniC 1'
   # Completion for aliases too
   setopt COMPLETE_ALIASES

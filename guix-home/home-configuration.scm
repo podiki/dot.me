@@ -43,6 +43,7 @@
              "lm-sensors"
              "unzip"
              "zsh"
+             "zsh-syntax-highlighting"
              "htop"
              "stow"
              "git"

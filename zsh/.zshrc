@@ -190,3 +190,9 @@ if [[ "$TERM" == (screen*|xterm*|rxvt*|termite*|kitty*) ]]; then
         add-zsh-hook -Uz preexec xterm_title_preexec
 fi
 # Looks:1 ends here
+
+# Syntax highlight
+
+# [[file:README.org::*Syntax highlight][Syntax highlight:1]]
+source ~/.guix-home/profile/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# Syntax highlight:1 ends here

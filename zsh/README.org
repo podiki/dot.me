@@ -16,12 +16,6 @@ Set up a few environment variables we need everywhere, especially the One True E
   export EDITOR='emacsclient -a nano'
 #+end_src
 
-workaround core-updates-frozen bug with TZ and HOSTNAME not universal
-#+begin_src sh
-  export TZ=America/New_York
-  export HOSTNAME=$(hostname)
-#+end_src
-
 ssh with gpg (starting agent moved to Guix Home)
 #+begin_src sh :tangle no
   export GPG_TTY="$(tty)"

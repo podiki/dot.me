@@ -13,27 +13,18 @@ export EDITOR='emacsclient -a nano'
 
 
 
-# workaround core-updates-frozen bug with TZ and HOSTNAME not universal
-
-# [[file:README.org::*.zshenv][.zshenv:2]]
-export TZ=America/New_York
-export HOSTNAME=$(hostname)
-# .zshenv:2 ends here
-
-
-
 # Add a user local bin to ~PATH~ (right now just for XMonad with Stack, default install location)
 
-# [[file:README.org::*.zshenv][.zshenv:4]]
+# [[file:README.org::*.zshenv][.zshenv:3]]
 typeset -U path PATH
 path=(~/.local/bin $path)
 export PATH
-# .zshenv:4 ends here
+# .zshenv:3 ends here
 
 
 
 # Enable MangoHud by default
 
-# [[file:README.org::*.zshenv][.zshenv:6]]
+# [[file:README.org::*.zshenv][.zshenv:5]]
 export MANGOHUD=1
-# .zshenv:6 ends here
+# .zshenv:5 ends here

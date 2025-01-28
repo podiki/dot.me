@@ -35,6 +35,7 @@ Firefox has the extension [[https://github.com/skhzhang/time-based-themes/][auto
 Well, the above doesn't really work for Wayland at all (or maybe for some applications?), see [[https://github.com/swaywm/sway/wiki/GTK-3-settings-on-Wayland][Sway wiki]]. So, use ~gsettings~ directly.
 
 #+begin_src sh
+  gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
   gsettings set org.gnome.desktop.interface gtk-theme Orchis-dark
   gsettings set org.gnome.desktop.interface icon-theme Papirus-Dark
   gsettings set org.gnome.desktop.interface cursor-theme capitaine-cursors-light
@@ -84,6 +85,7 @@ Switch wallpaper with ~swaybg~
 #+end_src
 
 #+begin_src sh
+  gsettings set org.gnome.desktop.interface color-scheme 'prefer-light'
   gsettings set org.gnome.desktop.interface gtk-theme Orchis-light
   gsettings set org.gnome.desktop.interface icon-theme Papirus-Light
   gsettings set org.gnome.desktop.interface cursor-theme capitaine-cursors

@@ -14,10 +14,9 @@
              (gnu packages networking) ; for blueman
              (guix profiles) ;; For manifest-entries
              (srfi srfi-1) ;; For filter-map
-             (rosenthal packages wm) ;; for hyprland
              (gnu packages hardware) ;; openrgb
              (gnu packages security-token) ;; for libfido2 (udev rule)
-             (openrgb) ;; for corectrl and openrgb-next
+             (gnu packages admin) ;; for corectrl
              (gnu packages gnome)) ;; for libratbag (piper)
 
 (use-service-modules
@@ -49,17 +48,23 @@
          "guix gc -F 1G"))
 
 (define linux-vrfix
-  (let ((linux-orig linux-6.11))
+  (let ((linux-orig linux-xanmod))
     (package/inherit linux-orig
                      (source
                       (origin
                         (inherit (package-source linux-orig))
-                        (patches (append '("cap_sys_nice_begone.patch")
+                        (patches (append '("cap_sys_nice_begone.patch"
+                                           ; via
+                                           ; <https://nyanpasu64.gitlab.io/blog/amdgpu-sleep-wake-hang/>
+                                           ; and
+                                           ; <https://gitlab.freedesktop.org/agd5f/linux/-/commit/2965e6355dcdf157b5fafa25a2715f00064da8bf>
+                                           "amd-suspend.patch")
                                          (origin-patches (package-source linux-orig)))))))))
 
-(define transform-hyprland
-  (options->transformation
-   '((with-patch . "hyprland=hyprland-steamvr-fix.patch"))))
+(define %ntsync-udev-rule
+  (udev-rule
+    "99-winesync.rules"
+    (string-append "KERNEL==\"ntsync\", MODE=\"0644\"")))
 
 (operating-system
   (locale "en_US.utf8")
@@ -79,9 +84,7 @@
                 %base-user-accounts))
   (packages
     (append
-     (list (specification->package "xinitrc-xsession")
-           (transform-hyprland (specification->package "hyprland"))
-           (specification->package "ntfs-3g"))
+     (map specification->package '("xinitrc-xsession" "hyprland" "ntfs-3g"))
       %base-packages))
   (services (cons*
              (service pam-limits-service-type
@@ -101,6 +104,7 @@
              (udev-rules-service 'headsetcontrol headsetcontrol)
              (udev-rules-service 'steam-devices steam-devices-udev-rules)
              (udev-rules-service 'openrgb openrgb)
+             (udev-rules-service 'ntsync %ntsync-udev-rule)
              (simple-service 'blueman dbus-root-service-type (list blueman))
              (simple-service 'ratbagd dbus-root-service-type (list libratbag))
              (simple-service 'corectrl-polkit polkit-service-type

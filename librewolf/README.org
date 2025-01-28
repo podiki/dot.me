@@ -1,0 +1,21 @@
+#+TITLE: LibreWolf Configuration
+#+PROPERTY: header-args :tangle "./.librewolf/librewolf.overrides.cfg" :tangle-mode (identity #o444) :mkdirp yes :comments both
+#+AUTO_TANGLE: t
+
+My LibreWolf configuration, following <https://librewolf.net/docs/settings/>.
+
+Enable letterboxing for fingerprinting resistance
+#+begin_src js
+  defaultPref("privacy.resistFingerprinting.letterboxing", true);
+#+end_src
+
+and Firefox Sync
+#+begin_src js
+  defaultPref("identity.fxaccounts.enabled", true);
+#+end_src
+
+along with history/download history
+#+begin_src js
+  defaultPref("privacy.clearOnShutdown.history", false);
+  defaultPref("privacy.clearOnShutdown.downloads", false);
+#+end_src

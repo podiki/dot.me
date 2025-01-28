@@ -61,11 +61,6 @@
                                            "amd-suspend.patch")
                                          (origin-patches (package-source linux-orig)))))))))
 
-(define %ntsync-udev-rule
-  (udev-rule
-    "99-winesync.rules"
-    (string-append "KERNEL==\"ntsync\", MODE=\"0644\"")))
-
 (operating-system
   (locale "en_US.utf8")
   (timezone "America/New_York")
@@ -104,7 +99,6 @@
              (udev-rules-service 'headsetcontrol headsetcontrol)
              (udev-rules-service 'steam-devices steam-devices-udev-rules)
              (udev-rules-service 'openrgb openrgb)
-             (udev-rules-service 'ntsync %ntsync-udev-rule)
              (simple-service 'blueman dbus-root-service-type (list blueman))
              (simple-service 'ratbagd dbus-root-service-type (list libratbag))
              (simple-service 'corectrl-polkit polkit-service-type

@@ -1134,7 +1134,7 @@ For [[https://boilingsteam.com][Boiling Steam posts]]
 Sync with Google Calendar using org-gcal
 #+begin_src emacs-lisp
   (use-package org-gcal
-    :defer t
+    :after org
     :ensure t
     :config
     (let* ((auth (car (auth-source-search :host "gcal")))
@@ -1149,7 +1149,8 @@ Sync with Google Calendar using org-gcal
             org-gcal-notify-p nil
             epg-pinentry-mode 'loopback)
       ;; for caching plist passphrase until can use authinfo/pass
-      (setq-default plstore-cache-passphrase-for-symmetric-encryption t)))
+      (setq-default plstore-cache-passphrase-for-symmetric-encryption t)
+      (org-gcal-reload-client-id-secret)))
 #+end_src
 
 Pretty view with calfw (currently disabled as haven't used it)
@@ -1369,7 +1370,9 @@ Show things like emphasis markers when editing text within them with org-appear
             ;; don't show related messages
             mu4e-headers-include-related nil
             ;; don't show multiple copies of same message
-            mu4e-headers-skip-duplicates t)
+            mu4e-headers-skip-duplicates t
+            ;; verify signatures
+            mm-verify-option 'known)
       ;; contexts
       (setq mu4e-contexts
             `(,(make-mu4e-context
@@ -1890,7 +1893,8 @@ Commented out for now as I haven't used python in a while, will need to be updat
     (add-to-list 'geiser-guile-load-path "~/codemonkey/guix-src"))
   (use-package yasnippet
     :config
-    (add-to-list 'yas-snippet-dirs "~/codemonkey/guix-src/etc/snippets"))
+    (add-to-list 'yas-snippet-dirs "~/codemonkey/guix-src/etc/snippets")
+    (yas-global-mode 1))
 #+end_src
 * Other text modes
 ** Fountain for screenplay writing

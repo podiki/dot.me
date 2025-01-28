@@ -19,7 +19,10 @@
              (gnu packages gnupg)
              (gnu services configuration)
              (guix gexp)
-             (guix transformations))
+             (guix transformations)
+             ;; for cut and remove
+             (srfi srfi-26)
+             (srfi srfi-1))
 
 ;; Package lists, with some inspiration from
 ;; <https://git.sr.ht/~efraim/guix-config> (see item/efraim-home.scm).
@@ -283,6 +286,36 @@
               "waybar"
               "swaynotificationcenter"))))
 
+;; much stolen from
+;; <https://git.ditigal.xyz/~ruther/guix-exprs/tree/main/item/ruther/home/services/wayland.scm>
+;; and (gnu home services desktop)
+(define (wayland-hyprland-env-shepherd-service config)
+  (list
+   (shepherd-service
+    (documentation "Sets WAYLAND_DISPLAY and HYPRLAND_INSTANCE_SIGNATURE to arguments
+passed in. This should be called from a wayland compositor: herd start
+wayland-display $WAYLAND_DISPLAY $HYPRLAND_INSTANCE_SIGNATURE")
+    (provision '(wayland-hyprland-env))
+    (auto-start? #f)
+    (respawn? #f)
+    (start #~(lambda (wayland-display hyprland-sign)
+               (setenv "WAYLAND_DISPLAY" wayland-display)
+               (setenv "HYPRLAND_INSTANCE_SIGNATURE" hyprland-sign)))
+    (stop #~(lambda _
+              (unsetenv "WAYLAND_DISPLAY")
+              (unsetenv "HYPRLAND_INSTANCE_SIGNATURE")
+              #f)))))
+
+(define-public home-wayland-hyprland-env-service-type
+  (service-type
+   (name 'home-wayland-hyprland-env)
+   (description "A service to set WAYLAND_DISPLAY and HYPRLAND_INSTANCE_SIGNATURE for
+shepherd services.")
+   (default-value #f)
+   (extensions
+    (list (service-extension home-shepherd-service-type
+                             wayland-hyprland-env-shepherd-service)))))
+
 (define (goimapnotify-shepherd-service config-name)
   ;; config-name is base name, full path is $HOME/config-name.conf
   (list (shepherd-service
@@ -298,7 +331,11 @@
                         "-conf" (string-append (getenv "HOME")
                                                "/" #$config-name ".conf"))
                   #:log-file (string-append %user-log-dir "/goimapnotify-"
-                                            #$config-name ".log")))
+                                            #$config-name ".log")
+                  ;; Need pinentry to see the X(Wayland) server, just
+                  ;; use the default.
+                  #:environment-variables (cons "DISPLAY=:0"
+                                                (default-environment-variables))))
         ;; in conf onNewMail --socket-name=/run/user/1000/emacs/server
         (stop #~(make-kill-destructor))
         (respawn? #t))))
@@ -315,13 +352,35 @@
   (list (shepherd-service
         (documentation "Run 'darkman', a system light/dark theme service")
         (provision '(darkman))
-        (modules '((shepherd support))) ;for %user-log-dir
-        (start #~(make-forkexec-constructor
-                  (list #$(file-append (specification->package "darkman")
-                                       "/bin/darkman")
-                        "run")
-                  #:log-file (string-append %user-log-dir "/darkman.log")))
+        (requirement '(dbus wayland-hyprland-env))
+        (modules '((shepherd support)  ;for %user-log-dir
+                   ;; for remove and cut
+                   (srfi srfi-1)
+                   (srfi srfi-26)))
+        (start #~(lambda _
+                   (if (service-running? (lookup-service 'wayland-hyprland-env))
+                       (make-forkexec-constructor
+                        (list #$(file-append (specification->package "darkman")
+                                             "/bin/darkman")
+                              "run")
+                        #:log-file (string-append %user-log-dir "/darkman.log")
+                        #:environment-variables
+                        (cons* (string-append "WAYLAND_DISPLAY=" (or
+                                                                  (getenv "WAYLAND_DISPLAY")
+                                                                  "NOTSET"))
+                               (string-append "HYPRLAND_INSTANCE_SIGNATURE="
+                                              (or (getenv "HYPRLAND_INSTANCE_SIGNATURE")
+                                                  "NOTSET"))
+                               ;; shouldn't have these variables by default
+                               ;; anyway (hence this whole thing) so
+                               ;; probably don't need this?
+                               ;; (remove (cut string-prefix? "HYPRLAND_INSTANCE_SIGNATURE=" <>)
+                               ;;         (remove (cut string-prefix? "WAYLAND_DISPLAY=" <>)
+                               ;;                 (default-environment-variables)))
+                               (default-environment-variables)))
+                       #f)))
         (stop #~(make-kill-destructor))
+        (auto-start? #f)
         (respawn? #t))))
 
 (define (home-darkman-profile-entries config)
@@ -333,7 +392,10 @@
                  (list (service-extension home-shepherd-service-type
                                           darkman-shepherd-service)
                        (service-extension home-profile-service-type
-                                          home-darkman-profile-entries)))
+                                          home-darkman-profile-entries)
+                       ;; need this for env
+                       (service-extension home-wayland-hyprland-env-service-type
+                                          (const #t))))
                 (default-value #f)
                 (description "darkman service")))
 
@@ -357,22 +419,25 @@
  ;; Below is the list of Home services.  To search for available
  ;; services, run 'guix home search KEYWORD' in a terminal.
  (services
-  (list (service home-dbus-service-type) ;; pipewire complains no dbus service
-        (service home-pipewire-service-type)
-        (service home-gpg-agent-service-type
-                 (home-gpg-agent-configuration
-                  ;; Use the default gtk2 pintentry program.
-                  (pinentry-program
-                   (file-append pinentry "/bin/pinentry"))
-                  (ssh-support? #t)
-                  ;; From
-                  ;; <https://github.com/drduh/config/blob/master/gpg-agent.conf>,
-                  ;; except no TTY setting (just needed for
-                  ;; localization?).
-                  (default-cache-ttl 60)
-                  (max-cache-ttl 120)
-                  ;; Shouldn't this be set by the option above?
-                  (extra-content "enable-ssh-support")))
-        (service home-darkman-service-type)
-        (service home-goimapnotify-service-type "gmail")
-        (service home-goimapnotify-service-type "proton"))))
+  (append
+   (list (service home-dbus-service-type) ;; pipewire complains no dbus service
+         (service home-pipewire-service-type)
+         (service home-gpg-agent-service-type
+                  (home-gpg-agent-configuration
+                   ;; Use the default gtk2 pintentry program.
+                   (pinentry-program
+                    (file-append pinentry "/bin/pinentry"))
+                   (ssh-support? #t)
+                   ;; From
+                   ;; <https://github.com/drduh/config/blob/master/gpg-agent.conf>,
+                   ;; except no TTY setting (just needed for
+                   ;; localization?).
+                   (default-cache-ttl 60)
+                   (max-cache-ttl 120)
+                   ;; Shouldn't this be set by the option above?
+                   (extra-content "enable-ssh-support")))
+         (service home-wayland-hyprland-env-service-type)
+         (service home-darkman-service-type)
+         (service home-goimapnotify-service-type "gmail")
+         (service home-goimapnotify-service-type "proton"))
+   %base-home-services)))

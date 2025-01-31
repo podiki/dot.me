@@ -1136,7 +1136,7 @@ Sync with Google Calendar using org-gcal
   (use-package org-gcal
     :after org
     :ensure t
-    :config
+    :init
     (let* ((auth (car (auth-source-search :host "gcal")))
            (id (plist-get auth :user))
            (secret (funcall (plist-get auth :secret))))
@@ -1149,8 +1149,7 @@ Sync with Google Calendar using org-gcal
             org-gcal-notify-p nil
             epg-pinentry-mode 'loopback)
       ;; for caching plist passphrase until can use authinfo/pass
-      (setq-default plstore-cache-passphrase-for-symmetric-encryption t)
-      (org-gcal-reload-client-id-secret)))
+      (setq-default plstore-cache-passphrase-for-symmetric-encryption t)))
 #+end_src
 
 Pretty view with calfw (currently disabled as haven't used it)
@@ -1220,6 +1219,7 @@ org-ref for reference management
 org-noter to take notes associated with pdfs
 #+begin_src emacs-lisp
   (use-package org-noter
+    :defer t
     :config (setq org-noter-default-notes-file-names '("notes.org")
                   org-noter-notes-search-path (list (concat org-directory "/science-style-lr/"))))
 #+end_src

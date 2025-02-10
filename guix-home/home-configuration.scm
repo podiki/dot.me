@@ -31,10 +31,7 @@
        (list "python-tldr"
              "python-yubikey-manager"
              "colordiff"
-             ;; tests fail post python-team merge, probably pytest
-             ;; update <https://github.com/nvbn/thefuck/issues/1438>
-             ;; but no upstream updates in a year... no fucks given?
-             ;; "thefuck"
+             "thefuck"
              "curl"
              "tree"
              "btrfs-progs"
@@ -223,6 +220,8 @@
               "font-adobe-source-sans-pro"
               "font-adobe-source-serif-pro"
               "font-google-noto"
+              "font-google-noto-sans-cjk"
+              "font-google-noto-emoji"
               "font-google-roboto"
               "font-liberation"
               "font-microsoft-web-core-fonts"
@@ -276,6 +275,7 @@
               "rofi-wayland"
               "rofi-pass-wayland"
               "yubikey-oath-dmenu"
+              "yubikey-touch-detector"
               "font-dejavu"
               "arandr"
               "xprop"

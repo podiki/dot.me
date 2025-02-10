@@ -236,6 +236,11 @@
                          (device (file-system-label "extra"))
                          (mount-point "/mnt/extra")
                          (type "ext4")
+                         (flags '(no-atime)))
+                       (file-system
+                         (device (file-system-label "nvmind"))
+                         (mount-point "/mnt/nvmind")
+                         (type "ext4")
                          (flags '(no-atime))))
                  %base-file-systems))
 

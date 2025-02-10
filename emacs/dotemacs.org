@@ -1560,7 +1560,10 @@ Compose nice HTML messages using the power of org-mode
     (setq org-msg-convert-citation t)
     ;; to stop extra buffers after sending
     (setq org-export-show-temporary-export-buffer nil)
-    (org-msg-mode))
+    ;; disabled by default due to issues with drafts/sending, e.g
+    ;; <https://github.com/jeremy-compostella/org-msg/issues/200>
+    ;; (org-msg-mode)
+    )
 #+end_src
 *** Notifications
 Use mu4e-alert

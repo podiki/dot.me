@@ -183,8 +183,7 @@
                    ;; mail
                    "mu"
                    "oauth2ms"
-                   "isync"
-                   "go-gitlab.com-shackra-goimapnotify")))))
+                   "isync")))))
 
 (define rofi-calc-wayland
   (options->transformation
@@ -316,27 +315,25 @@ shepherd services.")
     (list (service-extension home-shepherd-service-type
                              wayland-hyprland-env-shepherd-service)))))
 
-(define (goimapnotify-shepherd-service config-name)
-  ;; config-name is base name, full path is $HOME/config-name.conf
+(define (goimapnotify-shepherd-service config)
   (list (shepherd-service
         (documentation "Run 'goimapnotify', to watch a mailbox for events")
-        (provision (list (string->symbol
-                          (string-append "goimapnotify-" config-name))))
+        (provision '(goimapnotify))
         (modules '((shepherd support))) ;for %user-log-dir
         (start #~(make-forkexec-constructor
-                  (list #$(file-append
+                  (cons #$(file-append
                            (specification->package
-                            "go-gitlab.com-shackra-goimapnotify")
+                            "goimapnotify")
                            "/bin/goimapnotify")
-                        "-conf" (string-append (getenv "HOME")
-                                               "/" #$config-name ".conf"))
-                  #:log-file (string-append %user-log-dir "/goimapnotify-"
-                                            #$config-name ".log")
+                        (if #$config
+                            (list "-conf" #$config)
+                            '()))
+                  #:log-file (string-append %user-log-dir "/goimapnotify.log")
                   ;; Need pinentry to see the X(Wayland) server, just
                   ;; use the default.
-                  #:environment-variables (cons "DISPLAY=:0"
-                                                (default-environment-variables))))
-        ;; in conf onNewMail --socket-name=/run/user/1000/emacs/server
+                  #:environment-variables (cons* "DISPLAY=:0"
+                                                 (getenv "XDG_CONFIG_HOME")
+                                                 (default-environment-variables))))
         (stop #~(make-kill-destructor))
         (respawn? #t))))
 
@@ -345,7 +342,7 @@ shepherd services.")
                 (extensions
                  (list (service-extension home-shepherd-service-type
                                           goimapnotify-shepherd-service)))
-                (default-value "goimapnotify")
+                (default-value #f)
                 (description "goimapnotify service")))
 
 (define (darkman-shepherd-service config)
@@ -438,6 +435,5 @@ shepherd services.")
                    (extra-content "enable-ssh-support")))
          (service home-wayland-hyprland-env-service-type)
          (service home-darkman-service-type)
-         (service home-goimapnotify-service-type "gmail")
-         (service home-goimapnotify-service-type "proton"))
+         (service home-goimapnotify-service-type))
    %base-home-services)))

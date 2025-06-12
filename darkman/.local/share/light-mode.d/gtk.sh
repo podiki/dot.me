@@ -18,5 +18,5 @@ killall lxappearance
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-light'
 gsettings set org.gnome.desktop.interface gtk-theme Orchis-light
 gsettings set org.gnome.desktop.interface icon-theme Papirus-Light
-gsettings set org.gnome.desktop.interface cursor-theme capitaine-cursors
+# gsettings set org.gnome.desktop.interface cursor-theme capitaine-cursors
 # GTK:2 ends here

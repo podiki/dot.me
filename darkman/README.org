@@ -12,7 +12,7 @@ This is my setup to implement a global (of sorts) dark mode without something li
 Switch wallpaper with ~swaybg~
 #+begin_src sh
   killall swaybg
-  WAYLAND_DISPLAY=wayland-1 guix shell swaybg -- swaybg -i /home/john/.local/share/guix-sandbox-home/.local/share/Steam/userdata/11883925/760/remote/2561580/screenshots/20241115012204_1.jpg &
+  WAYLAND_DISPLAY=wayland-1 guix shell swaybg -- swaybg -i /home/john/Downloads/disco-dark.png &
 #+end_src
 ** GTK
 :PROPERTIES:
@@ -38,7 +38,7 @@ Well, the above doesn't really work for Wayland at all (or maybe for some applic
   gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
   gsettings set org.gnome.desktop.interface gtk-theme Orchis-dark
   gsettings set org.gnome.desktop.interface icon-theme Papirus-Dark
-  gsettings set org.gnome.desktop.interface cursor-theme capitaine-cursors-light
+  # gsettings set org.gnome.desktop.interface cursor-theme capitaine-cursors-light
 #+end_src
 ** Hyprland
 :PROPERTIES:
@@ -47,7 +47,7 @@ Well, the above doesn't really work for Wayland at all (or maybe for some applic
 Set the cursor theme for Hyprland as well, see [[https://wiki.hyprland.org/FAQ/#how-do-i-change-me-mouse-cursor][this question in the Hyprland FAQ]]. Except this doesn't work as the darkman service spawned by guix-home doesn't see the Hyprland environment variable needed...
 
 #+begin_src sh
-  hyprctl setcursor capitaine-cursors-light 32
+  # hyprctl setcursor capitaine-cursors-light 32
 #+end_src
 ** emacs
 :PROPERTIES:
@@ -88,14 +88,14 @@ Switch wallpaper with ~swaybg~
   gsettings set org.gnome.desktop.interface color-scheme 'prefer-light'
   gsettings set org.gnome.desktop.interface gtk-theme Orchis-light
   gsettings set org.gnome.desktop.interface icon-theme Papirus-Light
-  gsettings set org.gnome.desktop.interface cursor-theme capitaine-cursors
+  # gsettings set org.gnome.desktop.interface cursor-theme capitaine-cursors
 #+end_src
 ** Hyprland
 :PROPERTIES:
 :header-args+: :tangle "./.local/share/light-mode.d/hyprland.sh"
 :END:
 #+begin_src sh
-  hyprctl setcursor capitaine-cursors 32
+  # hyprctl setcursor capitaine-cursors 32
 #+end_src
 ** emacs
 :PROPERTIES:

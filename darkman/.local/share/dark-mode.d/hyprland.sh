@@ -7,5 +7,5 @@
 
 
 # [[file:../../../README.org::*Hyprland][Hyprland:1]]
-hyprctl setcursor capitaine-cursors-light 32
+# hyprctl setcursor capitaine-cursors-light 32
 # Hyprland:1 ends here

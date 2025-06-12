@@ -216,8 +216,8 @@
               ;; fonts
               "font-abattis-cantarell"
               "font-adobe-source-code-pro"
-              "font-adobe-source-sans-pro"
-              "font-adobe-source-serif-pro"
+              "font-adobe-source-sans"
+              "font-adobe-source-serif"
               "font-google-noto"
               "font-google-noto-sans-cjk"
               "font-google-noto-emoji"

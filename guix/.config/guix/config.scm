@@ -48,17 +48,13 @@
          "guix gc -F 1G"))
 
 (define linux-vrfix
-  (let ((linux-orig linux-xanmod))
+  (let ((linux-orig linux-6.14))
     (package/inherit linux-orig
                      (source
                       (origin
                         (inherit (package-source linux-orig))
-                        (patches (append '("cap_sys_nice_begone.patch"
-                                           ; via
-                                           ; <https://nyanpasu64.gitlab.io/blog/amdgpu-sleep-wake-hang/>
-                                           ; and
-                                           ; <https://gitlab.freedesktop.org/agd5f/linux/-/commit/2965e6355dcdf157b5fafa25a2715f00064da8bf>
-                                           "amd-suspend.patch")
+                        (patches (append (list (string-append (dirname (current-filename))
+                                                              "/cap_sys_nice_begone.patch"))
                                          (origin-patches (package-source linux-orig)))))))))
 
 (operating-system

@@ -1450,6 +1450,7 @@ Show things like emphasis markers when editing text within them with org-appear
                         (mu4e-drafts-folder . "/protonmail/Drafts")
                         (mu4e-maildir-shortcuts .
                          (("/protonmail/Inbox"    . ?i)
+                          ("/protonmail/Folders/Guix-Devel" . ?g)
                           ("/protonmail/Drafts"   . ?d)
                           ("/protonmail/Sent"     . ?s)
                           ("/protonmail/Trash"    . ?t)
@@ -1572,12 +1573,11 @@ Use mu4e-alert
     :ensure t
     :config
     (mu4e-alert-set-default-style 'notifications)
-    ;; don't notify for trashed messages or in all
+    ;; only notify for messages in inboxes
     (setq mu4e-alert-interesting-mail-query
           (concat "flag:unread"
-                  " AND NOT maildir:/gmail/all"
-                  " AND NOT flag:trashed"
-                  " AND NOT maildir:/gmail/trash"))
+                  " AND (maildir:/gmail/Inbox"
+                  " OR maildir:/protonmail/Inbox)"))
     :hook
     ((after-init . mu4e-alert-enable-notifications)
      (after-init . mu4e-alert-enable-mode-line-display)))

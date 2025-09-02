@@ -231,6 +231,7 @@
               "aspell"
               "darkman"
               "dunst"
+              "hypridle"
               "xdg-utils"
               "piper"
               "bluez"

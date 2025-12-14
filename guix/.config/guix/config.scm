@@ -25,6 +25,7 @@
  desktop
  ;docker
  sddm
+ linux
  mcron
  networking
  security-token ; for pcscd
@@ -48,14 +49,60 @@
          "guix gc -F 1G"))
 
 (define linux-vrfix
-  (let ((linux-orig linux-6.14))
+  (let ((linux-orig linux-6.16))
     (package/inherit linux-orig
-                     (source
-                      (origin
-                        (inherit (package-source linux-orig))
-                        (patches (append (list (string-append (dirname (current-filename))
-                                                              "/cap_sys_nice_begone.patch"))
-                                         (origin-patches (package-source linux-orig)))))))))
+      (source
+       (origin
+         (inherit (package-source linux-orig))
+         (patches (append (list (string-append (dirname (current-filename))
+                                               "/cap_sys_nice_begone.patch"))
+                          (origin-patches (package-source linux-orig)))))))))
+
+(define cachy-url "https://github.com/CachyOS/kernel-patches/raw/refs/heads/master/6.17/")
+
+(define (cachy-patch name hash)
+  (origin
+    (method url-fetch)
+    (uri (string-append cachy-url name ".patch"))
+    (sha256 (base32 hash))))
+
+(define cap-sys-nice-patch
+  (origin
+    (method url-fetch)
+    (uri (string-append "https://raw.githubusercontent.com/Scrumplex/"
+                        "pkgs/refs/heads/main/kernelPatches/"
+                        "cap_sys_nice_begone.patch"))
+    (sha256
+     (base32 "0ya6b43m0ncjbyi6vyq3ipwwx6yj24cw8m167bd6ikwvdz5yi887"))))
+
+(define-public linux-vr-mod
+  (customize-linux
+   #:linux
+   (let ((linux-orig linux-6.17))
+     (package/inherit linux-orig
+       (source
+        (origin
+          (inherit (package-source linux-orig))
+          (patches
+           (append
+            (list cap-sys-nice-patch
+                  ;; no longer needed with 6.16:
+                  ;; "0001-amd-pstate.patch"
+                  (cachy-patch "0004-cachy"
+                               "15x9s4wnf88a4jp7v41799yxb2a4ljh9bzc8j0gkaazbkshwd2gf")
+                  (cachy-patch "sched/0001-bore-cachy"
+                               "04334f4gxniv68j7nixk7dnfdfa7f2ygi1r8xpdknf1cn8vaykjv"))
+            (origin-patches (package-source linux-orig))))))))
+   #:name "linux-vr-mod"
+   #:configs '("CONFIG_CACHY=y"
+               "CONFIG_SCHED_BORE=y"
+               "CONFIG_X86_64_VERSION=3")
+   #:modconfig (local-file "/home/john/.config/modprobed.db")))
+
+(define-public linux-modconfig
+  (corrupt-linux linux-libre-6.16
+                 #:name "linux-modconfig"
+                 #:modconfig (local-file "/home/john/.config/modprobed.db")))
 
 (operating-system
   (locale "en_US.utf8")
@@ -85,6 +132,7 @@
                  ;; lower nice limit for users, but root can go further to rescue system
                  (pam-limits-entry "*" 'both 'nice -19)
                  (pam-limits-entry "root" 'both 'nice -20)))
+             (service kernel-module-loader-service-type '("ntsync"))
              (service pcscd-service-type)
              (service peroxide-service-type) ;testing
              (service bluetooth-service-type
@@ -172,7 +220,7 @@
                                             ;; in e.g. Arch
                                             ("vm.max_map_count" . "1048576"))
                                           %default-sysctl-settings)))))))
-  (kernel linux-vrfix)
+  (kernel linux-vr-mod)
   (kernel-loadable-modules (list v4l2loopback-linux-module))
   (kernel-arguments
    '("quiet"

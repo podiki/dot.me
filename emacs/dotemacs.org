@@ -812,7 +812,6 @@ Hydra
 #+BEGIN_SRC emacs-lisp
   ;; color-identifiers-mode
   (use-package color-identifiers-mode
-    :ensure t
     :hook
     (after-init . global-color-identifiers-mode))
 
@@ -1074,7 +1073,7 @@ Hydra
     (setf org-superstar-special-todo-items t))
 
   (use-package org-bullets
-    :ensure t ; no longer included in org-plus-contrib
+    ; no longer included in org-plus-contrib
     :hook
     (org-mode . (lambda () (org-bullets-mode 1))))
 
@@ -1408,6 +1407,7 @@ Show things like emphasis markers when editing text within them with org-appear
                           ("/gmail/trash"  . ?t)
                           ("/gmail/all"    . ?a)))
                         (smtpmail-smtp-server  . "smtp.office365.com")
+                        (smtpmail-smtp-user    . nil)
                         (smtpmail-local-domain . "office365.com")
                         (smtpmail-smtp-service . 587)
                         (smtpmail-stream-type  . starttls)
@@ -1431,6 +1431,7 @@ Show things like emphasis markers when editing text within them with org-appear
                                      :from "john.kehayias@gmail.com"))))
                 :vars '((user-mail-address     . "john.kehayias@gmail.com")
                         (smtpmail-smtp-server  . "smtp.gmail.com")
+                        (smtpmail-smtp-user    . nil)
                         (smtpmail-local-domain . "gmail.com")
                         (smtpmail-smtp-service . 587)
                         (smtpmail-stream-type  . starttls)
@@ -1456,10 +1457,61 @@ Show things like emphasis markers when editing text within them with org-appear
                           ("/protonmail/Trash"    . ?t)
                           ("/protonmail/Archive" . ?a)))
                         (smtpmail-smtp-server  . ,(system-name))
+                        (smtpmail-smtp-user    . nil)
                         (smtpmail-local-domain . "protonmail.com")
                         (smtpmail-smtp-service . 1025)
                         (smtpmail-stream-type  . starttls)
-                        (mail-host-address     . "protonmail.com")))))
+                        (mail-host-address     . "protonmail.com")))
+               ,(make-mu4e-context
+                 :name "Runbox"
+                 :enter-func (lambda () (mu4e-message "Entering Runbox context"))
+                 :leave-func (lambda () (mu4e-message "Leaving Runbox context"))
+                 :match-func (lambda (msg)
+                               (when msg
+                                 (string-match-p "^/runbox/" (mu4e-message-field msg :maildir))))
+                 :vars `((user-mail-address  . "john@guixotic.coop")
+                         (user-full-name     . "John Kehayias" )
+                         (mu4e-refile-folder . "/runbox/Archive")
+                         (mu4e-sent-folder   . "/runbox/Sent")
+                         (mu4e-trash-folder  . "/runbox/Trash")
+                         (mu4e-drafts-folder . "/runbox/Drafts")
+                         (mu4e-maildir-shortcuts .
+                                                 (("/runbox/Inbox"    . ?i)
+                                                  ("/runbox/Drafts"   . ?d)
+                                                  ("/runbox/Sent"     . ?s)
+                                                  ("/runbox/Trash"    . ?t)
+                                                  ("/runbox/Archive" . ?a)))
+                         (smtpmail-smtp-server  . "mail.runbox.com")
+                         (smtpmail-smtp-user    . "john@guixotic.coop")
+                         (smtpmail-local-domain . "guixotic.coop")
+                         (smtpmail-smtp-service . 587)
+                         (smtpmail-stream-type  . starttls)
+                         (mail-host-address     . "guixotic.coop")))
+               ,(make-mu4e-context
+                 :name "aRunbox-admin"
+                 :enter-func (lambda () (mu4e-message "Entering Runbox-admin context"))
+                 :leave-func (lambda () (mu4e-message "Leaving Runbox-admin context"))
+                 :match-func (lambda (msg)
+                               (when msg
+                                 (string-match-p "^/runbox-admin" (mu4e-message-field msg :maildir))))
+                 :vars `((user-mail-address  . "contact@guixotic.coop")
+                         (user-full-name     . "Guixotic Coop" )
+                         (mu4e-refile-folder . "/runbox-admin/Archive")
+                         (mu4e-sent-folder   . "/runbox-admin/Sent")
+                         (mu4e-trash-folder  . "/runbox-admin/Trash")
+                         (mu4e-drafts-folder . "/runbox-admin/Drafts")
+                         (mu4e-maildir-shortcuts .
+                                                 (("/runbox-admin/Inbox"    . ?i)
+                                                  ("/runbox-admin/Drafts"   . ?d)
+                                                  ("/runbox-admin/Sent"     . ?s)
+                                                  ("/runbox-admin/Trash"    . ?t)
+                                                  ("/runbox-admin/Archive" . ?a)))
+                         (smtpmail-smtp-server  . "mail.runbox.com")
+                         (smtpmail-smtp-user    . "admin@guixotic.coop")
+                         (smtpmail-local-domain . "guixotic.coop")
+                         (smtpmail-smtp-service . 587)
+                         (smtpmail-stream-type  . starttls)
+                         (mail-host-address     . "guixotic.coop")))))
       ;; from mu4e docs
       ;; with loop from https://old.reddit.com/r/emacs/comments/tvfpli/email_setting_up_an_automated_from_while_replying/ijqa637/
       ;; modified to use to/cc/bcc
@@ -1547,6 +1599,7 @@ Show things like emphasis markers when editing text within them with org-appear
 Compose nice HTML messages using the power of org-mode
 #+begin_src emacs-lisp
   (use-package org-msg
+    :defer t
     :after mu4e
     :config
     (setq org-msg-options "html-postamble:nil H:5 num:nil ^:{} toc:nil author:nil email:nil \\n:t")
@@ -1570,14 +1623,15 @@ Compose nice HTML messages using the power of org-mode
 Use mu4e-alert
 #+begin_src emacs-lisp
   (use-package mu4e-alert
-    :ensure t
     :config
     (mu4e-alert-set-default-style 'notifications)
     ;; only notify for messages in inboxes
     (setq mu4e-alert-interesting-mail-query
           (concat "flag:unread"
                   " AND (maildir:/gmail/Inbox"
-                  " OR maildir:/protonmail/Inbox)"))
+                  " OR maildir:/protonmail/Inbox"
+                  " OR maildir:/runbox/Inbox"
+                  " OR maildir:/runbox-admin/Inbox)"))
     :hook
     ((after-init . mu4e-alert-enable-notifications)
      (after-init . mu4e-alert-enable-mode-line-display)))

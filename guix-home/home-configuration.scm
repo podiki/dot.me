@@ -68,7 +68,8 @@
 
 (define %emacs-packages
   (append
-   (list (org-msg-git (specification->package "emacs-org-msg")))
+   (list (org-msg-git (specification->package "emacs-org-msg"))
+         (specification->package "emacs-org-cliplink")) ;; dendency el-mock fails tests with native comp
    (map native-comp
         (map specification->package
              (list "emacs-visual-fill-column"
@@ -104,7 +105,7 @@
                    ;; "emacs-ivy-hydra"
                    "emacs-consult"
                    "emacs-which-key"
-                   ;; "emacs-color-identifiers-mode"
+                   "emacs-color-identifiers-mode"
                    "emacs-highlight-symbol"
                    ;; "emacs-define-word"
                    "emacs-langtool"
@@ -128,7 +129,6 @@
                    "emacs-org-ref"
                    "emacs-org-noter"
                    ;; "emacs-advice-patch"
-                   "emacs-org-cliplink"
                    "emacs-org-auto-tangle"
                    ;; "emacs-org-msg"
                    "emacs-mu4e-alert"
@@ -180,6 +180,8 @@
                    "python-lsp-server"
                    "emacs-docker-compose-mode"
                    "emacs-eat"
+                   "emacs-spacious-padding"
+                   "emacs-ultra-scroll"
                    ;; mail
                    "mu"
                    "oauth2ms"

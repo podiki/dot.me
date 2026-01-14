@@ -185,15 +185,14 @@
                                                   (inherit config)
                                                   (substitute-urls
                                                    ;; Reverse the order to put Bordeaux first, adding in the US mirror
-                                                   ;; don't reverse as the US mirror has become slow/unresponsive for unknown reasons
-                                                   (append ;'("https://bordeaux-us-east-mirror.cbaines.net/")
+                                                   (reverse (append '("https://substitutes.nonguix.org"
+                                                                      "https://cache-cdn.guix.moe")
                                                            %default-substitute-urls
-                                                           '(;"https://cuirass.genenetwork.org" nonresponsive
-                                                             "https://substitutes.nonguix.org")))
+                                                           '("https://bordeaux-us-east-mirror.cbaines.net/"))))
                                                   (authorized-keys
                                                    (append (list (local-file "substitutes.nonguix.org.pub")
-                                                                 ;(local-file "cuirass.genenetwork.org.pub")
-                                                                 )
+                                                                 (plain-file "guix-moe.pub"
+                                                                             "(public-key (ecc (curve Ed25519) (q #552F670D5005D7EB6ACF05284A1066E52156B51D75DE3EBD3030CD046675D543#)))"))
                                                            %default-authorized-guix-keys))))
                               (sysctl-service-type config =>
                                 (sysctl-configuration

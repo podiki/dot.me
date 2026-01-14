@@ -7,7 +7,7 @@
     // Choose the order of the modules
     "modules-left": ["hyprland/workspaces", "keyboard-state", "sway/mode"],
     "modules-center": ["clock", "custom/weather"],
-    "modules-right": ["pulseaudio", "custom/mem", "backlight", "battery", "tray"],
+    "modules-right": ["pulseaudio", "custom/polycat", "custom/mem", "backlight", "battery", "tray"],
 
 
     //***************************
@@ -36,6 +36,11 @@
         "interval": 1800,
         "exec": "$HOME/.config/waybar/scripts/wttr.py",
         "return-type": "json"
+    },
+
+    "custom/polycat": {
+        "exec": "polycat"
+
     },
 
     "pulseaudio": {

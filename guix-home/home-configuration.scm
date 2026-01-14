@@ -4,8 +4,7 @@
 ;; need to capture the channels being used, as returned by "guix describe".
 ;; See the "Replicating Guix" section in the manual.
 
-(use-modules (darkman)
-             (ice-9 match)
+(use-modules (ice-9 match)
              (gnu home)
              (gnu packages)
              (gnu services)
@@ -17,6 +16,7 @@
              (gnu packages glib)
              (gnu packages gnome)
              (gnu packages gnupg)
+             (gnu packages xdisorg)
              (gnu services configuration)
              (guix gexp)
              (guix transformations)
@@ -32,6 +32,7 @@
              "python-yubikey-manager"
              "colordiff"
              "thefuck"
+             "btop"
              "curl"
              "tree"
              "btrfs-progs"
@@ -261,6 +262,7 @@
               "font-awesome"
               "godot"
               "polybar"
+              "polycat"
               "kitty"
               "alacritty"
               "foot"
@@ -291,6 +293,9 @@
 ;; much stolen from
 ;; <https://git.ditigal.xyz/~ruther/guix-exprs/tree/main/item/ruther/home/services/wayland.scm>
 ;; and (gnu home services desktop)
+;;
+;; see upsteaming at <https://issues.guix.gnu.org/76619> and
+;; <https://issues.guix.gnu.org/76057>
 (define (wayland-hyprland-env-shepherd-service config)
   (list
    (shepherd-service
@@ -348,6 +353,10 @@ shepherd services.")
                 (default-value #f)
                 (description "goimapnotify service")))
 
+;; TODO: switch to upstream service
+;; <https://guix.gnu.org/manual/devel/en/html_node/Desktop-Home-Services.html>?
+;; Though need to check if these env variables will still need to be
+;; handled.
 (define (darkman-shepherd-service config)
   (list (shepherd-service
         (documentation "Run 'darkman', a system light/dark theme service")

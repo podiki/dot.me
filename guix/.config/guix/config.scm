@@ -48,16 +48,6 @@
   #~(job "5 0 * * *"            ;Vixie cron syntax
          "guix gc -F 1G"))
 
-(define linux-vrfix
-  (let ((linux-orig linux-6.16))
-    (package/inherit linux-orig
-      (source
-       (origin
-         (inherit (package-source linux-orig))
-         (patches (append (list (string-append (dirname (current-filename))
-                                               "/cap_sys_nice_begone.patch"))
-                          (origin-patches (package-source linux-orig)))))))))
-
 (define cachy-url "https://github.com/CachyOS/kernel-patches/raw/refs/heads/master/6.17/")
 
 (define (cachy-patch name hash)
@@ -98,11 +88,6 @@
                "CONFIG_SCHED_BORE=y"
                "CONFIG_X86_64_VERSION=3")
    #:modconfig (local-file "/home/john/.config/modprobed.db")))
-
-(define-public linux-modconfig
-  (corrupt-linux linux-libre-6.16
-                 #:name "linux-modconfig"
-                 #:modconfig (local-file "/home/john/.config/modprobed.db")))
 
 (operating-system
   (locale "en_US.utf8")

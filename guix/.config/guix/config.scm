@@ -198,7 +198,9 @@
                               (sysctl-service-type config =>
                                 (sysctl-configuration
                                  (settings
-                                  (append '(("vm.swappiness" . "10")
+                                  (append '(;; see <https://www.phoronix.com/news/Linux-Splitlock-Hurts-Gaming>
+                                            ("kernel.split_lock_mitigate" . "0")
+                                            ("vm.swappiness" . "10")
                                             ;; potential performance
                                             ;; or stability with some
                                             ;; games and now a default

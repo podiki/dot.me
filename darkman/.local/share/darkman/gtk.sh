@@ -1,7 +1,7 @@
 #!/bin/sh
 # GTK
 # :PROPERTIES:
-# :header-args+: :tangle "./.local/share/dark-mode.d/gtk.sh"
+# :header-args+: :tangle "./.local/share/darkman/gtk.sh"
 # :END:
 # For GTK need to send ~HUP~ to the ~xsettings~ daemon to reload settings. This does give live changes of settings in things like Firefox. All this does is change the theme name to "-dark" from "-light" and reload. However, the mouse cursor theme is not updated on the root window (background) or in some programs. Opening lxappearance at least helps for the root window, so quickly open and kill that as a work around for now.
 
@@ -9,9 +9,25 @@
 
 
 # [[file:../../../README.org::*GTK][GTK:1]]
-sed --in-place --follow-symlinks 's/-light/-dark/' ~/.xsettingsd
-sed --in-place --follow-symlinks 's/-Light/-Dark/' ~/.xsettingsd
-sed --in-place --follow-symlinks 's/capitaine-cursors/capitaine-cursors-light/' ~/.xsettingsd
+case "$1" in
+    dark)
+        THEME="Orchis-dark"
+        ICON="Papirus-Dark"
+        CURSOR="capitaine-cursors-light"
+        SCHEME="prefer-dark"
+        ;;
+    light)
+        THEME="Orchis-light"
+        ICON="Papirus-Light"
+        CURSOR="capitaine-cursors"
+        SCHEME="prefer-light"
+        ;;
+    *) exit 1 ;;
+esac
+
+sed --in-place --follow-symlinks "s/Net\/ThemeName.*/Net\/ThemeName \"$THEME\"/" ~/.xsettingsd
+sed --in-place --follow-symlinks "s/Net\/IconThemeName.*/Net\/IconThemeName \"$ICON\"/" ~/.xsettingsd
+sed --in-place --follow-symlinks "s/Gtk\/CursorThemeName.*/Gtk\/CursorThemeName \"$CURSOR\"/" ~/.xsettingsd
 killall -HUP xsettingsd
 DISPLAY=:0 GDK_BACKEND=x11 lxappearance&
 sleep 0.2
@@ -24,8 +40,8 @@ killall lxappearance
 
 
 # [[file:../../../README.org::*GTK][GTK:2]]
-gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
-gsettings set org.gnome.desktop.interface gtk-theme Orchis-dark
-gsettings set org.gnome.desktop.interface icon-theme Papirus-Dark
-# gsettings set org.gnome.desktop.interface cursor-theme capitaine-cursors-light
+gsettings set org.gnome.desktop.interface color-scheme "$SCHEME"
+gsettings set org.gnome.desktop.interface gtk-theme "$THEME"
+gsettings set org.gnome.desktop.interface icon-theme "$ICON"
+# gsettings set org.gnome.desktop.interface cursor-theme "$CURSOR"
 # GTK:2 ends here

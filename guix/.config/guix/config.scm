@@ -44,7 +44,7 @@
          "guix gc -F 1G"))
 
 (define cachy-url
-  "https://github.com/CachyOS/kernel-patches/raw/refs/heads/master/6.17/")
+  "https://github.com/CachyOS/kernel-patches/raw/refs/heads/master/6.18/")
 
 (define (cachy-patch name hash)
   (origin
@@ -64,7 +64,7 @@
 (define-public linux-vr-mod
   (customize-linux
    #:linux
-   (let ((linux-orig linux-6.17))
+   (let ((linux-orig linux-6.18))
      (package/inherit linux-orig
        (source
         (origin
@@ -72,10 +72,14 @@
           (patches
            (append
             (list cap-sys-nice-patch
-                  ;; no longer needed with 6.16:
-                  ;; "0001-amd-pstate.patch"
-                  (cachy-patch "0004-cachy"
-                               "15x9s4wnf88a4jp7v41799yxb2a4ljh9bzc8j0gkaazbkshwd2gf")
+                  (cachy-patch "0001-amd-pstate"
+                               "1j0yjsb9k0d1bxkc39amfzsprn3jqkv8jlkrvvvzjynh2pq6gp44")
+                  (cachy-patch "0005-cachy"
+                               "029sdm9xdmcxqi8hkvzws3kmxpqdqxpc18mangxm0ah6ilwnl5xm")
+                  (cachy-patch "0007-fixes"
+                               "0fj88vvgr0l9f50qb08sjnlmr1is07ranarvihhqkvg0gqvvyr2i")
+                  (cachy-patch "0008-hdmi"
+                               "16i5yxnn8sc698lryfkzlj19sfs4khdhqmc1x0amadfcs2r53cx9")
                   (cachy-patch "sched/0001-bore-cachy"
                                "04334f4gxniv68j7nixk7dnfdfa7f2ygi1r8xpdknf1cn8vaykjv"))
             (origin-patches (package-source linux-orig))))))))
@@ -115,6 +119,8 @@
       (pam-limits-entry "root" 'both 'nice -20)))
     (service kernel-module-loader-service-type '("ntsync"))
     (service pcscd-service-type)
+    ;; See <https://codeberg.org/guix/guix/issues/5940> for why next line is needed.
+    (simple-service 'polkit-pcsc polkit-service-type (list pcsc-lite))
     (service peroxide-service-type) ;testing
     (service
      bluetooth-service-type

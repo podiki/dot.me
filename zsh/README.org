@@ -16,23 +16,11 @@ Set up a few environment variables we need everywhere, especially the One True E
   export EDITOR='emacsclient -a nano'
 #+end_src
 
-ssh with gpg (starting agent moved to Guix Home)
-#+begin_src sh :tangle no
-  export GPG_TTY="$(tty)"
-  export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
-  gpgconf --launch gpg-agent
-#+end_src
-
 Add a user local bin to ~PATH~ (right now just for XMonad with Stack, default install location)
 #+begin_src sh
   typeset -U path PATH
   path=(~/.local/bin $path)
   export PATH
-#+end_src
-
-Get colors from [[https://github.com/deviantfero/wpgtk/][wpgtk]] so commands in non-interactive shells also have them
-#+begin_src sh :tangle no
-  (cat ~/.config/wpg/sequences &)
 #+end_src
 
 Enable MangoHud by default
@@ -86,14 +74,6 @@ Test if on a Guix System to set the extra profiles variable and source them. Oth
       #  export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
   fi
 #+end_src
-** ~XDG_CONFIG_DIRs~ fix
-To work around some search paths not being exported consistently in Guix, e.g. [[https://issues.guix.gnu.org/50103][issue #50103]], add the desktop profile to ~XDG_CONFIG_DIRS~ (shouldn't be needed with Guix Home, so disabled)
-
-#+begin_src sh :tangle no
-  if [[ -s /run/current-system/profile ]]; then
-      export XDG_CONFIG_DIRS=$GUIX_EXTRA_PROFILES/desktop/desktop/etc/xdg:$XDG_CONFIG_DIRS
-  fi
-#+end_src
 ** Homebrew
 Utilize homebrew if it exists (Mac only)
 
@@ -107,32 +87,6 @@ Utilize homebrew if it exists (Mac only)
 :PROPERTIES:
 :header-args+: :tangle ".zshrc"
 :END:
-** Plugins with [[https://zdharma.github.io/zinit/wiki/][Zinit]]
-*** From the installer
-Basic loading and initialization
-#+begin_src sh :tangle no
-  if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
-      print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
-      command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
-      command git clone https://github.com/zdharma/zinit "$HOME/.zinit/bin" && \
-          print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
-          print -P "%F{160}▓▒░ The clone has failed.%f%b"
-  fi
-
-  source "$HOME/.zinit/bin/zinit.zsh"
-  autoload -Uz _zinit
-  (( ${+_comps} )) && _comps[zinit]=_zinit
-#+end_src
-
-Load a few important annexes, without Turbo (this is currently required for annexes)
-#+begin_src sh :tangle no
-  zinit light-mode for \
-      zinit-zsh/z-a-rust \
-      zinit-zsh/z-a-as-monitor \
-      zinit-zsh/z-a-patch-dl \
-      zinit-zsh/z-a-bin-gem-node
-#+end_src
-
 ** Plugins with [[https://z.digitalclouds.dev/][ZI]]
 *** p10k instant prompt
 #+begin_src sh

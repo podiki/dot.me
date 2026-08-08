@@ -15,16 +15,16 @@ export EDITOR='emacsclient -a nano'
 
 # Add a user local bin to ~PATH~ (right now just for XMonad with Stack, default install location)
 
-# [[file:README.org::*.zshenv][.zshenv:3]]
+# [[file:README.org::*.zshenv][.zshenv:2]]
 typeset -U path PATH
 path=(~/.local/bin $path)
 export PATH
-# .zshenv:3 ends here
+# .zshenv:2 ends here
 
 
 
 # Enable MangoHud by default
 
-# [[file:README.org::*.zshenv][.zshenv:5]]
+# [[file:README.org::*.zshenv][.zshenv:3]]
 export MANGOHUD=1
-# .zshenv:5 ends here
+# .zshenv:3 ends here

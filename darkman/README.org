@@ -91,4 +91,16 @@ For emacs, call a custom function that toggles between day and night themes. Pro
 
   emacsclient -e "(toggle-day-night-theme :$THEME)"
 #+end_src
+** foot
+:PROPERTIES:
+:header-args+: :tangle "./.local/share/darkman/foot.sh"
+:END:
+#+begin_src sh
+  case "$1" in
+      dark) SIGNAL=SIGUSR1 ;;
+      light) SIGNAL=SIGUSR2 ;;
+      ,*) exit 1;;
+  esac
 
+  pkill -$SIGNAL foot
+#+end_src

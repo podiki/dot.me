@@ -15,6 +15,8 @@ hl.monitor({
     mode = "3840x2160",
     position = "0x0",
     scale = "auto",
+    -- when enabled, gammastep doesn't work for changing monitor temperature at night
+    --icc = "/home/john/profile.icc",
 })
 
 hl.monitor({
@@ -26,6 +28,14 @@ hl.monitor({
 --monitor=HDMI-A-1,1920x1080,auto-right,1,mirror, DP-1
 hl.monitor({
     output = "HDMI-A-1",
+    --disabled = true,
+    mode = "1920x1080",
+    position = "auto-right",
+    scale = "auto",
+})
+
+hl.monitor({
+    output = "HDMI-A-2",
     disabled = true,
 })
 

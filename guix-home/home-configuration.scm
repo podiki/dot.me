@@ -28,7 +28,7 @@
 ;; <https://git.sr.ht/~efraim/guix-config> (see item/efraim-home.scm).
 (define %cli-packages
   (map specification->package+output
-       (list "python-tldr"
+       (list "tldr"
              "python-yubikey-manager"
              "colordiff"
              "thefuck"
@@ -39,6 +39,8 @@
              "compsize"
              "autoconf"
              "automake"
+             "qmk"
+             "beancount"
              ;; "mu"
              "make"
              "lm-sensors"
@@ -58,7 +60,9 @@
 
 (define native-comp
   (options->transformation
-   '((with-input . "emacs-minimal=emacs-pgtk"))))
+   '((with-input . "emacs-minimal=emacs-pgtk")
+     ;; tests fail in native-comp with update to 0.36
+     (without-tests . "emacs-flycheck"))))
 
 (define org-msg-git
   (options->transformation
@@ -153,11 +157,13 @@
                    "emacs-fountain-mode"
                    "emacs-markdown-mode"
                    "emacs-olivetti"
+                   "emacs-beancount"
                    "emacs-ledger-mode"
                    "emacs-flycheck-ledger"
                    "emacs-auctex"
                    ;; "emacs-latex-pretty-symbols"
                    "emacs-company-auctex"
+                   "emacs-cdlatex"
                    "emacs-company-math"
                    "emacs-emms"
                    "emacs-nerd-icons"
@@ -174,7 +180,6 @@
                    "emacs-yasnippet"
                    "emacs-highlight-sexp"
                    "emacs-gdscript-mode"
-                   "emacs-ledger-mode"
                    "emacs-vertico"
                    "emacs-vertico-posframe"
                    "emacs-marginalia"
@@ -188,13 +193,23 @@
                    "oauth2ms"
                    "isync")))))
 
-(define rofi-calc-wayland
+(define waybar-fix
   (options->transformation
-   '((with-input . "rofi=rofi-wayland"))))
+   ;; order matters! otherway doesn't work for this commit
+   '((with-commit
+      .
+      "waybar=05945748dccce28bf96d26d8f64a9e69a8dd49ba"
+      ;last good
+      ;"waybar=25d921725ce505662d5a90ee84dac786dd268a4"
+      )
+     ;; (with-git-url
+     ;;  .
+     ;;  "waybar=https://github.com/Alexays/Waybar")
+     )))
 
 (define %desktop-packages
   (append
-   (list (rofi-calc-wayland (specification->package "rofi-calc")))
+   (list (waybar-fix (specification->package "waybar")))
    (map specification->package+output
         (list "gnome-themes-extra" ; for some defaults
               "adwaita-icon-theme" ; ditto
@@ -245,7 +260,7 @@
               "udiskie"
               "xrdb"
               "dex"
-              "v4l-utils:gui"
+              "v4l-utils"
               "geeqie"
               "evince"
               "libreoffice"
@@ -254,12 +269,14 @@
               "headsetcontrol"
               "feh"
               "mpv"
-              "opencl-icd-loader"
               "rocm-opencl-runtime"
               "darktable"
               "xmodmap"
               "xsettingsd"
               "font-awesome"
+              "font-nerd-symbols"
+              "fava"
+              "fava-envelope-airmail"
               "godot"
               "polybar"
               "polycat"
@@ -276,7 +293,8 @@
               "xrandr"
               "pavucontrol"
               "pasystray"
-              "rofi-wayland"
+              "rofi"
+              "rofi-calc"
               "rofi-pass-wayland"
               "yubikey-oath-dmenu"
               "yubikey-touch-detector"
@@ -287,7 +305,6 @@
               ;; wayland
               "xremap-wlroots"
               "gammastep"
-              "waybar"
               "awww"
               "swaynotificationcenter"))))
 

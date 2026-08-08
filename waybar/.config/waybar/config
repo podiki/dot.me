@@ -7,7 +7,7 @@
     // Choose the order of the modules
     "modules-left": ["hyprland/workspaces", "keyboard-state", "sway/mode"],
     "modules-center": ["clock", "custom/weather"],
-    "modules-right": ["pulseaudio", "custom/polycat", "custom/mem", "backlight", "battery", "tray"],
+    "modules-right": ["pulseaudio", "custom/polycat", "custom/mem", "temperature", "tray"],
 
 
     //***************************
@@ -80,13 +80,6 @@
         "format": "{temperatureC}°C {icon}",
         "format-icons": ["", "", "", "", ""],
         "tooltip": false,
-    },
-
-    "backlight": {
-        "device": "intel_backlight",
-        "format": "{percent}% {icon}",
-        "format-icons": ["","","","", "", "", ""],
-        "min-length": 7,
     },
 
     "tray": {

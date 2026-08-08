@@ -2,7 +2,7 @@
     border: none;
     border-radius: 0;
     /* `otf-font-awesome` is required to be installed for icons */
-    font-family: Liberation;
+    font-family: FontAwesome, Liberation;
     min-height: 20px;
 }
 

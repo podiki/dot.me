@@ -114,6 +114,20 @@ hl.env("GDK_SCALE", "1.5")
 hl.env("QT_SCALE_FACTOR", "1.5")
 hl.env("XCURSOR_SIZE", "32")
 
+hl.layer_rule({
+  match        = { namespace = "rofi" },
+  blur         = true,
+  ignore_alpha = 0.5,
+  dim_around   = true,
+  animation    = "slide bottom",
+})
+
+hl.window_rule({
+    match = { class = "xdg-desktop-portal-gtk" },
+    float = true,
+    center = true,
+})
+
 hl.window_rule({
     match = {
         class = "^(steam_app_)(.*)$",
@@ -161,7 +175,7 @@ hl.window_rule({
 
 hl.window_rule({
     match = {
-        class = "Element",
+        class = "element",
     },
     float = true,
     size = "1025 735",
@@ -288,6 +302,12 @@ hl.config({
         --shadow_range = 6
         --shadow_render_power = 3
         --col.shadow = rgba(1a1a1aee)
+    },
+    group = {
+        auto_group = false;
+        groupbar = {
+            enabled = false,
+        },
     },
     animations = {
         enabled = true,

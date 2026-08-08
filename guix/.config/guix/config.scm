@@ -89,6 +89,19 @@
                "CONFIG_X86_64_VERSION=3")
    #:modconfig (local-file "/home/john/.config/modprobed.db")))
 
+;; via <https://github.com/qmk/qmk_firmware/issues/25847#issuecomment-3831966242>
+(define %keyball-rule
+  (udev-rule
+   "50-keyball.rules"
+   (string-append "KERNEL==\"hidraw*\", SUBSYSTEM==\"hidraw\", "
+                  "ATTRS{idVendor}==\"5957\", ATTRS{idProduct}==\"0100\", "
+                  "GOTO=\"keyball_start\"\n"
+                  "GOTO=\"keyball_end\"\n"
+                  "LABEL=\"keyball_start\"\n"
+                  "ATTRS{bInterfaceNumber}==\"01\", MODE=\"0660\", "
+                  "GROUP=\"users\", TAG+=\"uaccess\"\n"
+                  "LABEL=\"keyball_end\"\n")))
+
 (operating-system
   (locale "en_US.utf8")
   (timezone "America/New_York")
@@ -131,6 +144,7 @@
     (udev-rules-service 'headsetcontrol headsetcontrol)
     (udev-rules-service 'steam-devices steam-devices-udev-rules)
     (udev-rules-service 'openrgb openrgb)
+    (udev-rules-service 'keyball %keyball-rule)
     (simple-service 'blueman dbus-root-service-type (list blueman))
     (simple-service 'ratbagd dbus-root-service-type (list libratbag))
     (simple-service 'corectrl-polkit polkit-service-type (list corectrl))

@@ -44,7 +44,7 @@
          "guix gc -F 1G"))
 
 (define cachy-url
-  "https://github.com/CachyOS/kernel-patches/raw/refs/heads/master/6.18/")
+  "https://github.com/CachyOS/kernel-patches/raw/refs/heads/master/7.1/")
 
 (define (cachy-patch name hash)
   (origin
@@ -64,24 +64,24 @@
 (define-public linux-vr-mod
   (customize-linux
    #:linux
-   (let ((linux-orig linux-6.18))
+   (let ((linux-orig linux-7.1))
      (package/inherit linux-orig
+       (version "7.1.5-1")
        (source
         (origin
           (inherit (package-source linux-orig))
+          (method url-fetch)
+          (uri (string-append
+                "https://github.com/CachyOS/linux/releases/download/cachyos-"
+                version "/cachyos-" version ".tar.gz"))
+          (sha256
+           (base32
+            "1f8khws8ss8frd51sl4l2yp8yak0rpxvkxwy4cwgw2saf9yj36lg"))
           (patches
            (append
             (list cap-sys-nice-patch
-                  (cachy-patch "0001-amd-pstate"
-                               "1j0yjsb9k0d1bxkc39amfzsprn3jqkv8jlkrvvvzjynh2pq6gp44")
-                  (cachy-patch "0005-cachy"
-                               "029sdm9xdmcxqi8hkvzws3kmxpqdqxpc18mangxm0ah6ilwnl5xm")
-                  (cachy-patch "0007-fixes"
-                               "0fj88vvgr0l9f50qb08sjnlmr1is07ranarvihhqkvg0gqvvyr2i")
-                  (cachy-patch "0008-hdmi"
-                               "16i5yxnn8sc698lryfkzlj19sfs4khdhqmc1x0amadfcs2r53cx9")
                   (cachy-patch "sched/0001-bore-cachy"
-                               "04334f4gxniv68j7nixk7dnfdfa7f2ygi1r8xpdknf1cn8vaykjv"))
+                               "0lc62n7llaqnk8n45dc9wly2yczqqyzgacjpb71sj8qsrq0l30a4"))
             (origin-patches (package-source linux-orig))))))))
    #:name "linux-vr-mod"
    #:configs '("CONFIG_CACHY=y"

@@ -12,10 +12,5 @@ case "$1" in
     *) exit 1 ;;
 esac
 
-if pgrep -x "swaybg" > /dev/null
-then
-    killall swaybg
-fi
-
-WAYLAND_DISPLAY=wayland-1 guix shell swaybg -- nohup swaybg -i "$WALL" --mode fill &
+awww img "$WALL"
 # Wallpaper:1 ends here

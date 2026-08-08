@@ -288,6 +288,7 @@
               "xremap-wlroots"
               "gammastep"
               "waybar"
+              "awww"
               "swaynotificationcenter"))))
 
 ;; much stolen from

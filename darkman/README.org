@@ -17,12 +17,7 @@ Switch wallpaper with ~swaybg~
       ,*) exit 1 ;;
   esac
 
-  if pgrep -x "swaybg" > /dev/null
-  then
-      killall swaybg
-  fi
-
-  WAYLAND_DISPLAY=wayland-1 guix shell swaybg -- nohup swaybg -i "$WALL" --mode fill &
+  awww img "$WALL"
 #+end_src
 ** GTK
 :PROPERTIES:

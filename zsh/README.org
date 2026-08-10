@@ -236,3 +236,8 @@ Set up general keybindings, mostly just didn't have delete key registering corre
 #+begin_src sh
   source ~/.guix-home/profile/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 #+end_src
+
+** starship
+#+begin_src sh
+  eval "$(starship init zsh)"
+#+end_src

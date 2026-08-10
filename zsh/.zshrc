@@ -156,3 +156,9 @@ fi
 # [[file:README.org::*Syntax highlight][Syntax highlight:1]]
 source ~/.guix-home/profile/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # Syntax highlight:1 ends here
+
+# starship
+
+# [[file:README.org::*starship][starship:1]]
+eval "$(starship init zsh)"
+# starship:1 ends here

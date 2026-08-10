@@ -47,6 +47,7 @@
              "unzip"
              "zsh"
              "zsh-syntax-highlighting"
+             "starship"
              "htop"
              "stow"
              "git"

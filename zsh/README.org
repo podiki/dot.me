@@ -87,41 +87,6 @@ Utilize homebrew if it exists (Mac only)
 :PROPERTIES:
 :header-args+: :tangle ".zshrc"
 :END:
-** Plugins with [[https://z.digitalclouds.dev/][ZI]]
-*** p10k instant prompt
-#+begin_src sh
-  # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-  # Initialization code that may require console input (password prompts, [y/n]
-  # confirmations, etc.) must go above this block; everything else may go below.
-  if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-    source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-  fi
-#+end_src
-*** Basic loading from installer
-#+begin_src sh
-  if [[ -r "$HOME/.config/zi/init.zsh" ]]; then
-    source "$HOME/.config/zi/init.zsh" && zzinit
-  fi
-  zi light-mode for \
-    z-shell/z-a-meta-plugins \
-    @annexes # <- https://z.digitalclouds.dev/ecosystem/annexes
-  # examples here -> https://z.digitalclouds.dev/docs/gallery/collection
-  zicompinit # <- https://z.digitalclouds.dev/docs/guides/commands
-#+end_src
-*** Prompt
-Load powerlevel10k theme:
-#+begin_src sh
-  zinit light romkatv/powerlevel10k
-
-  # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-  [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-#+end_src
-*** Misc
-Color for man pages:
-#+begin_src sh
-  zi ice use:"*.zsh"
-  zi light zuxfoucault/colored-man-pages_mod
-#+end_src
 ** History and completion
 #+begin_src sh
   HISTFILE=~/.histfile

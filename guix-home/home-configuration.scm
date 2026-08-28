@@ -65,17 +65,10 @@
      ;; tests fail in native-comp with update to 0.36
      (without-tests . "emacs-flycheck"))))
 
-(define org-msg-git
-  (options->transformation
-   '((with-input . "emacs-minimal=emacs-pgtk")
-     (with-git-url
-      .
-      "emacs-org-msg=https://github.com/jeremy-compostella/org-msg"))))
-
 (define %emacs-packages
   (append
-   (list (org-msg-git (specification->package "emacs-org-msg"))
-         (specification->package "emacs-org-cliplink")) ;; dendency el-mock fails tests with native comp
+   ;; dependency el-mock fails tests with native comp
+   (list (specification->package "emacs-org-cliplink"))
    (map native-comp
         (map specification->package
              (list "emacs-visual-fill-column"
@@ -90,6 +83,7 @@
                    "emacs-monokai-theme"
                    "emacs-spacemacs-theme"
                    "emacs-doom-themes"
+                   "emacs-catppuccin-theme"
                    "emacs-solaire-mode"
                    "emacs-mixed-pitch"
                    ;; native comp fail "emacs-powerline"
@@ -136,7 +130,7 @@
                    "emacs-org-noter"
                    ;; "emacs-advice-patch"
                    "emacs-org-auto-tangle"
-                   ;; "emacs-org-msg"
+                   "emacs-org-msg"
                    "emacs-mu4e-alert"
                    ;; "emacs-mu4e-marker-icons"
                    "emacs-magit"

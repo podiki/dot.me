@@ -104,3 +104,17 @@ For emacs, call a custom function that toggles between day and night themes. Pro
 
   pkill -$SIGNAL foot
 #+end_src
+** btop
+:PROPERTIES:
+:header-args+: :tangle "./.local/share/darkman/btop.sh"
+:END:
+#+begin_src sh
+  case "$1" in
+      dark) THEME=mocha ;;
+      light) THEME=latte ;;
+      ,*) exit 1;;
+  esac
+
+  sed -i "s/catppuccin_.*\.theme/catppuccin_${THEME}.theme/g" ~/.config/btop/btop.conf
+  pkill -SIGUSR2 btop
+#+end_src

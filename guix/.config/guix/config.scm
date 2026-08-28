@@ -10,7 +10,7 @@
              (gnu packages linux) ; for fstrim
              (gnu packages networking) ; for blueman
              (guix profiles) ;; For manifest-entries
-             (srfi srfi-1) ;; For filter-map
+             (srfi srfi-1) ;; For filter-map and take
              (gnu packages hardware) ;; openrgb
              (gnu packages security-token) ;; for libfido2 (udev rule)
              (gnu packages admin) ;; for corectrl
@@ -43,14 +43,23 @@
   #~(job "5 0 * * *"            ;Vixie cron syntax
          "guix gc -F 1G"))
 
+(define kernel-version "7.2.0-1")
+(define kernel-version-major
+  (string-join (take (string-split kernel-version #\.) 2) "."))
+
 (define cachy-url
-  "https://github.com/CachyOS/kernel-patches/raw/refs/heads/master/7.1/")
+  (string-append "https://github.com/CachyOS/kernel-patches/raw/refs/heads/master/"
+                 kernel-version-major "/"))
 
 (define (cachy-patch name hash)
   (origin
     (method url-fetch)
     (uri (string-append cachy-url name ".patch"))
-    (sha256 (base32 hash))))
+    (sha256 (base32 hash))
+    ;; although patch probably doesn't usually change in minor version
+    ;; numbers, use whole kernel version to force downloads on each update.
+    (file-name (string-append (cadr (string-split name #\/))
+                              "-" kernel-version ".patch"))))
 
 (define cap-sys-nice-patch
   (origin
@@ -62,11 +71,13 @@
      (base32 "0ya6b43m0ncjbyi6vyq3ipwwx6yj24cw8m167bd6ikwvdz5yi887"))))
 
 (define-public linux-vr-mod
-  (customize-linux
-   #:linux
-   (let ((linux-orig linux-7.1))
+  ;; didn't work with string->symbol
+  (let ((linux-orig (specification->package
+                     (string-append "linux@" kernel-version-major))))
+    (customize-linux
+     #:linux
      (package/inherit linux-orig
-       (version "7.1.5-1")
+       (version kernel-version)
        (source
         (origin
           (inherit (package-source linux-orig))
@@ -76,18 +87,18 @@
                 version "/cachyos-" version ".tar.gz"))
           (sha256
            (base32
-            "1f8khws8ss8frd51sl4l2yp8yak0rpxvkxwy4cwgw2saf9yj36lg"))
+            "03rrghrvxqba375vijvbrvvp0rsl2y03gddz4ksjy47yckw9xr60"))
           (patches
            (append
             (list cap-sys-nice-patch
                   (cachy-patch "sched/0001-bore-cachy"
-                               "0lc62n7llaqnk8n45dc9wly2yczqqyzgacjpb71sj8qsrq0l30a4"))
-            (origin-patches (package-source linux-orig))))))))
-   #:name "linux-vr-mod"
-   #:configs '("CONFIG_CACHY=y"
-               "CONFIG_SCHED_BORE=y"
-               "CONFIG_X86_64_VERSION=3")
-   #:modconfig (local-file "/home/john/.config/modprobed.db")))
+                               "1814znphbwab9xc4dvkcpn83yn20aqw3p2ydj8zjm2jhsvaa828q"))
+            (origin-patches (package-source linux-orig)))))))
+     #:name "linux-cachy-vr"
+     #:configs '("CONFIG_CACHY=y"
+                 "CONFIG_SCHED_BORE=y"
+                 "CONFIG_X86_64_VERSION=3")
+     #:modconfig (local-file "/home/john/.config/modprobed.db"))))
 
 ;; via <https://github.com/qmk/qmk_firmware/issues/25847#issuecomment-3831966242>
 (define %keyball-rule

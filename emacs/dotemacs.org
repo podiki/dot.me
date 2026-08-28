@@ -223,8 +223,11 @@ for package listing and browsing
                (doom-themes-org-config)
                (setq frame-background-mode 'dark))
 
+  (use-package catppuccin-theme
+               :defer t)
+
   (setq frame-background-mode 'dark)
-  (load-theme 'doom-dracula t)
+  (load-theme 'catppuccin :no-confirm)
 
   ;; solaire-mode for grossly incandescent buffers
   (use-package solaire-mode
@@ -270,12 +273,14 @@ And a function for switching between two (day/night) themes, modified from this 
     (cond ((or (and (eq light-or-dark :dark) (eq frame-background-mode 'light))
                (and (not light-or-dark) (eq frame-background-mode 'light)))
            (setq frame-background-mode 'dark)
-           (load-theme 'doom-one t)
+           (setq catppuccin-flavor 'mocha)
+           (catppuccin-reload)
            (re-fontify-buffers))
           ((or (and (eq light-or-dark :light) (eq frame-background-mode 'dark))
                (and (not light-or-dark) (eq frame-background-mode 'dark)))
            (setq frame-background-mode 'light)
-           (load-theme 'doom-one-light t)
+           (setq catppuccin-flavor 'latte)
+           (catppuccin-reload)
            (re-fontify-buffers))
           (t (message "Didn't toggle theme, mismatch in arguments."))))
 #+END_SRC

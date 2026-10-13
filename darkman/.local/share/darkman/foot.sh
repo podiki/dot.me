@@ -11,5 +11,7 @@ case "$1" in
     *) exit 1;;
 esac
 
+sed -i "s/initial-color-theme=.*/initial-color-theme=$1/g" ~/.config/foot/foot.ini
+
 pkill -$SIGNAL foot
 # foot:1 ends here

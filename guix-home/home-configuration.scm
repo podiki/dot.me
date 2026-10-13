@@ -200,6 +200,20 @@
      ;;  "waybar=https://github.com/Alexays/Waybar")
      )))
 
+;; Old/xorg packages, no longer used, but in case need to jump back to
+;; xorg, keep the list around.
+(define %old-or-xorg-packages
+  (map specification->package+output
+       (list "dunst"
+             "xrdb"
+             "xmodmap"
+             "polybar"
+             "kitty"
+             "alacritty"
+             "redshift:gtk"
+             "picom"
+             "arandr"
+             "xprop")))
 (define %desktop-packages
   (append
    (list (waybar-fix (specification->package "waybar")))
@@ -241,7 +255,6 @@
               "aspell-dict-en"
               "aspell"
               "darkman"
-              "dunst"
               "hypridle"
               "xdg-utils"
               "piper"
@@ -251,9 +264,7 @@
               "corectrl"
               "lm-sensors"
               "udiskie"
-              "xrdb"
               "dex"
-              "v4l-utils"
               "geeqie"
               "evince"
               "libreoffice"
@@ -264,20 +275,14 @@
               "mpv"
               "rocm-opencl-runtime"
               "darktable"
-              "xmodmap"
               "xsettingsd"
               "font-awesome"
               "font-nerd-symbols"
               "fava"
               "fava-envelope-airmail"
               "godot"
-              "polybar"
               "polycat"
-              "kitty"
-              "alacritty"
               "foot"
-              "redshift:gtk"
-              "picom"
               "python" ; for GUIX_PYTHONPATH needed for redshift
               "syncthing"
               "syncthing-gtk"
@@ -292,8 +297,6 @@
               "yubikey-oath-dmenu"
               "yubikey-touch-detector"
               "font-dejavu"
-              "arandr"
-              "xprop"
               "wireplumber"
               ;; wayland
               "xremap-wlroots"

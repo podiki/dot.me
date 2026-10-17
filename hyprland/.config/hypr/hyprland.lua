@@ -28,7 +28,7 @@ hl.monitor({
 --monitor=HDMI-A-1,1920x1080,auto-right,1,mirror, DP-1
 hl.monitor({
     output = "HDMI-A-1",
-    --disabled = true,
+    disabled = true,
     mode = "1920x1080",
     position = "auto-right",
     scale = "auto",
@@ -56,6 +56,9 @@ hl.monitor({
 
 -- Source a file (multi-file configs)
 -- source = ~/.config/hypr/myColors.conf
+
+local colors = require('themes.catppuccin-mocha')
+local base = colors.base
 
 -- Set programs that you use
 local terminal = "foot"
@@ -114,12 +117,30 @@ hl.env("GDK_SCALE", "1.5")
 hl.env("QT_SCALE_FACTOR", "1.5")
 hl.env("XCURSOR_SIZE", "32")
 
+local suppressMaximizeRule = hl.window_rule({
+    -- Ignore maximize requests from all apps. You'll probably like this.
+    name  = "suppress-maximize-events",
+    match = { class = ".*" },
+
+    suppress_event = "maximize",
+})
+-- suppressMaximizeRule:set_enabled(false)
+
 hl.layer_rule({
   match        = { namespace = "rofi" },
   blur         = true,
-  ignore_alpha = 0.5,
-  dim_around   = true,
-  animation    = "slide bottom",
+  blur_popups  = true,
+  ignore_alpha = 0,
+  xray         = false,
+  dim_around   = false,
+  --animation    = "slide bottom",
+})
+
+hl.layer_rule({
+  match        = { namespace = "swaync-control-center" },
+  blur         = true,
+  ignore_alpha = 0.1,
+  animation    = "slide right",
 })
 
 hl.window_rule({
@@ -197,6 +218,12 @@ hl.window_rule({
     size = "260 575",
     move = "(1289) (125)",
 })
+
+hl.on("window.active", function(w)
+  if w.class == "steam" and w.title == "Steam Big Picture Mode" then
+    hl.dispatch(hl.dsp.window.fullscreen({ action = "set", mode = "fullscreen" }))
+  end
+end)
 
 local mainMod = "SUPER"
 
@@ -278,8 +305,8 @@ hl.config({
         gaps_out = 20,
         border_size = 2,
         col = {
-            active_border = { colors = { "rgba(33ccffee)", "rgba(00ff99ee)" }, angle = 45 },
-            inactive_border = "rgba(595959aa)",
+            active_border = { colors = { colors.red, colors.mauve }, angle = 45 },
+            inactive_border = colors.lavender,
         },
         layout = "dwindle",
         -- Please see https://wiki.hyprland.org/Configuring/Tearing/ before you turn this on
